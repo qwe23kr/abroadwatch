@@ -9,6 +9,10 @@ export const siteConfig = {
   gaMeasurementId: "G-123Z5X8X27",
   /** Google Search Console 소유 확인 */
   googleSiteVerification: "kxcfVDsuqZgaprqcwiVTe3Stc9JEqfjfq-9ORpkP0NU",
+  /** 네이버 서치어드바이저 소유 확인 */
+  naverSiteVerification: "c068976ca570c98efaf010d47db68f38c71acead",
+  /** Bing Webmaster Tools 소유 확인 */
+  bingSiteVerification: "6D861D63FA75FAE65BB7047C06925ACC",
   /** emrldco 트래킹 스크립트 */
   emrldScriptUrl: "https://emrldco.com/NTQxMDA0.js?t=541004",
   defaultLocale: "ko" as const,

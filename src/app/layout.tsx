@@ -37,6 +37,10 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://abroadwatch.com"),
   verification: {
     google: siteConfig.googleSiteVerification,
+    other: {
+      "naver-site-verification": siteConfig.naverSiteVerification,
+      "msvalidate.01": siteConfig.bingSiteVerification,
+    },
   },
   other: {
     "google-adsense-account": siteConfig.adsenseClientId,
