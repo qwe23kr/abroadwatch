@@ -1,6 +1,8 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/site-config";
 
+import { InlineMarkdown } from "./InlineMarkdown";
+
 interface ReviewNoteProps {
   source: string;
   url?: string;
@@ -31,7 +33,11 @@ export function ReviewNote({
         {displayLabel}
       </p>
       <div className="relative border-l-2 border-amber-400 pl-4 text-sm leading-relaxed text-gray-800">
-        {children}
+        {typeof children === "string" ? (
+          <InlineMarkdown text={children} />
+        ) : (
+          children
+        )}
       </div>
       <footer className="relative mt-4 flex flex-wrap items-center gap-2 border-t border-amber-200/60 pt-3 text-xs text-gray-600">
         <span className="rounded-full bg-white/80 px-2 py-0.5 font-medium text-amber-800">

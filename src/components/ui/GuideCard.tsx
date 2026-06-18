@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getGuidePath, type GuideContent } from "@/lib/content";
+import { incidentDescriptions } from "@/lib/incident-ui";
 import { stripMarkdown } from "@/lib/text";
 import { incidentLabels } from "@/lib/site-config";
 import { getCity, getCountry } from "@/lib/site-config";
@@ -26,7 +27,10 @@ export function GuideCard({ guide }: GuideCardProps) {
       <h3 className="mb-2 font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
         {guide.frontmatter.title}
       </h3>
-      <p className="mb-3 line-clamp-2 flex-1 text-sm text-gray-600">
+      <p className="mb-2 text-xs leading-relaxed text-gray-500 line-clamp-2">
+        {incidentDescriptions[guide.incident][guide.locale]}
+      </p>
+      <p className="mb-3 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-600">
         {stripMarkdown(guide.frontmatter.summary)}
       </p>
       <span className="text-xs font-medium text-gray-500">{location}</span>

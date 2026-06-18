@@ -29,7 +29,8 @@ import {
 } from "./ko-terms";
 import { localPhraseBlock } from "./local-phrases";
 import { getHospitalCopy } from "./hospital-terms";
-import { getScamGuide, scamReviewBlock } from "./scam-terms";
+import { getScamGuide, scamReviewBlock, scamReviewQuotesBlock, scamTypesBlock } from "./scam-terms";
+import { incidentReviewQuotesBlock } from "./incident-reviews";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -84,6 +85,19 @@ function sourceBlock(data: CityData, locale: Locale): string {
   return `<ReviewNote label="${label}" source="${esc(src[locale])}" url="${src.url}">
   ${note}
 </ReviewNote>`;
+}
+
+/** 공식 출처 + 실제 후기 요약 블록 */
+function buildReviewSection(
+  data: CityData,
+  locale: Locale,
+  country: string,
+  citySlug: string,
+  incident: IncidentType,
+): string {
+  const official = sourceBlock(data, locale);
+  const quotes = incidentReviewQuotesBlock(country, citySlug, incident, locale);
+  return quotes ? `${official}\n\n${quotes}` : official;
 }
 
 const medicalEmergencyNumbers: Record<
@@ -157,6 +171,7 @@ ${rows}
 function generateLostPassport(
   locale: Locale,
   country: string,
+  citySlug: string,
   cityName: string,
   countryName: string,
   data: CityData,
@@ -239,7 +254,7 @@ function generateLostPassport(
       cost: isJapan ? "약 6,500~6,890엔" : "공관 문의",
       time: isJapan ? "1~2영업일" : "1~3영업일",
       emergency: data.emergency,
-      review: sourceBlock(data, "ko"),
+      review: buildReviewSection(data, "ko", country, citySlug, "lost-passport"),
       timelineTitle: `${cityName} 여권 분실 대응 타임라인`,
       timeline,
       actions,
@@ -345,7 +360,7 @@ function generateLostPassport(
     cost: isJapan ? "~¥6,500–6,890" : "Contact mission",
     time: isJapan ? "1–2 business days" : "1–3 business days",
     emergency: data.emergency,
-    review: sourceBlock(data, "en"),
+    review: buildReviewSection(data, "en", country, citySlug, "lost-passport"),
     timelineTitle: `Lost passport timeline — ${cityName}`,
     timeline,
     actions,
@@ -383,6 +398,8 @@ function generateLostPassport(
 
 function generateLostPhone(
   locale: Locale,
+  country: string,
+  citySlug: string,
   cityName: string,
   countryName: string,
   data: CityData,
@@ -454,7 +471,7 @@ function generateLostPhone(
       cost: "경찰 신고 0원",
       time: "경찰 1~3시간 · 보험 2~4주",
       emergency: { number: emergency, label: { ko: isThailand ? "관광경찰 1155" : data.emergency.label.ko, en: "" } },
-      review: sourceBlock(data, "ko"),
+      review: buildReviewSection(data, "ko", country, citySlug, "lost-phone"),
       timelineTitle: `${cityName} 휴대폰 분실 타임라인`,
       timeline,
       actions,
@@ -495,7 +512,7 @@ function generateLostPhone(
     cost: "Police report free",
     time: "Police 1–3 hrs · insurance 2–4 weeks",
     emergency: { number: emergency, label: { ko: "", en: isThailand ? "Tourist Police 1155" : data.emergency.label.en } },
-    review: sourceBlock(data, "en"),
+    review: buildReviewSection(data, "en", country, citySlug, "lost-phone"),
     timelineTitle: `Lost phone timeline — ${cityName}`,
     timeline, actions,
     warning: { title: "Insurance", body: "Request **Stolen** not **Lost** on police report." },
@@ -514,6 +531,8 @@ function generateLostPhone(
 
 function generateLostWallet(
   locale: Locale,
+  country: string,
+  citySlug: string,
   cityName: string,
   countryName: string,
   data: CityData,
@@ -542,7 +561,7 @@ function generateLostWallet(
       summary: `${countryName} ${cityName} 지갑·카드 분실 시 즉시 조치.`,
       cost: "경찰 0원", time: "카드 정지 즉시 · 경찰 1~2시간",
       emergency: data.emergency,
-      review: sourceBlock(data, "ko"),
+      review: buildReviewSection(data, "ko", country, citySlug, "lost-wallet"),
       timelineTitle: `${cityName} 지갑 분실 타임라인`, timeline, actions,
       warning: { title: "골든타임", body: "카드 정지는 **분실 발견 즉시**. 24시간 내 결제 도용 다수." },
       info: [{ label: "경찰 신고 확인서", value: "보험 청구 시 필수" }, { label: "카드사", value: "분실신고 접수번호" }],
@@ -570,7 +589,7 @@ function generateLostWallet(
     summary: `Block cards, police report — ${cityName}, ${countryName}.`,
     cost: "Police free", time: "Card block immediate",
     emergency: data.emergency,
-    review: sourceBlock(data, "en"),
+    review: buildReviewSection(data, "en", country, citySlug, "lost-wallet"),
     timelineTitle: `Lost wallet timeline`, timeline, actions,
     warning: { title: "Golden window", body: "Block cards **immediately** upon discovery." },
     info: [{ label: "Police report", value: "Required for insurance" }],
@@ -583,6 +602,8 @@ function generateLostWallet(
 
 function generateHospital(
   locale: Locale,
+  country: string,
+  citySlug: string,
   cityName: string,
   countryName: string,
   data: CityData,
@@ -633,7 +654,7 @@ function generateHospital(
       cost: hospital.estimatedCost,
       time: "대기 30분~2시간",
       emergency: medicalEmergency,
-      review: sourceBlock(data, "ko"),
+      review: buildReviewSection(data, "ko", country, citySlug, "hospital"),
       timelineTitle: `${cityName} 병원 이용 타임라인`, timeline, actions,
       warning: { title: hospital.warningTitle, body: hospital.warningBody },
       info: [
@@ -667,7 +688,7 @@ function generateHospital(
     cost: hospital.estimatedCost,
     time: "Wait 30min–2hrs",
     emergency: medicalEmergency,
-    review: sourceBlock(data, "en"),
+    review: buildReviewSection(data, "en", country, citySlug, "hospital"),
     timelineTitle: `Hospital timeline — ${cityName}`, timeline, actions,
     warning: { title: hospital.warningTitle, body: hospital.warningBody },
     info: [{ label: "Passport", value: "Required" }, { label: "Insurance", value: "Direct billing check" }],
@@ -702,12 +723,11 @@ function generateScam(
     const timeline: TimelineItem[] = [
       {
         time: "출발 전",
-        action: `${countryName}·${cityName} **사기 유형** 미리 확인 — ${guide.hotspots.ko}`,
-        note: "아래 후기 기반 유형표 참고",
+        action: `${countryName}·${cityName} 사기 유형 미리 확인 — ${guide.hotspots.ko}`,
       },
       {
         time: "현장에서",
-        action: "「무료」「특가」「VIP」·낯선 사람 유인 → **정중히 거절**",
+        action: "「무료」「특가」「VIP」·낯선 사람 유인 → 정중히 거절",
         note: guide.warning.body.ko,
       },
       {
@@ -739,7 +759,7 @@ function generateScam(
       {
         title: "경찰·관광경찰 신고",
         detail: isThailand
-          ? "관광경찰 **1155** (영어·한국어 지원) — 사건 발생 장소·시간·금액 기록"
+          ? "관광경찰 1155 (영어·한국어 지원) — 사건 발생 장소·시간·금액 기록"
           : isTaiwan
             ? `0800-024-111 외국인 안내 · ${police.name.ko}${police.phone ? ` ${police.phone}` : ""}`
             : `${police.name.ko}${police.phone ? ` (${police.phone})` : ""} — 사건 발생 장소·시간·금액 기록`,
@@ -756,19 +776,18 @@ function generateScam(
     return buildPage({
       locale: "ko",
       title: `${cityName} 여행 사기 — 유형·예방·신고 (2026)`,
-      summary: `${countryName} ${cityName} 바·택시·환전 등 **실제 후기 기반** 사기 유형과 대응법.`,
+      summary: `${countryName} ${cityName} 바·택시·환전 등 실제 후기 기반 사기 유형과 대응법.`,
       cost: guide.estimatedLoss.ko,
       time: "예방 즉시 · 신고 1~3시간",
       emergency,
-      review: scamReviewBlock(guide, "ko"),
+      review: `${scamReviewBlock(guide, "ko")}\n\n${scamReviewQuotesBlock(guide, "ko")}`,
       timelineTitle: `${cityName} 여행 사기 대응 타임라인`,
       timeline,
       actions,
       warning: { title: guide.warning.title.ko, body: guide.warning.body.ko },
-      info: [
-        { label: "다발 구역", value: guide.hotspots.ko },
-        ...scamInfo,
-      ],
+      info: [{ label: "다발 구역", value: guide.hotspots.ko }, ...scamInfo],
+      customDocs: scamTypesBlock(guide, "ko"),
+      docsHeading: "주요 사기 유형",
       costTable: [
         ["예방", "무료"],
         ["피해액 (후기)", guide.estimatedLoss.ko],
@@ -780,11 +799,11 @@ function generateScam(
       faqs: [
         {
           q: `${cityName}에서 가장 흔한 사기는?`,
-          a: `**${guide.scams[0].label.ko}** — ${guide.scams[0].value.ko}`,
+          a: `${guide.scams[0].label.ko} — ${guide.scams[0].value.ko}`,
         },
         {
           q: "돈을 냈는데 환불 가능?",
-          a: "카드 결제면 **카드사 분쟁** 검토. 현금·ATM 유도는 회수 어려운 경우 많음 — **경찰 신고 + 대사관** 상담.",
+          a: "카드 결제면 카드사 분쟁을 검토하세요. 현금·ATM 유도는 회수 어려운 경우가 많습니다. 경찰 신고와 대사관 상담을 병행하세요.",
         },
       ],
     });
@@ -793,8 +812,7 @@ function generateScam(
   const timeline: TimelineItem[] = [
     {
       time: "Before trip",
-      action: `Review **scam types** for ${cityName} — ${guide.hotspots.en}`,
-      note: "See review-based list below",
+      action: `Review scam types for ${cityName} — ${guide.hotspots.en}`,
     },
     {
       time: "On the spot",
@@ -827,7 +845,7 @@ function generateScam(
     {
       title: "Report to police",
       detail: isThailand
-        ? "Tourist Police **1155** (English/Korean) — note place, time, amount"
+        ? "Tourist Police 1155 (English/Korean) — note place, time, amount"
         : isTaiwan
           ? `Foreigner line **0800-024-111** · ${police.name.en} ${police.phone ?? ""}`
           : `${police.name.en} ${police.phone ?? ""} — note place, time, amount`,
@@ -842,12 +860,14 @@ function generateScam(
     cost: guide.estimatedLoss.en,
     time: "Prevention: immediate · Report: 1–3 hrs",
     emergency,
-    review: scamReviewBlock(guide, "en"),
+    review: `${scamReviewBlock(guide, "en")}\n\n${scamReviewQuotesBlock(guide, "en")}`,
     timelineTitle: `Scam response timeline — ${cityName}`,
     timeline,
     actions,
     warning: { title: guide.warning.title.en, body: guide.warning.body.en },
     info: [{ label: "Hotspots", value: guide.hotspots.en }, ...scamInfo],
+    customDocs: scamTypesBlock(guide, "en"),
+    docsHeading: "Common scam types",
     costTable: [
       ["Prevention", "Free"],
       ["Typical loss (reviews)", guide.estimatedLoss.en],
@@ -859,11 +879,11 @@ function generateScam(
     faqs: [
       {
         q: `Most common scam in ${cityName}?`,
-        a: `**${guide.scams[0].label.en}** — ${guide.scams[0].value.en}`,
+        a: `${guide.scams[0].label.en} — ${guide.scams[0].value.en}`,
       },
       {
         q: "Can I get a refund?",
-        a: "Card payments: try **chargeback/dispute**. Cash/ATM coercion often hard to recover — police report + embassy.",
+        a: "Card payments: try chargeback/dispute. Cash/ATM coercion is often hard to recover — file a police report and contact your embassy.",
       },
     ],
   });
@@ -871,6 +891,8 @@ function generateScam(
 
 function generatePoliceReport(
   locale: Locale,
+  country: string,
+  citySlug: string,
   cityName: string,
   countryName: string,
   data: CityData,
@@ -900,7 +922,7 @@ function generatePoliceReport(
       summary: `${countryName} ${cityName} 도난·분실 경찰 신고, ${reportName}, 보험.`,
       cost: "무료", time: "1~3시간",
       emergency: data.emergency,
-      review: sourceBlock(data, "ko"),
+      review: buildReviewSection(data, "ko", country, citySlug, "police-report"),
       timelineTitle: `${cityName} 경찰 신고 타임라인`, timeline, actions,
       warning: { title: "보험용 서류", body: insuranceReportRequest(data.country) + "라고 처음부터 요청하지 않으면 일반 접수로 끝날 수 있습니다." },
       info: [
@@ -933,7 +955,7 @@ function generatePoliceReport(
     summary: `Theft/loss report, insurance certificate — ${cityName}, ${countryName}.`,
     cost: "Free", time: "1–3 hours",
     emergency: data.emergency,
-    review: sourceBlock(data, "en"),
+    review: buildReviewSection(data, "en", country, citySlug, "police-report"),
     timelineTitle: `Police report timeline`, timeline, actions,
     warning: { title: "For insurance", body: "Say **Police Report for insurance** at the start." },
     info: [{ label: "Passport", value: "Original + copy" }, { label: "Item list", value: "English/local language" }],
@@ -957,6 +979,8 @@ interface PageBuildOpts {
   actions: ActionItem[];
   warning: { title: string; body: string };
   info: InfoItem[];
+  customDocs?: string;
+  docsHeading?: string;
   costTable: string[][];
   locations: Location[];
   locationHeaders: string[];
@@ -968,7 +992,7 @@ function buildPage(opts: PageBuildOpts): string {
   const L = opts.locale;
   const hTimeline = L === "ko" ? "대응 타임라인" : "Response Timeline";
   const hActions = L === "ko" ? "지금 당장 이렇게 하세요" : "Do This Right Now";
-  const hDocs = L === "ko" ? "필요 서류·정보" : "Required Documents";
+  const hDocs = opts.docsHeading ?? (L === "ko" ? "필요 서류·정보" : "Required Documents");
   const hCost = L === "ko" ? "실제 비용" : "Costs";
   const hFaq = L === "ko" ? "자주 묻는 질문" : "FAQ";
   const emLabel = opts.emergency.label[L];
@@ -1022,7 +1046,7 @@ ${opts.afterActions ?? ""}
 
 ## ${hDocs}
 
-${renderInfoRows(opts.info)}
+${opts.customDocs ?? renderInfoRows(opts.info)}
 
 ## ${hCost}
 
@@ -1052,15 +1076,15 @@ function generateContent(
 
   switch (incident) {
     case "lost-passport":
-      return generateLostPassport(locale, country, cityName, countryName, data);
+      return generateLostPassport(locale, country, citySlug, cityName, countryName, data);
     case "lost-phone":
-      return generateLostPhone(locale, cityName, countryName, data);
+      return generateLostPhone(locale, country, citySlug, cityName, countryName, data);
     case "lost-wallet":
-      return generateLostWallet(locale, cityName, countryName, data);
+      return generateLostWallet(locale, country, citySlug, cityName, countryName, data);
     case "hospital":
-      return generateHospital(locale, cityName, countryName, data);
+      return generateHospital(locale, country, citySlug, cityName, countryName, data);
     case "police-report":
-      return generatePoliceReport(locale, cityName, countryName, data);
+      return generatePoliceReport(locale, country, citySlug, cityName, countryName, data);
     case "scam":
       return generateScam(locale, country, citySlug, cityName, countryName, data);
   }

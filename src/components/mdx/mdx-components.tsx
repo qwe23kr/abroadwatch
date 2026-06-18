@@ -9,6 +9,8 @@ import { GoogleMap } from "./GoogleMap";
 import { InfoRow, InfoRows } from "./InfoRow";
 import { LocalPhrase } from "./LocalPhrase";
 import { ReviewNote } from "./ReviewNote";
+import { ReviewQuotes, ReviewQuote, ReviewQuoteRow } from "./ReviewQuotes";
+import { ScamHotspots, ScamType, ScamTypeList, ScamTypeRow } from "./ScamTypeList";
 import { TimelineGroup, TimelineStep } from "./TimelineStep";
 
 /** MDX 렌더링용 커스텀 컴포넌트 맵 (locale 주입) */
@@ -25,6 +27,13 @@ export function createMdxComponents(locale: Locale): MDXComponents {
     InfoRows,
     LocalPhrase,
     ReviewNote: (props) => <ReviewNote {...props} locale={locale} />,
+    ReviewQuotes,
+    ReviewQuote,
+    ReviewQuoteRow,
+    ScamHotspots,
+    ScamType,
+    ScamTypeList,
+    ScamTypeRow,
     TimelineGroup,
     TimelineStep,
     h2: ({ children, ...props }) => (

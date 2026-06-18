@@ -4,6 +4,7 @@ import { LocaleHtmlLang } from "@/components/layout/LocaleHtmlLang";
 import { GoogleAdSense } from "@/components/analytics/GoogleAdSense";
 import { EmrldTracker } from "@/components/analytics/EmrldTracker";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
+import { isProductionRuntime } from "@/lib/runtime";
 import { isValidLocale, siteConfig, type Locale } from "@/lib/site-config";
 import { notFound } from "next/navigation";
 
@@ -20,6 +21,7 @@ export default async function LocaleLayout({
   const { locale: localeParam } = await params;
   if (!isValidLocale(localeParam)) notFound();
   const locale = localeParam as Locale;
+  const enableThirdParty = isProductionRuntime();
 
   return (
     <>
@@ -27,8 +29,8 @@ export default async function LocaleLayout({
       <Header locale={locale} />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} />
-      <GoogleAdSense />
-      <EmrldTracker />
+      {enableThirdParty && <GoogleAdSense />}
+      {enableThirdParty && <EmrldTracker />}
       <ServiceWorkerRegister />
     </>
   );

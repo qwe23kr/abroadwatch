@@ -1,3 +1,5 @@
+import { InlineMarkdown } from "./InlineMarkdown";
+
 interface TimelineStepProps {
   time: string;
   action: string;
@@ -11,10 +13,12 @@ export function TimelineStep({ time, action, note }: TimelineStepProps) {
       <div className="mb-2 inline-flex rounded-full bg-blue-600 px-3 py-1 text-xs font-bold text-white">
         {time}
       </div>
-      <p className="text-base font-semibold leading-snug text-gray-900">{action}</p>
+      <p className="text-base font-semibold leading-snug text-gray-900">
+        <InlineMarkdown text={action} />
+      </p>
       {note && note.trim() !== "" && (
-        <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-900">
-          💡 {note}
+        <p className="mt-2 text-sm leading-relaxed text-gray-600">
+          <InlineMarkdown text={note} />
         </p>
       )}
     </div>

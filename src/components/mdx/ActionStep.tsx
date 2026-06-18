@@ -1,3 +1,5 @@
+import { InlineMarkdown } from "./InlineMarkdown";
+
 interface ActionStepProps {
   n: string | number;
   title: string;
@@ -25,7 +27,9 @@ export function ActionStep({ n, title, detail, urgent }: ActionStepProps) {
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-base font-bold text-gray-900">{title}</p>
-        <p className="mt-1 text-sm leading-relaxed text-gray-600">{detail}</p>
+        <p className="mt-1 text-sm leading-relaxed text-gray-600">
+          <InlineMarkdown text={detail} />
+        </p>
       </div>
     </div>
   );

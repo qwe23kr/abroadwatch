@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { GuideCard } from "@/components/ui/GuideCard";
+import { IncidentGuideLink } from "@/components/ui/IncidentGuideLink";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { SectionHeading } from "@/components/home/HomeSections";
@@ -156,15 +157,15 @@ export default async function CityOrIncidentHubPage({ params }: SegmentPageProps
           </div>
         </header>
 
-        <div className="mb-8 flex flex-wrap gap-2">
+        <div className="mb-8 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {incidentTypes.map((incident) => (
-            <Link
+            <IncidentGuideLink
               key={incident}
-              href={getGuidePath(locale, country, segment, incident)}
-              className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-700"
-            >
-              {incidentLabels[incident][locale]}
-            </Link>
+              locale={locale}
+              country={country}
+              city={segment}
+              incident={incident}
+            />
           ))}
         </div>
 

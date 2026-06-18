@@ -1,70 +1,16 @@
 import Link from "next/link";
 import Form from "next/form";
+import { CountryGrid } from "@/components/home/CountryGrid";
+import { incidentDescriptions, incidentIcons } from "@/lib/incident-ui";
 import { t } from "@/lib/i18n";
 import {
   countries,
   incidentLabels,
   incidentTypes,
-  type IncidentType,
   type Locale,
 } from "@/lib/site-config";
 
-interface CountryGridProps {
-  locale: Locale;
-  filterCountry?: string;
-}
-
-/** 국가별 탐색 그리드 */
-export function CountryGrid({ locale, filterCountry }: CountryGridProps) {
-  const visible = filterCountry
-    ? countries.filter((c) => c.slug === filterCountry)
-    : countries;
-
-  return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {visible.map((country) => (
-        <div
-          key={country.slug}
-          id={`country-${country.slug}`}
-          className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm scroll-mt-24"
-        >
-          <h3 className="mb-3 text-lg font-semibold text-gray-900">
-            <Link
-              href={`/${locale}/${country.slug}`}
-              className="hover:text-blue-600"
-            >
-              {country.name[locale]}
-            </Link>
-          </h3>
-          <ul className="space-y-1.5">
-            {country.cities.map((city) => (
-              <li key={city.slug}>
-                <Link
-                  href={`/${locale}/${country.slug}/${city.slug}`}
-                  className="text-sm font-medium text-gray-700 hover:text-blue-600"
-                >
-                  {city.name[locale]}
-                </Link>
-                <ul className="mt-1 flex flex-wrap gap-1.5 pl-2">
-                  {incidentTypes.map((incident) => (
-                    <li key={incident}>
-                      <Link
-                        href={`/${locale}/${country.slug}/${city.slug}/${incident}`}
-                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        {incidentLabels[incident][locale]}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
-}
+export { CountryGrid };
 
 interface IncidentGridProps {
   locale: Locale;
@@ -72,70 +18,32 @@ interface IncidentGridProps {
 
 /** 사건 유형별 탐색 그리드 */
 export function IncidentGrid({ locale }: IncidentGridProps) {
-  const descriptions: Record<IncidentType, Record<Locale, string>> = {
-    "lost-passport": {
-      ko: "경찰 신고부터 긴급여권 발급까지",
-      en: "From police report to emergency passport",
-    },
-    "lost-phone": {
-      ko: "기기 잠금, SIM 정지, 보험 청구 순서",
-      en: "Device lock, SIM block, and insurance steps",
-    },
-    "lost-wallet": {
-      ko: "카드 정지와 현지 분실 신고 절차",
-      en: "Card blocking and local loss reporting",
-    },
-    hospital: {
-      ko: "응급번호, 병원 위치, 보험 준비사항",
-      en: "Emergency numbers, hospitals, and insurance",
-    },
-    "police-report": {
-      ko: "도난·분실 신고와 보험용 확인서 발급",
-      en: "Theft reports and insurance certificates",
-    },
-    scam: {
-      ko: "바·택시·환전 등 실제 후기 기반 예방·대응",
-      en: "Bar, taxi, exchange scams — prevention from real reviews",
-    },
-  };
-
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {incidentTypes.map((incident) => (
         <Link
           key={incident}
           href={`/${locale}/search?incident=${incident}`}
-          className="group flex min-h-44 flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="group flex flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-            <IncidentIcon incident={incident} />
+          <div className="mb-3 flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-xl">
+              {incidentIcons[incident]}
+            </div>
+            <h3 className="text-base font-bold leading-snug text-gray-900 group-hover:text-blue-700 sm:text-lg">
+              {incidentLabels[incident][locale]}
+            </h3>
           </div>
-          <h3 className="font-semibold text-gray-900 group-hover:text-blue-700">
-            {incidentLabels[incident][locale]}
-          </h3>
-          <p className="mt-2 flex-1 text-sm leading-6 text-gray-600">
-            {descriptions[incident][locale]}
+          <p className="flex-1 text-sm leading-relaxed text-gray-600">
+            {incidentDescriptions[incident][locale]}
           </p>
           <span className="mt-4 text-sm font-semibold text-blue-600">
-            {locale === "ko" ? "도시별 가이드 보기 →" : "View city guides →"}
+            {locale === "ko" ? "19개 도시 가이드 보기 →" : "View guides in 19 cities →"}
           </span>
         </Link>
       ))}
     </div>
   );
-}
-
-/** 사건 유형별 아이콘 */
-function IncidentIcon({ incident }: { incident: IncidentType }) {
-  const icons: Record<IncidentType, string> = {
-    "lost-passport": "📋",
-    "lost-phone": "📱",
-    "lost-wallet": "👛",
-    hospital: "🏥",
-    "police-report": "🚔",
-    scam: "⚠️",
-   };
-  return <span className="text-xl">{icons[incident]}</span>;
 }
 
 interface HeroProps {

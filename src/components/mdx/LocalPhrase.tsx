@@ -47,9 +47,9 @@ export function LocalPhrase({
       <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500">
         {t.title(language)}
       </p>
-      <p className="text-base font-medium leading-relaxed text-gray-800">
+      <div className="text-base font-medium leading-relaxed text-gray-800 [&>p]:mb-0">
         {children}
-      </p>
+      </div>
       {reading ? (
         <div className="mt-3 rounded-md bg-white px-3 py-2.5 ring-1 ring-gray-200">
           <p className="mb-1 text-xs font-semibold text-gray-600">

@@ -1,3 +1,5 @@
+import { InlineMarkdown } from "./InlineMarkdown";
+
 interface InfoRowProps {
   label: string;
   value: string;
@@ -6,12 +8,12 @@ interface InfoRowProps {
 /** 필요 서류/정보 — 단일 행 */
 export function InfoRow({ label, value }: InfoRowProps) {
   return (
-    <div className="flex flex-col gap-1 rounded-lg border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-      <span className="text-xs font-bold uppercase tracking-wide text-gray-500">
+    <div className="flex flex-col gap-1 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+      <span className="shrink-0 text-xs font-bold uppercase tracking-wide text-gray-500">
         {label}
       </span>
-      <span className="text-sm font-semibold text-gray-900 sm:text-right">
-        {value}
+      <span className="text-sm leading-relaxed text-gray-800 sm:text-right">
+        <InlineMarkdown text={value} />
       </span>
     </div>
   );
