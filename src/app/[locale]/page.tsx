@@ -1,0 +1,120 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Script from "next/script";
+import {
+  CountryGrid,
+  CoverageAndTrust,
+  FaqSection,
+  Hero,
+  IncidentGrid,
+  SectionHeading,
+} from "@/components/home/HomeSections";
+import { GuideCard } from "@/components/ui/GuideCard";
+import { getLatestGuides, getPopularGuides } from "@/lib/content";
+import { t } from "@/lib/i18n";
+import { buildFaqJsonLd, buildMetadata, buildWebsiteJsonLd } from "@/lib/seo";
+import { isValidLocale, type Locale } from "@/lib/site-config";
+
+interface HomePageProps {
+  params: Promise<{ locale: string }>;
+}
+
+/** 로케일별 홈페이지 메타데이터 */
+export async function generateMetadata({
+  params,
+}: HomePageProps): Promise<Metadata> {
+  const { locale: localeParam } = await params;
+  if (!isValidLocale(localeParam)) return {};
+  const locale = localeParam as Locale;
+
+  return buildMetadata({
+    locale,
+    title: t(locale, "heroTitle"),
+    description: t(locale, "siteDescription"),
+    path: `/${locale}`,
+    alternatePaths: { ko: "/ko", en: "/en" },
+  });
+}
+
+/** 로케일별 홈페이지 */
+export default async function HomePage({ params }: HomePageProps) {
+  const { locale: localeParam } = await params;
+  if (!isValidLocale(localeParam)) notFound();
+  const locale = localeParam as Locale;
+
+  const latestGuides = getLatestGuides(locale, 6);
+  const popularGuides = getPopularGuides(locale, 6);
+
+  const faqItems = [
+    { question: t(locale, "faqHome1Q"), answer: t(locale, "faqHome1A") },
+    { question: t(locale, "faqHome2Q"), answer: t(locale, "faqHome2A") },
+    { question: t(locale, "faqHome3Q"), answer: t(locale, "faqHome3A") },
+  ];
+
+  return (
+    <>
+      <Script
+        id="website-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildWebsiteJsonLd()),
+        }}
+      />
+      <Script
+        id="faq-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildFaqJsonLd(faqItems)),
+        }}
+      />
+
+      <Hero locale={locale} />
+
+      <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <CoverageAndTrust locale={locale} />
+        {popularGuides.length > 0 && (
+          <section className="mb-16">
+            <SectionHeading title={t(locale, "popularGuides")} />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {popularGuides.map((guide) => (
+                <GuideCard key={guide.slug} guide={guide} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="mb-16">
+          <SectionHeading
+            title={t(locale, "browseByCountry")}
+            description={locale === "ko" ? "도시를 찾고 여권·휴대폰·지갑 분실, 병원, 경찰 신고 중 필요한 가이드를 바로 선택하세요." : "Choose a city, then open any of the five emergency guides."}
+          />
+          <CountryGrid locale={locale} />
+        </section>
+
+        <section className="mb-16">
+          <SectionHeading
+            title={t(locale, "browseByIncident")}
+            description={locale === "ko" ? "상황을 선택하면 지원 중인 19개 도시의 관련 가이드만 모아 보여드립니다." : "Choose a situation to see matching guides across all 19 supported cities."}
+          />
+          <IncidentGrid locale={locale} />
+        </section>
+
+        {latestGuides.length > 0 && (
+          <section className="mb-16">
+            <SectionHeading title={t(locale, "latestGuides")} />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {latestGuides.map((guide) => (
+                <GuideCard key={guide.slug} guide={guide} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section>
+          <SectionHeading title={t(locale, "faq")} />
+          <FaqSection locale={locale} />
+        </section>
+      </div>
+    </>
+  );
+}
