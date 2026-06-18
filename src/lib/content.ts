@@ -3,11 +3,13 @@ import path from "path";
 import matter from "gray-matter";
 import {
   countries,
+  incidentLabels,
   incidentTypes,
   siteConfig,
   type IncidentType,
   type Locale,
 } from "./site-config";
+import { stripMarkdown, stripMdxContent } from "./text";
 
 /** MDX frontmatter 스키마 */
 export interface GuideFrontmatter {
@@ -78,6 +80,7 @@ export function getGuide(
 }
 
 /** 가이드 URL 경로 생성 */
+/** 가이드 URL 경로 생성 */
 export function getGuidePath(
   locale: Locale,
   country: string,
@@ -85,6 +88,22 @@ export function getGuidePath(
   incident: IncidentType,
 ): string {
   return `/${locale}/${country}/${city}/${incident}`;
+}
+
+export function getCityHubPath(locale: Locale, country: string, city: string): string {
+  return `/${locale}/${country}/${city}`;
+}
+
+export function getCountryHubPath(locale: Locale, country: string): string {
+  return `/${locale}/${country}`;
+}
+
+export function getCountryIncidentHubPath(
+  locale: Locale,
+  country: string,
+  incident: IncidentType,
+): string {
+  return `/${locale}/${country}/${incident}`;
 }
 
 /** content 폴더에서 존재하는 모든 가이드 목록 반환 */
@@ -123,25 +142,36 @@ export function getAllGuideParams(): Array<{
   }));
 }
 
-/** 최신 가이드 N개 반환 (updatedAt 기준) */
+/** 최신 가이드 N개 — 도시별 1개씩 다양하게 */
 export function getLatestGuides(locale: Locale, limit = 6): GuideContent[] {
-  return getAllGuides()
+  const sorted = getAllGuides()
     .filter((g) => g.locale === locale)
     .sort(
       (a, b) =>
         new Date(b.frontmatter.updatedAt).getTime() -
         new Date(a.frontmatter.updatedAt).getTime(),
-    )
-    .slice(0, limit);
+    );
+
+  const seen = new Set<string>();
+  const diverse: GuideContent[] = [];
+  for (const guide of sorted) {
+    const key = `${guide.country}/${guide.city}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    diverse.push(guide);
+    if (diverse.length >= limit) break;
+  }
+  return diverse;
 }
 
 const popularGuideKeys = [
   "japan/tokyo/lost-passport",
   "thailand/bangkok/lost-phone",
+  "japan/tokyo/scam",
+  "thailand/bangkok/scam",
   "vietnam/danang/hospital",
   "philippines/cebu/lost-passport",
   "taiwan/taipei/police-report",
-  "japan/osaka/lost-wallet",
 ] as const;
 
 /** 운영상 중요도와 대표 여행지를 기준으로 선정한 가이드 */
@@ -155,7 +185,58 @@ export function getPopularGuides(locale: Locale, limit = 6): GuideContent[] {
     .slice(0, limit);
 }
 
-/** 제목, 요약, 국가, 도시, 사건 유형을 대상으로 검색 */
+/** 도시별 모든 가이드 */
+export function getCityGuides(
+  locale: Locale,
+  country: string,
+  city: string,
+): GuideContent[] {
+  return incidentTypes
+    .map((inc) => getGuide(locale, country, city, inc))
+    .filter((g): g is GuideContent => g !== null);
+}
+
+/** 국가·사건 유형별 가이드 */
+export function getGuidesByCountryAndIncident(
+  locale: Locale,
+  country: string,
+  incident: IncidentType,
+): GuideContent[] {
+  return getAllGuides().filter(
+    (g) => g.locale === locale && g.country === country && g.incident === incident,
+  );
+}
+
+/** 검색용 동의어 (한국어) */
+const searchSynonyms: Record<string, string[]> = {
+  사기: ["scam", "바", "택시", "환전", "툭툭"],
+  scam: ["사기", "바", "택시"],
+  병원: ["hospital", "응급", "er"],
+  hospital: ["병원", "응급"],
+  여권: ["passport", "lost-passport"],
+  passport: ["여권"],
+  경찰: ["police", "신고"],
+  police: ["경찰"],
+  휴대폰: ["phone", "폰"],
+  phone: ["휴대폰", "폰"],
+  지갑: ["wallet", "카드"],
+  wallet: ["지갑"],
+};
+
+function expandSearchTerms(terms: string[]): string[] {
+  const expanded = new Set(terms);
+  for (const term of terms) {
+    for (const [key, syns] of Object.entries(searchSynonyms)) {
+      if (term.includes(key) || key.includes(term)) {
+        expanded.add(key);
+        syns.forEach((s) => expanded.add(s));
+      }
+    }
+  }
+  return [...expanded];
+}
+
+/** 제목, 요약, 사건 라벨, 본문 키워드 검색 */
 export function searchGuides(
   locale: Locale,
   rawQuery: string,
@@ -164,7 +245,7 @@ export function searchGuides(
   const query = rawQuery.trim().toLocaleLowerCase(locale);
   if (!query) return [];
 
-  const terms = query.split(/\s+/).filter(Boolean);
+  const terms = expandSearchTerms(query.split(/\s+/).filter(Boolean));
 
   return getAllGuides()
     .filter((guide) => guide.locale === locale)
@@ -173,18 +254,20 @@ export function searchGuides(
       const city = country?.cities.find((item) => item.slug === guide.city);
       const haystack = [
         guide.frontmatter.title,
-        guide.frontmatter.summary,
+        stripMarkdown(guide.frontmatter.summary),
         country?.name[locale],
         country?.slug,
         city?.name[locale],
         city?.slug,
         guide.incident,
+        incidentLabels[guide.incident][locale],
+        stripMdxContent(guide.content),
       ]
         .filter(Boolean)
         .join(" ")
         .toLocaleLowerCase(locale);
 
-      return terms.every((term) => haystack.includes(term));
+      return terms.every((term) => haystack.includes(term.toLocaleLowerCase(locale)));
     })
     .slice(0, limit);
 }

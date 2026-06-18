@@ -11,26 +11,40 @@ import {
 
 interface CountryGridProps {
   locale: Locale;
+  filterCountry?: string;
 }
 
 /** 국가별 탐색 그리드 */
-export function CountryGrid({ locale }: CountryGridProps) {
+export function CountryGrid({ locale, filterCountry }: CountryGridProps) {
+  const visible = filterCountry
+    ? countries.filter((c) => c.slug === filterCountry)
+    : countries;
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {countries.map((country) => (
+      {visible.map((country) => (
         <div
           key={country.slug}
-          className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+          id={`country-${country.slug}`}
+          className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm scroll-mt-24"
         >
           <h3 className="mb-3 text-lg font-semibold text-gray-900">
-            {country.name[locale]}
+            <Link
+              href={`/${locale}/${country.slug}`}
+              className="hover:text-blue-600"
+            >
+              {country.name[locale]}
+            </Link>
           </h3>
           <ul className="space-y-1.5">
             {country.cities.map((city) => (
               <li key={city.slug}>
-                <span className="text-sm font-medium text-gray-700">
+                <Link
+                  href={`/${locale}/${country.slug}/${city.slug}`}
+                  className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                >
                   {city.name[locale]}
-                </span>
+                </Link>
                 <ul className="mt-1 flex flex-wrap gap-1.5 pl-2">
                   {incidentTypes.map((incident) => (
                     <li key={incident}>

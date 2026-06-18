@@ -39,6 +39,11 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const baseResults = query ? searchGuides(locale, query) : incident ? getGuidesByIncident(locale, incident) : [];
   const results = incident ? baseResults.filter((guide) => guide.incident === incident) : baseResults;
   const heading = incident ? incidentLabels[incident][locale] : t(locale, "searchResults");
+  const subtitle = query
+    ? `${query} · ${results.length}`
+    : incident
+      ? `${results.length}${locale === "ko" ? "개 결과" : " results"}`
+      : t(locale, "searchPrompt");
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-14">
@@ -53,7 +58,6 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
         <input
           name="query"
           type="search"
-          required
           defaultValue={query}
           placeholder={t(locale, "searchPlaceholder")}
           className="min-w-0 flex-1 rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -63,9 +67,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
         </button>
       </Form>
 
-      <p className="mt-6 text-sm text-gray-600">
-        {query ? `${query} · ${results.length}` : incident ? `${results.length}${locale === "ko" ? "개 결과" : " results"}` : t(locale, "searchPrompt")}
-      </p>
+      <p className="mt-6 text-sm text-gray-600">{subtitle}</p>
 
       {(query || incident) && results.length === 0 ? (
         <p className="mt-8 rounded-xl border border-gray-200 bg-gray-50 p-6 text-gray-700">

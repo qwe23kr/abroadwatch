@@ -5,9 +5,9 @@ export type TranslationKey = keyof typeof translations.ko;
 
 const translations = {
   ko: {
-    heroTitle: "전 세계 여행 비상 & 안전 가이드",
+    heroTitle: "아시아 19개 도시 여행 비상 & 안전 가이드",
     heroSubtitle:
-      "해외에서 여권을 잃어버리셨나요? 병원이 필요하신가요? 전 세계 대사관, 경찰서, 비상 연락처 및 복구 가이드를 찾아보세요.",
+      "여권 분실, 병원, 경찰 신고, 여행 사기까지 — 아시아 주요 여행지의 대사관·경찰·비상 연락처와 복구 절차를 한곳에서 확인하세요.",
     searchPlaceholder: "도시 또는 상황 검색 (예: 도쿄 여권)",
     searchButton: "검색",
     searchResults: "검색 결과",
@@ -51,7 +51,7 @@ const translations = {
     termsTitle: "이용약관",
     disclaimerTitle: "면책조항",
     siteDescription:
-      "해외 여행 중 여권 분실, 도난, 병원 이용, 경찰 신고 등 비상 상황 대처 가이드",
+      "아시아 19개 도시 여권 분실, 병원, 경찰 신고, 여행 사기 등 해외 비상 상황 대처 가이드",
     footerTagline: "해외 여행자를 위한 신뢰할 수 있는 비상 대처 가이드",
     footerRights: "All rights reserved.",
     emergency: "긴급",
@@ -65,11 +65,37 @@ const translations = {
     faqHome3Q: "모든 국가를 지원하나요?",
     faqHome3A:
       "현재 아시아 주요 여행지 5개국 19개 도시를 지원하며, 지속적으로 확대하고 있습니다.",
+    browseCountryDescription:
+      "도시를 찾고 여권·휴대폰·지갑 분실, 병원, 경찰 신고, 여행 사기 중 필요한 가이드를 바로 선택하세요.",
+    browseIncidentDescription:
+      "상황을 선택하면 지원 중인 19개 도시의 관련 가이드만 모아 보여드립니다.",
+    filterByCountry: "국가 필터",
+    allCountriesClear: "전체 보기",
+    cityHubTitle: "도시 비상 가이드",
+    cityHubDescription: "이 도시에서 발생할 수 있는 6가지 비상 상황 가이드입니다.",
+    countryHubTitle: "국가별 가이드",
+    countryHubDescription: "지원 도시와 주요 비상 가이드를 확인하세요.",
+    countryIncidentHubScam: "여행 사기 가이드",
+    countryIncidentHubHospital: "병원·응급실 가이드",
+    countryIncidentHubDescription:
+      "이 국가의 모든 지원 도시 가이드를 한곳에서 확인하세요.",
+    incidentTabsLabel: "같은 도시 다른 상황",
+    emergencyFab: "긴급 전화",
+    emergencyFabHelp: "해외여행자 24시간",
+    menuOpen: "메뉴 열기",
+    menuClose: "메뉴 닫기",
+    address: "주소",
+    phone: "전화",
+    hours: "운영시간",
+    website: "웹사이트",
+    reviewSource: "출처",
+    reviewVerified: "여행 후기·커뮤니티 기반",
+    viewOnMap: "Google Maps에서 길찾기",
   },
   en: {
-    heroTitle: "Travel Emergency & Safety Guides Worldwide",
+    heroTitle: "Travel Emergency & Safety Guides — 19 Asian Cities",
     heroSubtitle:
-      "Lost your passport abroad? Need a hospital? Find embassies, police stations, emergency contacts and recovery guides around the world.",
+      "Lost passport, hospital, police report, or travel scam — embassy contacts, emergency numbers, and step-by-step guides for major Asian destinations.",
     searchPlaceholder: "Search city or situation (e.g. Tokyo passport)",
     searchButton: "Search",
     searchResults: "Search Results",
@@ -114,7 +140,7 @@ const translations = {
     termsTitle: "Terms of Service",
     disclaimerTitle: "Disclaimer",
     siteDescription:
-      "Emergency travel guides for lost passports, theft, hospital visits, and police reports abroad",
+      "Emergency travel guides for 19 Asian cities — lost passport, hospital, police, and travel scams",
     footerTagline:
       "Trusted emergency response guides for international travelers",
     footerRights: "All rights reserved.",
@@ -129,6 +155,32 @@ const translations = {
     faqHome3Q: "Do you cover all countries?",
     faqHome3A:
       "We currently cover 19 cities across 5 major Asian travel destinations, with ongoing expansion.",
+    browseCountryDescription:
+      "Pick a city, then open guides for lost passport, phone, wallet, hospital, police report, or travel scams.",
+    browseIncidentDescription:
+      "Choose a situation to see matching guides across all 19 supported cities.",
+    filterByCountry: "Filter by country",
+    allCountriesClear: "Show all",
+    cityHubTitle: "City emergency guides",
+    cityHubDescription: "Six emergency situations covered for this city.",
+    countryHubTitle: "Country guides",
+    countryHubDescription: "Supported cities and key emergency guides.",
+    countryIncidentHubScam: "Travel scam guides",
+    countryIncidentHubHospital: "Hospital & ER guides",
+    countryIncidentHubDescription:
+      "All supported city guides for this country in one place.",
+    incidentTabsLabel: "Other situations in this city",
+    emergencyFab: "Emergency call",
+    emergencyFabHelp: "24hr traveler helpline",
+    menuOpen: "Open menu",
+    menuClose: "Close menu",
+    address: "Address",
+    phone: "Phone",
+    hours: "Hours",
+    website: "Website",
+    reviewSource: "Source",
+    reviewVerified: "Based on travel reviews & forums",
+    viewOnMap: "Open in Google Maps",
   },
 } as const;
 

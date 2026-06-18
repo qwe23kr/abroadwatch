@@ -56,7 +56,7 @@ export function createStaticPage(slug: string) {
           {page.title[locale]}
         </h1>
         <div className="prose-guide">
-          <MdxContent source={content} />
+          <MdxContent source={content} locale={locale} />
         </div>
       </div>
     );

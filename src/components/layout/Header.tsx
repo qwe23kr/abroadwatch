@@ -1,15 +1,16 @@
 import Link from "next/link";
-import { t, type TranslationKey } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { siteConfig, type Locale } from "@/lib/site-config";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { MobileNav } from "./MobileNav";
 
 interface HeaderProps {
   locale: Locale;
 }
 
-const navItems: Array<{ key: TranslationKey; path: string }> = [
-  { key: "about", path: "/about" },
-  { key: "contact", path: "/contact" },
+const navItems = [
+  { key: "about" as const, path: "/about" },
+  { key: "contact" as const, path: "/contact" },
 ];
 
 /** 사이트 헤더 — 로고, 내비게이션, 언어 전환 */
@@ -41,7 +42,12 @@ export function Header({ locale }: HeaderProps) {
           ))}
         </nav>
 
-        <LanguageSwitcher locale={locale} />
+        <div className="flex items-center gap-2">
+          <div className="hidden md:block">
+            <LanguageSwitcher locale={locale} />
+          </div>
+          <MobileNav locale={locale} />
+        </div>
       </div>
     </header>
   );

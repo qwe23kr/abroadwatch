@@ -1,16 +1,18 @@
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
-import { mdxComponents } from "@/components/mdx/mdx-components";
+import { createMdxComponents } from "@/components/mdx/mdx-components";
+import type { Locale } from "@/lib/site-config";
 
 interface MdxContentProps {
   source: string;
+  locale: Locale;
 }
 
-/** MDX 콘텐츠 렌더러 — compileMDX로 JSX 표현식 지원 */
-export async function MdxContent({ source }: MdxContentProps) {
+/** MDX 콘텐츠 렌더러 — locale별 ContactCard·ReviewNote 라벨 */
+export async function MdxContent({ source, locale }: MdxContentProps) {
   const { content } = await compileMDX({
     source,
-    components: mdxComponents,
+    components: createMdxComponents(locale),
     options: {
       mdxOptions: {
         remarkPlugins: [remarkGfm],

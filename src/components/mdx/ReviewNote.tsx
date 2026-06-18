@@ -1,7 +1,11 @@
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/site-config";
+
 interface ReviewNoteProps {
   source: string;
   url?: string;
   label?: string;
+  locale?: Locale;
   children: React.ReactNode;
 }
 
@@ -9,17 +13,30 @@ interface ReviewNoteProps {
 export function ReviewNote({
   source,
   url,
-  label = "📌 실제 후기 기반",
+  label,
+  locale = "ko",
   children,
 }: ReviewNoteProps) {
+  const displayLabel = label ?? `📌 ${t(locale, "reviewVerified")}`;
+
   return (
-    <blockquote className="my-6 rounded-lg border-l-4 border-amber-400 bg-amber-50 p-4">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-800">
-        {label}
+    <blockquote className="relative my-6 overflow-hidden rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-sm">
+      <div
+        className="pointer-events-none absolute -right-2 -top-4 text-6xl font-serif text-amber-200/80"
+        aria-hidden="true"
+      >
+        "
+      </div>
+      <p className="relative mb-3 text-xs font-semibold uppercase tracking-wide text-amber-900">
+        {displayLabel}
       </p>
-      <div className="text-sm leading-relaxed text-gray-800">{children}</div>
-      <footer className="mt-3 text-xs text-gray-500">
-        출처:{" "}
+      <div className="relative border-l-2 border-amber-400 pl-4 text-sm leading-relaxed text-gray-800">
+        {children}
+      </div>
+      <footer className="relative mt-4 flex flex-wrap items-center gap-2 border-t border-amber-200/60 pt-3 text-xs text-gray-600">
+        <span className="rounded-full bg-white/80 px-2 py-0.5 font-medium text-amber-800">
+          {t(locale, "reviewSource")}
+        </span>
         {url ? (
           <a
             href={url}
@@ -27,10 +44,10 @@ export function ReviewNote({
             rel="noopener noreferrer"
             className="font-medium text-blue-600 hover:underline"
           >
-            {source}
+            {source} →
           </a>
         ) : (
-          source
+          <span>{source}</span>
         )}
       </footer>
     </blockquote>

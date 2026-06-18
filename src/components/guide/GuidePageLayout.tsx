@@ -1,8 +1,15 @@
 import Script from "next/script";
+import { IncidentTabs } from "@/components/guide/IncidentTabs";
+import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { GuideCard } from "@/components/ui/GuideCard";
-import { getGuidePath, type GuideContent } from "@/lib/content";
+import {
+  getCityHubPath,
+  getCountryHubPath,
+  getGuidePath,
+  type GuideContent,
+} from "@/lib/content";
 import { t } from "@/lib/i18n";
 import {
   buildArticleJsonLd,
@@ -32,18 +39,19 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
     { label: t(locale, "home"), href: `/${locale}` },
     {
       label: countryData?.name[locale] ?? country,
-      href: `/${locale}?country=${country}`,
+      href: getCountryHubPath(locale, country),
     },
     {
       label: cityData?.name[locale] ?? city,
-      href: `/${locale}/${country}/${city}/lost-passport`,
+      href: getCityHubPath(locale, country, city),
     },
     { label: incidentLabel },
   ];
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(locale, [
     { name: t(locale, "home"), path: `/${locale}` },
-    { name: countryData?.name[locale] ?? country, path: `/${locale}?country=${country}` },
+    { name: countryData?.name[locale] ?? country, path: getCountryHubPath(locale, country) },
+    { name: cityData?.name[locale] ?? city, path: getCityHubPath(locale, country, city) },
     {
       name: `${cityData?.name[locale] ?? city} - ${incidentLabel}`,
       path: getGuidePath(locale, country, city, incident),
@@ -85,10 +93,10 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <article className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
+      <article className="mx-auto max-w-3xl px-4 py-8 pb-24 md:px-6 md:py-12 md:pb-28">
         <Breadcrumbs items={breadcrumbItems} />
 
-        <header className="mb-8">
+        <header className="mb-6">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
               {incidentLabel}
@@ -101,7 +109,7 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
             {frontmatter.title}
           </h1>
           <p className="text-lg leading-relaxed text-gray-600">
-            {frontmatter.summary}
+            {frontmatter.summary.replace(/\*\*/g, "")}
           </p>
           <p className="mt-4 text-sm text-gray-500">
             {t(locale, "lastUpdated")}: {frontmatter.updatedAt}
@@ -119,8 +127,10 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
           </dl>
         </header>
 
+        <IncidentTabs locale={locale} country={country} city={city} current={incident} />
+
         <div className="prose-guide">
-          <MdxContent source={guide.content} />
+          <MdxContent source={guide.content} locale={locale} />
         </div>
 
         {relatedGuides.length > 0 && (
@@ -136,6 +146,12 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
           </section>
         )}
       </article>
+
+      <EmergencyFab
+        locale={locale}
+        phone={frontmatter.emergencyNumber}
+        label={`${cityData?.name[locale]}, ${incidentLabel}`}
+      />
     </>
   );
 }

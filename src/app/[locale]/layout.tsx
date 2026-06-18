@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { LocaleHtmlLang } from "@/components/layout/LocaleHtmlLang";
 import { GoogleAdSense } from "@/components/analytics/GoogleAdSense";
 import { EmrldTracker } from "@/components/analytics/EmrldTracker";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { isValidLocale, siteConfig, type Locale } from "@/lib/site-config";
 import { notFound } from "next/navigation";
 
@@ -28,6 +29,7 @@ export default async function LocaleLayout({
       <Footer locale={locale} />
       <GoogleAdSense />
       <EmrldTracker />
+      <ServiceWorkerRegister />
     </>
   );
 }

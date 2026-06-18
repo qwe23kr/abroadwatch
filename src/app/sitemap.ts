@@ -107,6 +107,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
+  const seoIncidents = ["scam", "hospital"] as const;
+  for (const locale of siteConfig.locales) {
+    for (const country of countries) {
+      for (const incident of seoIncidents) {
+        const incidentPath = `/${country.slug}/${incident}`;
+        entries.push({
+          url: `${baseUrl}/${locale}${incidentPath}`,
+          lastModified: latestUpdatedAt(
+            guides,
+            locale,
+            (g) => g.country === country.slug && g.incident === incident,
+          ),
+          changeFrequency: "monthly",
+          priority: 0.75,
+          alternates: localeAlternates(incidentPath),
+        });
+      }
+    }
+  }
+
   for (const guide of guides) {
     const pathSuffix = `/${guide.country}/${guide.city}/${guide.incident}`;
 

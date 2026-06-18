@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getGuidePath, type GuideContent } from "@/lib/content";
+import { stripMarkdown } from "@/lib/text";
 import { incidentLabels } from "@/lib/site-config";
 import { getCity, getCountry } from "@/lib/site-config";
 
@@ -26,7 +27,7 @@ export function GuideCard({ guide }: GuideCardProps) {
         {guide.frontmatter.title}
       </h3>
       <p className="mb-3 line-clamp-2 flex-1 text-sm text-gray-600">
-        {guide.frontmatter.summary}
+        {stripMarkdown(guide.frontmatter.summary)}
       </p>
       <span className="text-xs font-medium text-gray-500">{location}</span>
     </Link>

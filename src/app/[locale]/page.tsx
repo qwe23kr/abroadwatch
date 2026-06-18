@@ -9,14 +9,17 @@ import {
   IncidentGrid,
   SectionHeading,
 } from "@/components/home/HomeSections";
+import { CountryFilter } from "@/components/home/CountryFilter";
+import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { GuideCard } from "@/components/ui/GuideCard";
 import { getLatestGuides, getPopularGuides } from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { buildFaqJsonLd, buildMetadata, buildWebsiteJsonLd } from "@/lib/seo";
-import { isValidLocale, type Locale } from "@/lib/site-config";
+import { countries, getCountry, isValidLocale, type Locale } from "@/lib/site-config";
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ country?: string | string[] }>;
 }
 
 /** 로케일별 홈페이지 메타데이터 */
@@ -37,13 +40,18 @@ export async function generateMetadata({
 }
 
 /** 로케일별 홈페이지 */
-export default async function HomePage({ params }: HomePageProps) {
+export default async function HomePage({ params, searchParams }: HomePageProps) {
   const { locale: localeParam } = await params;
   if (!isValidLocale(localeParam)) notFound();
   const locale = localeParam as Locale;
 
+  const countryParam = (await searchParams).country;
+  const rawCountry = Array.isArray(countryParam) ? countryParam[0] : countryParam;
+  const filterCountry =
+    rawCountry && getCountry(rawCountry) ? rawCountry : undefined;
+
   const latestGuides = getLatestGuides(locale, 6);
-  const popularGuides = getPopularGuides(locale, 6);
+  const popularGuides = getPopularGuides(locale, 7);
 
   const faqItems = [
     { question: t(locale, "faqHome1Q"), answer: t(locale, "faqHome1A") },
@@ -83,18 +91,19 @@ export default async function HomePage({ params }: HomePageProps) {
           </section>
         )}
 
-        <section className="mb-16">
+        <section className="mb-16" id="browse-countries">
           <SectionHeading
             title={t(locale, "browseByCountry")}
-            description={locale === "ko" ? "도시를 찾고 여권·휴대폰·지갑 분실, 병원, 경찰 신고 중 필요한 가이드를 바로 선택하세요." : "Choose a city, then open any of the five emergency guides."}
+            description={t(locale, "browseCountryDescription")}
           />
-          <CountryGrid locale={locale} />
+          <CountryFilter locale={locale} active={filterCountry} />
+          <CountryGrid locale={locale} filterCountry={filterCountry} />
         </section>
 
         <section className="mb-16">
           <SectionHeading
             title={t(locale, "browseByIncident")}
-            description={locale === "ko" ? "상황을 선택하면 지원 중인 19개 도시의 관련 가이드만 모아 보여드립니다." : "Choose a situation to see matching guides across all 19 supported cities."}
+            description={t(locale, "browseIncidentDescription")}
           />
           <IncidentGrid locale={locale} />
         </section>
@@ -115,6 +124,8 @@ export default async function HomePage({ params }: HomePageProps) {
           <FaqSection locale={locale} />
         </section>
       </div>
+
+      <EmergencyFab locale={locale} />
     </>
   );
 }
