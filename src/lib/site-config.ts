@@ -24,6 +24,7 @@ export const incidentTypes = [
   "lost-wallet",
   "hospital",
   "police-report",
+  "scam",
 ] as const;
 
 export type IncidentType = (typeof incidentTypes)[number];
@@ -98,6 +99,7 @@ export const incidentLabels: Record<IncidentType, Record<Locale, string>> = {
   "lost-wallet": { ko: "지갑 분실", en: "Lost Wallet" },
   hospital: { ko: "병원 이용", en: "Hospital Visit" },
   "police-report": { ko: "경찰 신고", en: "Police Report" },
+  scam: { ko: "여행 사기", en: "Travel Scams" },
 };
 
 /** 국가 슬러그로 국가 설정 조회 */

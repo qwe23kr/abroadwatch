@@ -1,5 +1,5 @@
 /**
- * 190개 MDX 가이드 페이지 일괄 생성 — TimelineStep / ActionStep (문자열 props)
+ * 228개 MDX 가이드 페이지 일괄 생성 — TimelineStep / ActionStep (문자열 props)
  * 실행: npm run generate:content
  */
 import fs from "fs";
@@ -28,6 +28,8 @@ import {
   policeSectionHeader,
 } from "./ko-terms";
 import { localPhraseBlock } from "./local-phrases";
+import { getHospitalCopy } from "./hospital-terms";
+import { getScamGuide, scamReviewBlock } from "./scam-terms";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -97,6 +99,21 @@ const medicalEmergencyNumbers: Record<
 
 function getMedicalEmergency(data: CityData) {
   return medicalEmergencyNumbers[data.country];
+}
+
+/** 사기 가이드용 비상번호 — 베트남 등 응급(115)과 경찰(113) 구분 */
+const scamEmergencyNumbers: Record<
+  string,
+  { number: string; label: { ko: string; en: string } }
+> = {
+  vietnam: {
+    number: "113",
+    label: { ko: "베트남 경찰 113", en: "Vietnam Police 113" },
+  },
+};
+
+function getScamEmergency(data: CityData) {
+  return scamEmergencyNumbers[data.country] ?? data.emergency;
 }
 
 function renderTimeline(title: string, items: TimelineItem[]): string {
@@ -571,17 +588,37 @@ function generateHospital(
   data: CityData,
 ): string {
   const hospitals = data.hospitals ?? [];
-  const isVietnam = data.country === "vietnam";
   const h1 = hospitals[0];
   const medicalEmergency = getMedicalEmergency(data);
+  const hospital = getHospitalCopy(data.country, locale);
 
   if (locale === "ko") {
     const timeline: TimelineItem[] = [
-      { time: "증상 발생", action: `생명 위험(의식·호흡·대출혈) → ${medicalEmergency.number} 즉시`, note: isVietnam ? "구급차 비용은 출동 기관에 확인" : "" },
-      { time: "10분", action: "여행자보험 24시간 콜센터 — 병원 직접 청구 가능 여부 확인", note: "미연락 시 전액 선납" },
-      { time: "30분~1시간", action: `${h1 ? h1.name.ko : "가까운 ER"} 이동 · 여권+보험증+카드`, note: "택시 또는 현지 교통수단" },
-      { time: "접수~대기", action: "국제과/응급실 접수 — 증상 명확히 (번역 앱)", note: "대기 30분~2시간 · 중증 우선" },
-      { time: "진료 후", action: "영수증·진단서(영문) 보관 → 보험 청구", note: "매 단계 선납(베트남)" },
+      {
+        time: "증상 발생",
+        action: `생명 위험(의식·호흡·대출혈) → ${medicalEmergency.number} 즉시`,
+        note: hospital.onsetNote,
+      },
+      {
+        time: "10분",
+        action: "여행자보험 24시간 콜센터 — 병원 직접 청구 가능 여부 확인",
+        note: hospital.insuranceNote,
+      },
+      {
+        time: "30분~1시간",
+        action: `${h1 ? h1.name.ko : "가까운 ER"} 이동 · 여권+보험증+카드`,
+        note: "택시 또는 현지 교통수단",
+      },
+      {
+        time: "접수~대기",
+        action: "국제과/응급실 접수 — 증상 명확히 (번역 앱)",
+        note: "대기 30분~2시간 · 중증 우선",
+      },
+      {
+        time: "진료 후",
+        action: "영수증·진단서(영문) 보관 → 보험 청구",
+        note: hospital.afterVisitNote,
+      },
     ];
     const actions: ActionItem[] = [
       { title: "증상 심각도 판단", detail: `경미: 약국/외래 · 중증: 응급실 · 생명위험: ${medicalEmergency.number}`, urgent: true },
@@ -593,31 +630,29 @@ function generateHospital(
     return buildPage({
       locale: "ko", title: `${cityName} 병원·응급실 — 비용·절차 (2026)`,
       summary: `${countryName} ${cityName} ER 이용, 보험, 한국어 통역.`,
-      cost: isVietnam ? "1차 12.5만~110만 VND" : "병원별 문의",
+      cost: hospital.estimatedCost,
       time: "대기 30분~2시간",
       emergency: medicalEmergency,
       review: sourceBlock(data, "ko"),
       timelineTitle: `${cityName} 병원 이용 타임라인`, timeline, actions,
-      warning: { title: "선납", body: isVietnam ? "베트남은 **진료·검사·약 모두 선납**. 현금+카드 준비." : "신용카드·여권 지참." },
+      warning: { title: hospital.warningTitle, body: hospital.warningBody },
       info: [
         { label: "여권", value: "등록 필수" },
         { label: "보험증", value: "병원 직접 청구 가능 여부 확인" },
         { label: "카드", value: "Visa/Master 대부분 가능" },
       ],
-      costTable: isVietnam
-        ? [["패밀리병원 1차", "40만 VND"], ["빈멕 예약/무예약", "69만/110만"], ["종합병원", "12.5만 VND"]]
-        : [["ER 방문", "병원별 견적"]],
+      costTable: hospital.costTable,
       locations: hospitals.length > 0 ? hospitals : [data.embassy],
       locationHeaders: (hospitals.length > 0 ? hospitals : [data.embassy]).map(() => "병원"),
-      faqs: [{ q: "병원 직접 청구?", a: "방문 **전** 보험 콜센터 연락 — 미연락 시 전액 선납 후 사후 청구." }],
+      faqs: [{ q: "병원 직접 청구?", a: hospital.faqAnswer }],
     });
   }
 
   const timeline: TimelineItem[] = [
-    { time: "Onset", action: `Life-threatening → call ${medicalEmergency.number}`, note: "" },
-    { time: "10 min", action: "Insurance hotline — direct billing hospitals", note: "" },
+    { time: "Onset", action: `Life-threatening → call ${medicalEmergency.number}`, note: hospital.onsetNote },
+    { time: "10 min", action: "Insurance hotline — direct billing hospitals", note: hospital.insuranceNote },
     { time: "30–60 min", action: `Go to ${h1?.name.en ?? "nearest ER"} with passport`, note: "" },
-    { time: "After visit", action: "Keep receipts and English diagnosis", note: "" },
+    { time: "After visit", action: "Keep receipts and English diagnosis", note: hospital.afterVisitNote },
   ];
   const actions: ActionItem[] = [
     { title: "Assess severity", detail: `Mild: clinic/pharmacy · Severe: ER · Emergency: call ${medicalEmergency.number}`, urgent: true },
@@ -629,17 +664,208 @@ function generateHospital(
   return buildPage({
     locale: "en", title: `Hospital & ER in ${cityName} (2026)`,
     summary: `Emergency care, costs, insurance — ${cityName}, ${countryName}.`,
-    cost: isVietnam ? "125k–1.1M VND first visit" : "Get quote",
+    cost: hospital.estimatedCost,
     time: "Wait 30min–2hrs",
     emergency: medicalEmergency,
     review: sourceBlock(data, "en"),
     timelineTitle: `Hospital timeline — ${cityName}`, timeline, actions,
-    warning: { title: "Prepay", body: isVietnam ? "All care prepaid in Vietnam." : "Bring passport and card." },
+    warning: { title: hospital.warningTitle, body: hospital.warningBody },
     info: [{ label: "Passport", value: "Required" }, { label: "Insurance", value: "Direct billing check" }],
-    costTable: [["ER visit", "Varies by hospital"]],
+    costTable: hospital.costTable,
     locations: hospitals.length > 0 ? hospitals : [data.embassy],
     locationHeaders: (hospitals.length > 0 ? hospitals : [data.embassy]).map(() => "Hospitals"),
-    faqs: [{ q: "Direct billing?", a: "Call insurer before visit." }],
+    faqs: [{ q: "Direct billing?", a: hospital.faqAnswer }],
+  });
+}
+
+function generateScam(
+  locale: Locale,
+  country: string,
+  citySlug: string,
+  cityName: string,
+  countryName: string,
+  data: CityData,
+): string {
+  const guide = getScamGuide(country, citySlug);
+  const police = data.police[0];
+  const consulate = getConsulate(data);
+  const emergency = getScamEmergency(data);
+  const isThailand = country === "thailand";
+  const isTaiwan = country === "taiwan";
+
+  const scamInfo: InfoItem[] = guide.scams.map((s) => ({
+    label: s.label[locale],
+    value: s.value[locale],
+  }));
+
+  if (locale === "ko") {
+    const timeline: TimelineItem[] = [
+      {
+        time: "출발 전",
+        action: `${countryName}·${cityName} **사기 유형** 미리 확인 — ${guide.hotspots.ko}`,
+        note: "아래 후기 기반 유형표 참고",
+      },
+      {
+        time: "현장에서",
+        action: "「무료」「특가」「VIP」·낯선 사람 유인 → **정중히 거절**",
+        note: guide.warning.body.ko,
+      },
+      {
+        time: "피해 발생 직후",
+        action: `안전한 곳으로 이동 · ${isThailand ? "관광경찰 1155 또는 " : ""}${police.name.ko} 신고 검토`,
+        note: "위협·폭력 시 즉시 신고",
+      },
+      {
+        time: "1~3시간",
+        action: "카드 정지·영수증·사진·대화 기록 보관",
+        note: "보험·분쟁 대비",
+      },
+      {
+        time: "당일",
+        action: `${consulate.name.ko} ☎ ${consulate.phone} — 법률·통역 안내`,
+        note: "형사·뇌물 사기(필리핀 등)는 대사관 우선",
+      },
+    ];
+    const actions: ActionItem[] = [
+      {
+        title: "사기 징후 알아보기",
+        detail: `${guide.hotspots.ko} — ${guide.scams[0].label.ko}, ${guide.scams[1].label.ko} 등 후기 다발`,
+        urgent: true,
+      },
+      {
+        title: "당장 거절·이탈",
+        detail: guide.warning.body.ko,
+      },
+      {
+        title: "경찰·관광경찰 신고",
+        detail: isThailand
+          ? "관광경찰 **1155** (영어·한국어 지원) — 사건 발생 장소·시간·금액 기록"
+          : isTaiwan
+            ? `0800-024-111 외국인 안내 · ${police.name.ko}${police.phone ? ` ${police.phone}` : ""}`
+            : `${police.name.ko}${police.phone ? ` (${police.phone})` : ""} — 사건 발생 장소·시간·금액 기록`,
+      },
+      {
+        title: "증거 수집",
+        detail: "영수증·카드 승인 내역·가게 간판·CCTV 위치·목격자 연락처",
+      },
+      {
+        title: "대사관·보험 연락",
+        detail: `${consulate.phone} · 여행자보험 24시간 — 분쟁·환불 가능 여부`,
+      },
+    ];
+    return buildPage({
+      locale: "ko",
+      title: `${cityName} 여행 사기 — 유형·예방·신고 (2026)`,
+      summary: `${countryName} ${cityName} 바·택시·환전 등 **실제 후기 기반** 사기 유형과 대응법.`,
+      cost: guide.estimatedLoss.ko,
+      time: "예방 즉시 · 신고 1~3시간",
+      emergency,
+      review: scamReviewBlock(guide, "ko"),
+      timelineTitle: `${cityName} 여행 사기 대응 타임라인`,
+      timeline,
+      actions,
+      warning: { title: guide.warning.title.ko, body: guide.warning.body.ko },
+      info: [
+        { label: "다발 구역", value: guide.hotspots.ko },
+        ...scamInfo,
+      ],
+      costTable: [
+        ["예방", "무료"],
+        ["피해액 (후기)", guide.estimatedLoss.ko],
+        ["경찰 신고", "무료"],
+      ],
+      locations: [...data.police, consulate],
+      locationHeaders: [...data.police.map(() => policeSectionHeader(country)), "공관·영사관"],
+      afterActions: localPhraseBlock("ko", country, "police-report"),
+      faqs: [
+        {
+          q: `${cityName}에서 가장 흔한 사기는?`,
+          a: `**${guide.scams[0].label.ko}** — ${guide.scams[0].value.ko}`,
+        },
+        {
+          q: "돈을 냈는데 환불 가능?",
+          a: "카드 결제면 **카드사 분쟁** 검토. 현금·ATM 유도는 회수 어려운 경우 많음 — **경찰 신고 + 대사관** 상담.",
+        },
+      ],
+    });
+  }
+
+  const timeline: TimelineItem[] = [
+    {
+      time: "Before trip",
+      action: `Review **scam types** for ${cityName} — ${guide.hotspots.en}`,
+      note: "See review-based list below",
+    },
+    {
+      time: "On the spot",
+      action: "Say no to 「Free」「Special」「VIP」and strangers leading you elsewhere",
+      note: guide.warning.body.en,
+    },
+    {
+      time: "If scammed",
+      action: `Move to safety · ${isThailand ? "Tourist Police 1155 or " : ""}report to ${police.name.en}`,
+      note: "Report threats or violence immediately",
+    },
+    {
+      time: "1–3 hours",
+      action: "Block cards · keep receipts, photos, chat logs",
+      note: "For insurance and disputes",
+    },
+    {
+      time: "Same day",
+      action: `${consulate.name.en} ☎ ${consulate.phone}`,
+      note: "Embassy first for fake-police or shakedown cases",
+    },
+  ];
+  const actions: ActionItem[] = [
+    {
+      title: "Know local scam patterns",
+      detail: `${guide.hotspots.en} — ${guide.scams[0].label.en}, ${guide.scams[1].label.en} widely reported`,
+      urgent: true,
+    },
+    { title: "Refuse and leave", detail: guide.warning.body.en },
+    {
+      title: "Report to police",
+      detail: isThailand
+        ? "Tourist Police **1155** (English/Korean) — note place, time, amount"
+        : isTaiwan
+          ? `Foreigner line **0800-024-111** · ${police.name.en} ${police.phone ?? ""}`
+          : `${police.name.en} ${police.phone ?? ""} — note place, time, amount`,
+    },
+    { title: "Collect evidence", detail: "Receipts, card slips, shop sign, CCTV location, witnesses" },
+    { title: "Embassy & insurance", detail: `${consulate.phone} · 24hr travel insurance hotline` },
+  ];
+  return buildPage({
+    locale: "en",
+    title: `Travel Scams in ${cityName} — Prevention & Reporting (2026)`,
+    summary: `Review-based scam types and what to do in ${cityName}, ${countryName}.`,
+    cost: guide.estimatedLoss.en,
+    time: "Prevention: immediate · Report: 1–3 hrs",
+    emergency,
+    review: scamReviewBlock(guide, "en"),
+    timelineTitle: `Scam response timeline — ${cityName}`,
+    timeline,
+    actions,
+    warning: { title: guide.warning.title.en, body: guide.warning.body.en },
+    info: [{ label: "Hotspots", value: guide.hotspots.en }, ...scamInfo],
+    costTable: [
+      ["Prevention", "Free"],
+      ["Typical loss (reviews)", guide.estimatedLoss.en],
+      ["Police report", "Free"],
+    ],
+    locations: [...data.police, consulate],
+    locationHeaders: [...data.police.map(() => "Police"), "Mission"],
+    afterActions: localPhraseBlock("en", country, "police-report"),
+    faqs: [
+      {
+        q: `Most common scam in ${cityName}?`,
+        a: `**${guide.scams[0].label.en}** — ${guide.scams[0].value.en}`,
+      },
+      {
+        q: "Can I get a refund?",
+        a: "Card payments: try **chargeback/dispute**. Cash/ATM coercion often hard to recover — police report + embassy.",
+      },
+    ],
   });
 }
 
@@ -835,6 +1061,8 @@ function generateContent(
       return generateHospital(locale, cityName, countryName, data);
     case "police-report":
       return generatePoliceReport(locale, cityName, countryName, data);
+    case "scam":
+      return generateScam(locale, country, citySlug, cityName, countryName, data);
   }
 }
 
@@ -864,7 +1092,7 @@ function main() {
     }
   }
 
-  console.log(`✅ Regenerated ${created} pages (all 190)`);
+  console.log(`✅ Regenerated ${created} pages (all 228)`);
 }
 
 main();

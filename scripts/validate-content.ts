@@ -17,12 +17,19 @@ const medicalNumbers: Record<string, string> = {
   philippines: "911",
 };
 
+const vietnamOnlyMarkers = [
+  /선납\(베트남\)/,
+  /매 단계 선납\(베트남\)/,
+  /베트남은 \*\*진료/,
+  /All care prepaid in Vietnam/,
+];
+
 const foreignMarkers: Record<string, RegExp[]> = {
-  japan: [/\bTHB\b|바트|\bVND\b|베트남 동|\bTWD\b|대만달러|\bPHP\b|페소|₱/i, /관광경찰 1155/i, /Tourist Police 1155/i, /0800-024-111/],
-  thailand: [/엔|¥|\bJPY\b|\bVND\b|\bTWD\b|\bPHP\b|페소|₱/i, /050-2016-1603/, /\bJR\b/, /0800-024-111/],
+  japan: [/\bTHB\b|바트|\bVND\b|베트남 동|\bTWD\b|대만달러|\bPHP\b|페소|₱/i, /관광경찰 1155/i, /Tourist Police 1155/i, /0800-024-111/, ...vietnamOnlyMarkers],
+  thailand: [/엔|¥|\bJPY\b|\bVND\b|\bTWD\b|\bPHP\b|페소|₱/i, /050-2016-1603/, /\bJR\b/, /0800-024-111/, ...vietnamOnlyMarkers],
   vietnam: [/엔|¥|\bJPY\b|\bTHB\b|바트|\bTWD\b|\bPHP\b|페소|₱/i, /050-2016-1603/, /\bJR\b/, /관광경찰 1155/i, /Tourist Police 1155/i, /0800-024-111/],
-  taiwan: [/엔|¥|\bJPY\b|\bTHB\b|바트|\bVND\b|\bPHP\b|페소|₱/i, /050-2016-1603/, /\bJR\b/, /관광경찰 1155/i, /Tourist Police 1155/i],
-  philippines: [/엔|¥|\bJPY\b|\bTHB\b|바트|\bVND\b|\bTWD\b/i, /050-2016-1603/, /\bJR\b/, /관광경찰 1155/i, /Tourist Police 1155/i, /0800-024-111/],
+  taiwan: [/엔|¥|\bJPY\b|\bTHB\b|바트|\bVND\b|\bPHP\b|페소|₱/i, /050-2016-1603/, /\bJR\b/, /관광경찰 1155/i, /Tourist Police 1155/i, ...vietnamOnlyMarkers],
+  philippines: [/엔|¥|\bJPY\b|\bTHB\b|바트|\bVND\b|\bTWD\b/i, /050-2016-1603/, /\bJR\b/, /관광경찰 1155/i, /Tourist Police 1155/i, /0800-024-111/, ...vietnamOnlyMarkers],
 };
 
 const errors: string[] = [];

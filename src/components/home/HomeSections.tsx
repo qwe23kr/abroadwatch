@@ -79,6 +79,10 @@ export function IncidentGrid({ locale }: IncidentGridProps) {
       ko: "도난·분실 신고와 보험용 확인서 발급",
       en: "Theft reports and insurance certificates",
     },
+    scam: {
+      ko: "바·택시·환전 등 실제 후기 기반 예방·대응",
+      en: "Bar, taxi, exchange scams — prevention from real reviews",
+    },
   };
 
   return (
@@ -115,7 +119,8 @@ function IncidentIcon({ incident }: { incident: IncidentType }) {
     "lost-wallet": "👛",
     hospital: "🏥",
     "police-report": "🚔",
-  };
+    scam: "⚠️",
+   };
   return <span className="text-xl">{icons[incident]}</span>;
 }
 
@@ -196,8 +201,8 @@ export function CoverageAndTrust({ locale }: { locale: Locale }) {
           </h2>
           <p className="mt-3 text-sm leading-6 text-slate-300">
             {locale === "ko"
-              ? "모든 도시는 여권·휴대폰·지갑 분실, 병원, 경찰 신고의 5가지 상황을 동일하게 제공합니다. 연락처와 절차는 방문 전 해당 기관에 다시 확인하세요."
-              : "Every city covers lost passports, phones, wallets, hospitals, and police reports. Reconfirm contacts and procedures with the relevant authority before visiting."}
+              ? "모든 도시는 여권·휴대폰·지갑 분실, 병원, 경찰 신고, 여행 사기의 6가지 상황을 동일하게 제공합니다. 연락처와 절차는 방문 전 해당 기관에 다시 확인하세요."
+              : "Every city covers lost passports, phones, wallets, hospitals, police reports, and travel scams. Reconfirm contacts and procedures with the relevant authority before visiting."}
           </p>
         </div>
         <dl className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-3">
