@@ -33,6 +33,9 @@ export default function RootLayout({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://abroadwatch.com"),
+  verification: {
+    google: siteConfig.googleSiteVerification,
+  },
   other: {
     "google-adsense-account": siteConfig.adsenseClientId,
   },

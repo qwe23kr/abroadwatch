@@ -5,6 +5,8 @@ export const siteConfig = {
   domain: "abroadwatch.com",
   url: "https://abroadwatch.com",
   adsenseClientId: "ca-pub-5495602989008149",
+  /** Google Search Console 소유 확인 */
+  googleSiteVerification: "kxcfVDsuqZgaprqcwiVTe3Stc9JEqfjfq-9ORpkP0NU",
   defaultLocale: "ko" as const,
   locales: ["ko", "en"] as const,
   twitterHandle: "@abroadwatch",
