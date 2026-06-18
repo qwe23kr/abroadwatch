@@ -15,6 +15,7 @@ import { GuideCard } from "@/components/ui/GuideCard";
 import { getLatestGuides, getPopularGuides } from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { buildFaqJsonLd, buildMetadata, buildWebsiteJsonLd } from "@/lib/seo";
+import { buildHomeTabTitle } from "@/lib/seo-titles";
 import { countries, getCountry, isValidLocale, type Locale } from "@/lib/site-config";
 
 interface HomePageProps {
@@ -32,7 +33,7 @@ export async function generateMetadata({
 
   return buildMetadata({
     locale,
-    title: t(locale, "heroTitle"),
+    title: buildHomeTabTitle(locale),
     description: t(locale, "siteDescription"),
     path: `/${locale}`,
     alternatePaths: { ko: "/ko", en: "/en" },

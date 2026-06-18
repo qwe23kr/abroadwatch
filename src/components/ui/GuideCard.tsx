@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getGuidePath, type GuideContent } from "@/lib/content";
+import { buildGuideHeadline } from "@/lib/seo-titles";
 import { incidentDescriptions } from "@/lib/incident-ui";
 import { stripMarkdown } from "@/lib/text";
 import { incidentLabels } from "@/lib/site-config";
@@ -14,6 +15,12 @@ export function GuideCard({ guide }: GuideCardProps) {
   const country = getCountry(guide.country);
   const city = getCity(guide.country, guide.city);
   const incidentLabel = incidentLabels[guide.incident][guide.locale];
+  const displayTitle = buildGuideHeadline(
+    guide.locale,
+    guide.city,
+    guide.country,
+    guide.incident,
+  );
   const location = `${city?.name[guide.locale] ?? guide.city}, ${country?.name[guide.locale] ?? guide.country}`;
 
   return (
@@ -25,7 +32,7 @@ export function GuideCard({ guide }: GuideCardProps) {
         {incidentLabel}
       </span>
       <h3 className="mb-2 font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
-        {guide.frontmatter.title}
+        {displayTitle}
       </h3>
       <p className="mb-2 text-xs leading-relaxed text-gray-500 line-clamp-2">
         {incidentDescriptions[guide.incident][guide.locale]}

@@ -10,6 +10,7 @@ import {
 } from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import { buildCountryHubTitle } from "@/lib/seo-titles";
 import {
   countries,
   getCountry,
@@ -39,8 +40,8 @@ export async function generateMetadata({ params }: CountryHubPageProps): Promise
 
   return buildMetadata({
     locale,
-    title: `${countryData.name[locale]} ${t(locale, "countryHubTitle")}`,
-    description: t(locale, "countryHubDescription"),
+    title: buildCountryHubTitle(locale, country),
+    description: `${countryData.name[locale]} ${t(locale, "countryHubDescription")}`,
     path: `/${locale}/${country}`,
     alternatePaths: { ko: `/ko/${country}`, en: `/en/${country}` },
   });

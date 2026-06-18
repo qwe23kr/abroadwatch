@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { getGuidePath } from "./content";
 import {
+  buildGuideMetaDescription,
+  buildGuideShareTitle,
+  buildGuideTabTitle,
+  truncateMetaDescription,
+} from "./seo-titles";
+import {
   getCity,
   getCountry,
   incidentLabels,
@@ -18,6 +24,8 @@ interface PageMetadataOptions {
   updatedAt?: string;
   alternatePaths?: Partial<Record<Locale, string>>;
   type?: "website" | "article";
+  /** OG·Twitter 전용 제목 (없으면 title 사용) */
+  shareTitle?: string;
 }
 
 /** 페이지 메타데이터 생성 (canonical, OG, Twitter, hreflang) */
@@ -31,10 +39,12 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
     updatedAt,
     alternatePaths,
     type = "website",
+    shareTitle,
   } = options;
 
   const canonicalUrl = `${siteConfig.url}${path}`;
-  const fullTitle = `${title} | ${siteConfig.name}`;
+  const metaDescription = truncateMetaDescription(description);
+  const ogTitle = shareTitle ?? title;
 
   const languages: Record<string, string> = {};
   for (const loc of siteConfig.locales) {
@@ -44,15 +54,15 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
   languages["x-default"] = `${siteConfig.url}${alternatePaths?.ko ?? path.replace(`/${locale}`, "/ko")}`;
 
   return {
-    title: fullTitle,
-    description,
+    title,
+    description: metaDescription,
     alternates: {
       canonical: canonicalUrl,
       languages,
     },
     openGraph: {
-      title: fullTitle,
-      description,
+      title: ogTitle,
+      description: metaDescription,
       url: canonicalUrl,
       siteName: siteConfig.name,
       locale: locale === "ko" ? "ko_KR" : "en_US",
@@ -62,8 +72,8 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
     },
     twitter: {
       card: "summary_large_image",
-      title: fullTitle,
-      description,
+      title: ogTitle,
+      description: metaDescription,
       site: siteConfig.twitterHandle,
     },
     robots: {
@@ -89,8 +99,15 @@ export function buildGuideMetadata(
 
   return buildMetadata({
     locale,
-    title: frontmatter.title,
-    description: frontmatter.summary,
+    title: buildGuideTabTitle(locale, country, city, incident),
+    shareTitle: buildGuideShareTitle(locale, country, city, incident),
+    description: buildGuideMetaDescription(
+      locale,
+      country,
+      city,
+      incident,
+      frontmatter.summary,
+    ),
     path,
     publishedAt: frontmatter.publishedAt,
     updatedAt: frontmatter.updatedAt,

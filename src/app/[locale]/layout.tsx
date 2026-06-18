@@ -7,6 +7,7 @@ import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { isProductionRuntime } from "@/lib/runtime";
 import { isValidLocale, siteConfig, type Locale } from "@/lib/site-config";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -40,3 +41,11 @@ export default async function LocaleLayout({
 export function generateStaticParams() {
   return siteConfig.locales.map((locale) => ({ locale }));
 }
+
+/** 브라우저 탭 제목 템플릿 — 페이지별 title + 브랜드 */
+export const metadata: Metadata = {
+  title: {
+    template: "%s · AbroadWatch",
+    default: "AbroadWatch",
+  },
+};

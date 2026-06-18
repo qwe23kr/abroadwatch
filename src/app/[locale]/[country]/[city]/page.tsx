@@ -15,6 +15,7 @@ import {
 import { getCityEmergency } from "@/lib/emergency";
 import { t } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import { buildCityHubTitle, buildCountryIncidentHubTitle } from "@/lib/seo-titles";
 import {
   countries,
   getCity,
@@ -59,13 +60,9 @@ export async function generateMetadata({ params }: SegmentPageProps): Promise<Me
   const countryData = getCountry(country)!;
 
   if (isSeoIncident(segment)) {
-    const title =
-      segment === "scam"
-        ? `${countryData.name[locale]} ${t(locale, "countryIncidentHubScam")}`
-        : `${countryData.name[locale]} ${t(locale, "countryIncidentHubHospital")}`;
     return buildMetadata({
       locale,
-      title,
+      title: buildCountryIncidentHubTitle(locale, country, segment),
       description: t(locale, "countryIncidentHubDescription"),
       path: `/${locale}/${country}/${segment}`,
       alternatePaths: {
@@ -80,8 +77,8 @@ export async function generateMetadata({ params }: SegmentPageProps): Promise<Me
 
   return buildMetadata({
     locale,
-    title: `${cityData.name[locale]} ${t(locale, "cityHubTitle")}`,
-    description: t(locale, "cityHubDescription"),
+    title: buildCityHubTitle(locale, country, segment),
+    description: `${cityData.name[locale]}, ${countryData.name[locale]} — ${t(locale, "cityHubDescription")}`,
     path: `/${locale}/${country}/${segment}`,
     alternatePaths: { ko: `/ko/${country}/${segment}`, en: `/en/${country}/${segment}` },
   });

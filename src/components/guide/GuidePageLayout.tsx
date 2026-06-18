@@ -17,6 +17,7 @@ import {
   buildFaqJsonLd,
   buildHowToJsonLd,
 } from "@/lib/seo";
+import { buildGuideHeadline } from "@/lib/seo-titles";
 import {
   getCity,
   getCountry,
@@ -58,12 +59,14 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
     },
   ]);
 
+  const headline = buildGuideHeadline(locale, city, country, incident);
+
   const articleJsonLd = buildArticleJsonLd(
     locale,
     country,
     city,
     incident,
-    frontmatter,
+    { ...frontmatter, title: headline },
   );
   const faqItems = Array.from(
     guide.content.matchAll(/<FaqItem question="([^"]+)">\s*([\s\S]*?)\s*<\/FaqItem>/g),
@@ -85,7 +88,7 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
         <Script id="guide-faq-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(faqItems)) }} />
       )}
       {actionSteps.length > 0 && (
-        <Script id="guide-howto-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildHowToJsonLd(frontmatter.title, frontmatter.summary, actionSteps)) }} />
+        <Script id="guide-howto-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildHowToJsonLd(headline, frontmatter.summary, actionSteps)) }} />
       )}
       <Script
         id="article-jsonld"
@@ -106,7 +109,7 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
             </span>
           </div>
           <h1 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
-            {frontmatter.title}
+            {headline}
           </h1>
           <p className="text-lg leading-relaxed text-gray-600">
             {frontmatter.summary.replace(/\*\*/g, "")}
