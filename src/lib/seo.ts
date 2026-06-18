@@ -67,6 +67,14 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
       siteName: siteConfig.name,
       locale: locale === "ko" ? "ko_KR" : "en_US",
       type,
+      images: [
+        {
+          url: `${siteConfig.url}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${siteConfig.name} travel emergency guides`,
+        },
+      ],
       ...(publishedAt && { publishedTime: publishedAt }),
       ...(updatedAt && { modifiedTime: updatedAt }),
     },
@@ -75,6 +83,7 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
       title: ogTitle,
       description: metaDescription,
       site: siteConfig.twitterHandle,
+      images: [`${siteConfig.url}/opengraph-image`],
     },
     robots: {
       index: true,

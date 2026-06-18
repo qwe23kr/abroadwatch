@@ -27,7 +27,7 @@ export function ReviewNote({
         className="pointer-events-none absolute -right-2 -top-4 text-6xl font-serif text-amber-200/80"
         aria-hidden="true"
       >
-        "
+        &ldquo;
       </div>
       <p className="relative mb-3 text-xs font-semibold uppercase tracking-wide text-amber-900">
         {displayLabel}

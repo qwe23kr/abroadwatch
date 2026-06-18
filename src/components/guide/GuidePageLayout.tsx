@@ -1,5 +1,6 @@
 import Script from "next/script";
 import { IncidentTabs } from "@/components/guide/IncidentTabs";
+import { ShareGuide } from "@/components/guide/ShareGuide";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -117,6 +118,7 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
           <p className="mt-4 text-sm text-gray-500">
             {t(locale, "lastUpdated")}: {frontmatter.updatedAt}
           </p>
+          <ShareGuide locale={locale} title={headline} />
           <dl className="mt-5 grid grid-cols-1 gap-3 min-[380px]:grid-cols-3">
             {frontmatter.emergencyNumber && (
               <div className="rounded-lg bg-red-50 p-3"><dt className="text-xs font-medium text-red-700">{locale === "ko" ? "긴급번호" : "Emergency"}</dt><dd className="mt-1 font-bold text-red-800">{frontmatter.emergencyNumber}</dd></div>
