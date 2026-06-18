@@ -1,8 +1,8 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { LocaleHtmlLang } from "@/components/layout/LocaleHtmlLang";
-import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { GoogleAdSense } from "@/components/analytics/GoogleAdSense";
+import { EmrldTracker } from "@/components/analytics/EmrldTracker";
 import { isValidLocale, siteConfig, type Locale } from "@/lib/site-config";
 import { notFound } from "next/navigation";
 
@@ -26,8 +26,8 @@ export default async function LocaleLayout({
       <Header locale={locale} />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} />
-      <GoogleAnalytics />
       <GoogleAdSense />
+      <EmrldTracker />
     </>
   );
 }

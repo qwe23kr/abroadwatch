@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="ko" className={`${inter.variable} ${notoSansKr.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-white font-sans text-gray-900 antialiased">
         {children}
+        <GoogleAnalytics />
       </body>
     </html>
   );

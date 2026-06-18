@@ -5,8 +5,12 @@ export const siteConfig = {
   domain: "abroadwatch.com",
   url: "https://abroadwatch.com",
   adsenseClientId: "ca-pub-5495602989008149",
+  /** Google Analytics 4 측정 ID */
+  gaMeasurementId: "G-123Z5X8X27",
   /** Google Search Console 소유 확인 */
   googleSiteVerification: "kxcfVDsuqZgaprqcwiVTe3Stc9JEqfjfq-9ORpkP0NU",
+  /** emrldco 트래킹 스크립트 */
+  emrldScriptUrl: "https://emrldco.com/NTQxMDA0.js?t=541004",
   defaultLocale: "ko" as const,
   locales: ["ko", "en"] as const,
   twitterHandle: "@abroadwatch",
