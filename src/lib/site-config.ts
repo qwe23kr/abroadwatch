@@ -4,6 +4,7 @@ export const siteConfig = {
   name: "AbroadWatch",
   domain: "abroadwatch.com",
   url: "https://abroadwatch.com",
+  adsenseClientId: "ca-pub-5495602989008149",
   defaultLocale: "ko" as const,
   locales: ["ko", "en"] as const,
   twitterHandle: "@abroadwatch",

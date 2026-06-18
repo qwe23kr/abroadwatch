@@ -1,9 +1,9 @@
 import Script from "next/script";
+import { siteConfig } from "@/lib/site-config";
 
 /** 게시자 ID가 설정된 경우에만 AdSense 검토/광고 스크립트를 로드합니다. */
 export function GoogleAdSense() {
-  const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
-  if (!client?.startsWith("ca-pub-")) return null;
+  const client = siteConfig.adsenseClientId;
 
   return (
     <Script

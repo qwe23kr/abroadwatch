@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
+import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,9 +33,7 @@ export default function RootLayout({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://abroadwatch.com"),
-  ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.startsWith("ca-pub-") && {
-    other: {
-      "google-adsense-account": process.env.NEXT_PUBLIC_ADSENSE_CLIENT,
-    },
-  }),
+  other: {
+    "google-adsense-account": siteConfig.adsenseClientId,
+  },
 };
