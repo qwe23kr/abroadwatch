@@ -8,8 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "generate:content": "tsx scripts/generate-mdx.ts",
+    "generate:traveler-content": "tsx scripts/generate-traveler-content.ts",
     "validate:content": "tsx scripts/validate-content.ts",
-    "check": "npm run lint && tsc --noEmit && npm run validate:content"
+    "validate:traveler-sources": "tsx scripts/validate-traveler-sources.ts",
+    "validate:traveler-content": "tsx scripts/validate-traveler-content.ts",
+    "check": "npm run lint && tsc --noEmit && npm run validate:content && npm run validate:traveler-sources && npm run validate:traveler-content"
   },
   "dependencies": {
     "clsx": "^2.1.1",

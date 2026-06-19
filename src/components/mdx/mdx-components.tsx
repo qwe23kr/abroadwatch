@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import type { Locale } from "@/lib/site-config";
+import type { TravelerProfile } from "@/lib/traveler-profiles";
 import { ActionGroup, ActionStep } from "./ActionStep";
 import { Callout } from "./Callout";
 import { ContactCard } from "./ContactCard";
@@ -14,18 +15,21 @@ import { ScamHotspots, ScamType, ScamTypeList, ScamTypeRow } from "./ScamTypeLis
 import { TimelineGroup, TimelineStep } from "./TimelineStep";
 
 /** MDX 렌더링용 커스텀 컴포넌트 맵 (locale 주입) */
-export function createMdxComponents(locale: Locale): MDXComponents {
+export function createMdxComponents(
+  locale: Locale,
+  uiLanguage?: TravelerProfile["language"],
+): MDXComponents {
   return {
     ActionGroup,
     ActionStep,
     Callout,
-    ContactCard: (props) => <ContactCard {...props} locale={locale} />,
+    ContactCard: (props) => <ContactCard {...props} locale={locale} uiLanguage={uiLanguage} />,
     EmergencyBanner,
     FaqItem,
-    GoogleMap,
+    GoogleMap: (props) => <GoogleMap {...props} uiLanguage={uiLanguage} />,
     InfoRow,
     InfoRows,
-    LocalPhrase,
+    LocalPhrase: (props) => <LocalPhrase {...props} uiLanguage={uiLanguage} />,
     ReviewNote: (props) => <ReviewNote {...props} locale={locale} />,
     ReviewQuotes,
     ReviewQuote,

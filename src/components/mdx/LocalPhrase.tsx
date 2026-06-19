@@ -1,7 +1,8 @@
-type LocalPhraseLocale = "ko" | "en";
+type LocalPhraseLocale = "ko" | "zh-Hans" | "ja" | "zh-Hant" | "en";
 
 interface LocalPhraseProps {
   locale?: LocalPhraseLocale;
+  uiLanguage?: LocalPhraseLocale;
   language: string;
   /** 발음 가이드 + 뜻 */
   reading?: string;
@@ -31,16 +32,35 @@ const UI: Record<
       "Show a translation app, or read slowly using the romanization above.",
     hint: "Show a translation app, or read the phrase above as written.",
   },
+  "zh-Hans": {
+    title: (language) => `🗣 当地沟通用语（${language}）`,
+    readingLabel: "发音参考",
+    hintWithReading: "可出示翻译软件，或按上方发音缓慢朗读。",
+    hint: "可出示翻译软件，或直接展示上方句子。",
+  },
+  ja: {
+    title: (language) => `🗣 現地で伝える表現（${language}）`,
+    readingLabel: "発音の目安",
+    hintWithReading: "翻訳アプリを見せるか、上の発音をゆっくり読んでください。",
+    hint: "翻訳アプリまたは上の文をそのまま見せてください。",
+  },
+  "zh-Hant": {
+    title: (language) => `🗣 當地溝通用語（${language}）`,
+    readingLabel: "發音參考",
+    hintWithReading: "可出示翻譯軟體，或依上方發音慢慢朗讀。",
+    hint: "可出示翻譯軟體，或直接展示上方句子。",
+  },
 };
 
 /** 현지어 멘트 — 본문과 분리, 발음 가이드 포함 */
 export function LocalPhrase({
   locale = "ko",
+  uiLanguage,
   language,
   reading,
   children,
 }: LocalPhraseProps) {
-  const t = UI[locale];
+  const t = UI[uiLanguage ?? locale];
 
   return (
     <div className="my-4 rounded-lg border border-dashed border-gray-400 bg-gray-50 p-4">

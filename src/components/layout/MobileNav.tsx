@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { t, type TranslationKey } from "@/lib/i18n";
 import { siteConfig, type Locale } from "@/lib/site-config";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import type { TravelerProfile } from "@/lib/traveler-profiles";
+import { travelerNav } from "@/lib/traveler-ui";
 
 interface MobileNavProps {
   locale: Locale;
+  traveler?: TravelerProfile;
 }
 
 const navItems: Array<{ key: TranslationKey; path: string }> = [
@@ -16,8 +18,9 @@ const navItems: Array<{ key: TranslationKey; path: string }> = [
 ];
 
 /** 모바일 햄버거 메뉴 */
-export function MobileNav({ locale }: MobileNavProps) {
+export function MobileNav({ locale, traveler }: MobileNavProps) {
   const [open, setOpen] = useState(false);
+  const nativeNav = traveler ? travelerNav(traveler) : undefined;
 
   return (
     <div className="md:hidden">
@@ -53,16 +56,15 @@ export function MobileNav({ locale }: MobileNavProps) {
           >
             <div className="mb-6 flex items-center justify-between">
               <span className="font-bold text-gray-900">{siteConfig.name}</span>
-              <LanguageSwitcher locale={locale} />
             </div>
             <ul className="space-y-1">
               <li>
                 <Link
-                  href={`/${locale}`}
+                  href={traveler ? `/${traveler.code}` : `/${locale}`}
                   onClick={() => setOpen(false)}
                   className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
-                  {t(locale, "home")}
+                  {nativeNav?.home ?? t(locale, "home")}
                 </Link>
               </li>
               <li>
@@ -71,7 +73,7 @@ export function MobileNav({ locale }: MobileNavProps) {
                   onClick={() => setOpen(false)}
                   className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
-                  {t(locale, "searchButton")}
+                  {nativeNav?.search ?? t(locale, "searchButton")}
                 </Link>
               </li>
               {navItems.map((item) => (
@@ -81,7 +83,7 @@ export function MobileNav({ locale }: MobileNavProps) {
                     onClick={() => setOpen(false)}
                     className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
-                    {t(locale, item.key)}
+                    {item.key === "about" ? nativeNav?.about ?? t(locale, item.key) : nativeNav?.contact ?? t(locale, item.key)}
                   </Link>
                 </li>
               ))}

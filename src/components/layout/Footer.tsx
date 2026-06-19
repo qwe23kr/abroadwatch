@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { t, type TranslationKey } from "@/lib/i18n";
 import { siteConfig, type Locale } from "@/lib/site-config";
+import type { TravelerProfile } from "@/lib/traveler-profiles";
+import { travelerFooter } from "@/lib/traveler-ui";
 
 interface FooterProps {
   locale: Locale;
+  traveler?: TravelerProfile;
 }
 
 const footerLinks: Array<{ key: TranslationKey; path: string }> = [
@@ -16,8 +19,9 @@ const footerLinks: Array<{ key: TranslationKey; path: string }> = [
 ];
 
 /** 사이트 푸터 — 링크, 저작권 */
-export function Footer({ locale }: FooterProps) {
+export function Footer({ locale, traveler }: FooterProps) {
   const year = new Date().getFullYear();
+  const nativeFooter = traveler ? travelerFooter(traveler) : undefined;
 
   return (
     <footer className="mt-auto border-t border-gray-200 bg-gray-50">
@@ -28,7 +32,7 @@ export function Footer({ locale }: FooterProps) {
               {siteConfig.name}
             </p>
             <p className="max-w-sm text-sm text-gray-600">
-              {t(locale, "footerTagline")}
+              {nativeFooter?.tagline ?? t(locale, "footerTagline")}
             </p>
           </div>
           <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
@@ -38,7 +42,7 @@ export function Footer({ locale }: FooterProps) {
                 href={`/${locale}${link.path}`}
                 className="text-sm text-gray-600 transition-colors hover:text-blue-600"
               >
-                {t(locale, link.key)}
+                {nativeFooter?.[link.key as keyof Omit<typeof nativeFooter, "tagline">] ?? t(locale, link.key)}
               </Link>
             ))}
           </nav>

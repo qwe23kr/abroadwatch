@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
-import { siteConfig } from "@/lib/site-config";
-
-/** 루트 경로 → 기본 로케일(ko)로 리다이렉트 */
+/** 루트 경로 → 기본 국적(대한민국)으로 리다이렉트 */
 export default function RootPage() {
-  redirect(`/${siteConfig.defaultLocale}`);
+  redirect("/kr");
 }

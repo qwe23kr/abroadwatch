@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllGuides } from "@/lib/content";
+import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
+import { travelerProfiles } from "@/lib/traveler-profiles";
 import { countries, siteConfig, type Locale } from "@/lib/site-config";
 
 const LEGAL_PATHS = [
@@ -136,6 +138,41 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.6,
       alternates: localeAlternates(pathSuffix),
+    });
+  }
+
+  const travelerParams = getAllTravelerGuideParams();
+  for (const profile of travelerProfiles) {
+    entries.push({
+      url: `${baseUrl}/${profile.code}`,
+      lastModified: new Date("2026-06-19"),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    });
+  }
+
+  for (const params of travelerParams) {
+    const guide = getTravelerGuide(
+      params.traveler,
+      params.country,
+      params.city,
+      params.incident,
+    );
+    if (!guide) continue;
+    const suffix = `/${params.country}/${params.city}/${params.incident}`;
+    entries.push({
+      url: `${baseUrl}/${params.traveler}${suffix}`,
+      lastModified: new Date(guide.frontmatter.updatedAt),
+      changeFrequency: "monthly",
+      priority: 0.65,
+      alternates: {
+        languages: Object.fromEntries(
+          travelerProfiles.map((profile) => [
+            profile.htmlLang,
+            `${baseUrl}/${profile.code}${suffix}`,
+          ]),
+        ),
+      },
     });
   }
 
