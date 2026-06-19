@@ -1,9 +1,11 @@
 import Form from "next/form";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { SectionHeading } from "@/components/home/HomeSections";
 import { incidentIcons } from "@/lib/incident-ui";
+import { buildTravelerHomeMetadata } from "@/lib/seo";
 import { countries, incidentTypes } from "@/lib/site-config";
 import {
   getLatestTravelerGuides,
@@ -15,6 +17,18 @@ import { travelerIncident, travelerName, travelerUi } from "@/lib/traveler-ui";
 
 export function generateStaticParams() {
   return travelerProfiles.map((profile) => ({ traveler: profile.code }));
+}
+
+/** 국적별 홈 메타데이터 — 사이트 제목·설명·OG */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ traveler: string }>;
+}): Promise<Metadata> {
+  const { traveler } = await params;
+  const profile = getTravelerProfile(traveler);
+  if (!profile) return {};
+  return buildTravelerHomeMetadata(profile);
 }
 
 function TravelerGuideCard({ guide, profile }: { guide: TravelerGuide; profile: TravelerProfile }) {

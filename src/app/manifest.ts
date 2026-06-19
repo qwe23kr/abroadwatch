@@ -1,14 +1,14 @@
 import type { MetadataRoute } from "next";
+import { brandLogoUrl } from "@/lib/brand-icon";
 import { siteConfig } from "@/lib/site-config";
 
 /** PWA manifest */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "AbroadWatch — Travel Emergency Guides",
-    short_name: "AbroadWatch",
-    description:
-      "Emergency guides for lost passport, hospital, police, and travel scams across 19 Asian cities.",
-    start_url: "/ko",
+    name: siteConfig.seo.title,
+    short_name: siteConfig.name,
+    description: siteConfig.seo.description,
+    start_url: "/kr",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#2563eb",
@@ -17,7 +17,25 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       {
         src: "/icon",
-        sizes: "64x64",
+        sizes: "96x96",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/apple-icon",
+        sizes: "180x180",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: brandLogoUrl(siteConfig.url, 192),
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: brandLogoUrl(siteConfig.url, 512),
+        sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },

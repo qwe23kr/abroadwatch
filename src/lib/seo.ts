@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getGuidePath } from "./content";
+import { brandLogoUrl } from "./brand-icon";
 import {
   buildGuideMetaDescription,
   buildGuideShareTitle,
@@ -14,6 +15,86 @@ import {
   type IncidentType,
   type Locale,
 } from "./site-config";
+import type { TravelerProfile } from "./traveler-profiles";
+import { travelerUi } from "./traveler-ui";
+
+const OG_IMAGE = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: "AbroadWatch — 아시아 여행 비상·안전 가이드",
+} as const;
+
+const OG_LOCALE_BY_LANGUAGE: Record<TravelerProfile["language"], string> = {
+  ko: "ko_KR",
+  en: "en_US",
+  ja: "ja_JP",
+  "zh-Hans": "zh_CN",
+  "zh-Hant": "zh_TW",
+};
+
+/** 사이트 전역 메타데이터 — 루트 레이아웃·검색엔진 기본값 */
+export function buildSiteMetadata(): Metadata {
+  const { title, description, ogTitle, ogDescription } = siteConfig.seo;
+  const metaDescription = truncateMetaDescription(description);
+
+  return {
+    metadataBase: new URL(siteConfig.url),
+    applicationName: siteConfig.name,
+    title: {
+      default: title,
+      template: `%s | ${siteConfig.name}`,
+    },
+    description: metaDescription,
+    openGraph: {
+      title: ogTitle,
+      description: truncateMetaDescription(ogDescription),
+      url: siteConfig.url,
+      siteName: siteConfig.name,
+      locale: "ko_KR",
+      type: "website",
+      images: [OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description: truncateMetaDescription(ogDescription),
+      site: siteConfig.twitterHandle,
+      images: [OG_IMAGE.url],
+    },
+  };
+}
+
+/** 국적별 홈(`/kr` 등) 메타데이터 */
+export function buildTravelerHomeMetadata(profile: TravelerProfile): Metadata {
+  const ui = travelerUi(profile);
+  const path = `/${profile.code}`;
+  const canonicalUrl = `${siteConfig.url}${path}`;
+  const metaDescription = truncateMetaDescription(ui.subtitle);
+  const shareTitle = `${siteConfig.name} | ${ui.hub}`;
+
+  return {
+    title: ui.hub,
+    description: metaDescription,
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      title: shareTitle,
+      description: metaDescription,
+      url: canonicalUrl,
+      siteName: siteConfig.name,
+      locale: OG_LOCALE_BY_LANGUAGE[profile.language],
+      type: "website",
+      images: [OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: shareTitle,
+      description: metaDescription,
+      site: siteConfig.twitterHandle,
+      images: [OG_IMAGE.url],
+    },
+  };
+}
 
 interface PageMetadataOptions {
   locale: Locale;
@@ -67,14 +148,7 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
       siteName: siteConfig.name,
       locale: locale === "ko" ? "ko_KR" : "en_US",
       type,
-      images: [
-        {
-          url: `${siteConfig.url}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: `${siteConfig.name} travel emergency guides`,
-        },
-      ],
+      images: [OG_IMAGE],
       ...(publishedAt && { publishedTime: publishedAt }),
       ...(updatedAt && { modifiedTime: updatedAt }),
     },
@@ -83,7 +157,7 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
       title: ogTitle,
       description: metaDescription,
       site: siteConfig.twitterHandle,
-      images: [`${siteConfig.url}/opengraph-image`],
+      images: [OG_IMAGE.url],
     },
     robots: {
       index: true,
@@ -240,7 +314,18 @@ export function buildWebsiteJsonLd(): object {
     "@type": "WebSite",
     name: siteConfig.name,
     url: siteConfig.url,
-    description: "Travel emergency and safety guides worldwide",
+    description: siteConfig.seo.description,
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: {
+        "@type": "ImageObject",
+        url: brandLogoUrl(siteConfig.url, 512),
+        width: 512,
+        height: 512,
+      },
+    },
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteConfig.url}/ko/search?query={search_term_string}`,

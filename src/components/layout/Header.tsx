@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/ui/BrandMark";
 import { t } from "@/lib/i18n";
 import { siteConfig, type Locale } from "@/lib/site-config";
 import { MobileNav } from "./MobileNav";
@@ -26,9 +27,7 @@ export function Header({ locale, traveler }: HeaderProps) {
           href={traveler ? `/${traveler.code}` : `/${locale}`}
           className="flex items-center gap-2 transition-opacity hover:opacity-80"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white">
-            AW
-          </span>
+          <BrandMark size={32} />
           <span className="text-lg font-bold text-gray-900">
             {siteConfig.name}
           </span>
