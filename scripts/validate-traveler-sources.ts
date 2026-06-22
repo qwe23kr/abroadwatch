@@ -1,4 +1,4 @@
-import { countries } from "../src/lib/site-config";
+import { travelerDestinations } from "../src/lib/traveler-destinations";
 import { travelerProfiles } from "../src/lib/traveler-profiles";
 import {
   getTravelerMissionSource,
@@ -23,7 +23,7 @@ for (const source of travelerMissionSources) {
 }
 
 for (const traveler of travelerProfiles) {
-  for (const country of countries) {
+  for (const country of travelerDestinations) {
     const source = getTravelerMissionSource(
       traveler.code,
       country.slug as DestinationCode,

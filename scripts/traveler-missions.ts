@@ -1,6 +1,7 @@
 import type { TravelerCode } from "../src/lib/traveler-profiles";
 
 export type DestinationCode =
+  | "south-korea"
   | "japan"
   | "thailand"
   | "vietnam"
@@ -309,6 +310,66 @@ export const travelerMissionSources: TravelerMissionSource[] = [
     officialUrl:
       "https://www.international.gc.ca/country-pays/philippines/index.aspx?lang=eng",
     sourceCheckedAt: "2026-06-19",
+  },
+  {
+    traveler: "kr", destination: "south-korea", officialName: "외교부 여권안내", officialUrl: "https://www.passport.go.kr/", sourceCheckedAt: "2026-06-22", handling: "domestic-authority",
+  },
+  {
+    traveler: "cn", destination: "south-korea", officialName: "中华人民共和国驻大韩民国大使馆", officialUrl: "https://kr.china-embassy.gov.cn/chn/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "us", destination: "south-korea", officialName: "U.S. Embassy & Consulate in the Republic of Korea", officialUrl: "https://kr.usembassy.gov/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "jp", destination: "south-korea", officialName: "在大韓民国日本国大使館", officialUrl: "https://www.kr.emb-japan.go.jp/itprtop_ja/index.html", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "tw", destination: "south-korea", officialName: "駐韓國台北代表部", officialUrl: "https://www.roc-taiwan.org/kr/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "au", destination: "south-korea", officialName: "Australian Embassy in the Republic of Korea", officialUrl: "https://southkorea.embassy.gov.au/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "gb", destination: "south-korea", officialName: "British Embassy Seoul", officialUrl: "https://www.gov.uk/world/organisations/british-embassy-seoul", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "ca", destination: "south-korea", officialName: "Embassy of Canada to the Republic of Korea", officialUrl: "https://www.international.gc.ca/country-pays/korea-republic-coree-republique/seoul.aspx?lang=eng", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "th", destination: "south-korea", officialName: "สถานเอกอัครราชทูต ณ กรุงโซล", officialUrl: "https://seoul.thaiembassy.org/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "th", destination: "japan", officialName: "สถานเอกอัครราชทูต ณ กรุงโตเกียว", officialUrl: "https://tokyo.thaiembassy.org/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "th", destination: "thailand", officialName: "กรมการกงสุล กระทรวงการต่างประเทศ", officialUrl: "https://consular.mfa.go.th/", sourceCheckedAt: "2026-06-22", handling: "domestic-authority",
+  },
+  {
+    traveler: "th", destination: "vietnam", officialName: "สถานเอกอัครราชทูต ณ กรุงฮานอย", officialUrl: "https://hanoi.thaiembassy.org/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "th", destination: "taiwan", officialName: "สำนักงานการค้าและเศรษฐกิจไทย ไทเป", officialUrl: "https://tteo.thaiembassy.org/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "th", destination: "philippines", officialName: "สถานเอกอัครราชทูต ณ กรุงมะนิลา", officialUrl: "https://manila.thaiembassy.org/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "vn", destination: "south-korea", officialName: "Đại sứ quán Việt Nam tại Hàn Quốc", officialUrl: "https://vnembassy-seoul.mofa.gov.vn/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "vn", destination: "japan", officialName: "Đại sứ quán Việt Nam tại Nhật Bản", officialUrl: "https://vnembassy-jp.org/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "vn", destination: "thailand", officialName: "Đại sứ quán Việt Nam tại Thái Lan", officialUrl: "https://vnembassy-bangkok.mofa.gov.vn/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "vn", destination: "vietnam", officialName: "Cục Lãnh sự Bộ Ngoại giao Việt Nam", officialUrl: "https://lanhsuvietnam.gov.vn/", sourceCheckedAt: "2026-06-22", handling: "domestic-authority",
+  },
+  {
+    traveler: "vn", destination: "taiwan", officialName: "Văn phòng Kinh tế Văn hóa Việt Nam tại Đài Bắc", officialUrl: "https://vnoffice-taipei.mofa.gov.vn/", sourceCheckedAt: "2026-06-22",
+  },
+  {
+    traveler: "vn", destination: "philippines", officialName: "Đại sứ quán Việt Nam tại Philippines", officialUrl: "https://vnembassy-manila.mofa.gov.vn/", sourceCheckedAt: "2026-06-22",
   },
 ];
 

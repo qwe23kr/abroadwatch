@@ -1,4 +1,4 @@
-type LocalPhraseLocale = "ko" | "zh-Hans" | "ja" | "zh-Hant" | "en";
+type LocalPhraseLocale = "ko" | "zh-Hans" | "ja" | "zh-Hant" | "th" | "vi" | "en";
 
 interface LocalPhraseProps {
   locale?: LocalPhraseLocale;
@@ -49,6 +49,18 @@ const UI: Record<
     readingLabel: "發音參考",
     hintWithReading: "可出示翻譯軟體，或依上方發音慢慢朗讀。",
     hint: "可出示翻譯軟體，或直接展示上方句子。",
+  },
+  th: {
+    title: (language) => `🗣 ประโยคสำหรับสื่อสารในพื้นที่ (${language})`,
+    readingLabel: "คำอ่าน",
+    hintWithReading: "แสดงแอปแปลภาษา หรืออ่านช้า ๆ ตามคำอ่านด้านบน",
+    hint: "แสดงแอปแปลภาษา หรือแสดงประโยคด้านบน",
+  },
+  vi: {
+    title: (language) => `🗣 Câu dùng tại địa phương (${language})`,
+    readingLabel: "Cách phát âm",
+    hintWithReading: "Đưa ứng dụng dịch hoặc đọc chậm theo phần phát âm ở trên.",
+    hint: "Đưa ứng dụng dịch hoặc cho xem nguyên câu ở trên.",
   },
 };
 

@@ -23,7 +23,7 @@ export default async function TravelerLayout({
 
   return (
     <>
-      <LocaleHtmlLang locale={locale} />
+      <LocaleHtmlLang locale={locale} htmlLang={profile.htmlLang} />
       <Header locale={locale} traveler={profile} />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} traveler={profile} />

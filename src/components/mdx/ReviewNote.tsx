@@ -1,5 +1,6 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/site-config";
+import type { TravelerProfile } from "@/lib/traveler-profiles";
 
 import { InlineMarkdown } from "./InlineMarkdown";
 
@@ -8,6 +9,7 @@ interface ReviewNoteProps {
   url?: string;
   label?: string;
   locale?: Locale;
+  uiLanguage?: TravelerProfile["language"];
   children: React.ReactNode;
 }
 
@@ -17,9 +19,13 @@ export function ReviewNote({
   url,
   label,
   locale = "ko",
+  uiLanguage,
   children,
 }: ReviewNoteProps) {
   const displayLabel = label ?? `📌 ${t(locale, "reviewVerified")}`;
+  const sourceLabel = uiLanguage
+    ? ({ ko: "출처", "zh-Hans": "来源", ja: "出典", "zh-Hant": "來源", th: "แหล่งที่มา", vi: "Nguồn", en: "Source" } as const)[uiLanguage]
+    : t(locale, "reviewSource");
 
   return (
     <blockquote className="relative my-6 overflow-hidden rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-sm">
@@ -41,7 +47,7 @@ export function ReviewNote({
       </div>
       <footer className="relative mt-4 flex flex-wrap items-center gap-2 border-t border-amber-200/60 pt-3 text-xs text-gray-600">
         <span className="rounded-full bg-white/80 px-2 py-0.5 font-medium text-amber-800">
-          {t(locale, "reviewSource")}
+          {sourceLabel}
         </span>
         {url ? (
           <a

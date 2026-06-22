@@ -6,7 +6,8 @@ import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { SectionHeading } from "@/components/home/HomeSections";
 import { incidentIcons } from "@/lib/incident-ui";
 import { buildTravelerHomeMetadata } from "@/lib/seo";
-import { countries, incidentTypes } from "@/lib/site-config";
+import { incidentTypes } from "@/lib/site-config";
+import { travelerDestinations } from "@/lib/traveler-destinations";
 import {
   getLatestTravelerGuides,
   getPopularTravelerGuides,
@@ -56,7 +57,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
   const ui = travelerUi(profile);
   const popularGuides = getPopularTravelerGuides(profile.code, 7);
   const latestGuides = getLatestTravelerGuides(profile.code, 6);
-  const cityCount = countries.reduce((sum, country) => sum + country.cities.length, 0);
+  const cityCount = travelerDestinations.reduce((sum, country) => sum + country.cities.length, 0);
 
   return (
     <>
@@ -83,7 +84,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
               <p className="mt-3 text-sm font-semibold text-blue-300">{profile.consularHotline}</p>
             </div>
             <dl className="grid grid-cols-3 gap-3">
-              {[[countries.length, "Countries"], [cityCount, "Cities"], [cityCount * incidentTypes.length * travelerProfiles.length, "Guides"]].map(([value, label]) => (
+              {[[travelerDestinations.length, "Countries"], [cityCount, "Cities"], [cityCount * incidentTypes.length * travelerProfiles.length, "Guides"]].map(([value, label]) => (
                 <div key={label} className="rounded-xl bg-white/10 p-4 text-center"><dt className="text-2xl font-bold md:text-3xl">{value}</dt><dd className="mt-1 text-xs text-slate-300 md:text-sm">{label}</dd></div>
               ))}
             </dl>
@@ -98,7 +99,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
         <section className="mb-16" id="browse-countries">
           <SectionHeading title={ui.browseCountry} description={ui.browseCountryDescription} />
           <div className="grid gap-6 lg:grid-cols-2">
-            {countries.map((country) => (
+            {travelerDestinations.map((country) => (
               <article key={country.slug} className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                 <div className="bg-gradient-to-r from-blue-700 to-cyan-600 px-5 py-4 text-white"><h3 className="text-xl font-bold">{travelerName(profile, country.slug, country.name.en)}</h3></div>
                 <div className="space-y-5 p-5">{country.cities.map((city) => (

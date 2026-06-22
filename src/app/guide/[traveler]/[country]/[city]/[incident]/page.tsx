@@ -5,8 +5,9 @@ import { MdxContent } from "@/components/mdx/MdxContent";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
 import { getTravelerProfile } from "@/lib/traveler-profiles";
+import { getTravelerCity, getTravelerCountry } from "@/lib/traveler-destinations";
 import { travelerIncident, travelerName, travelerUi } from "@/lib/traveler-ui";
-import { getCity, getCountry, isValidIncident, type IncidentType, type Locale } from "@/lib/site-config";
+import { isValidIncident, type IncidentType, type Locale } from "@/lib/site-config";
 
 interface Props {
   params: Promise<{ traveler: string; country: string; city: string; incident: string }>;
@@ -32,11 +33,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TravelerGuidePage({ params }: Props) {
   const { traveler, country, city, incident } = await params;
   const profile = getTravelerProfile(traveler);
-  if (!profile || !isValidIncident(incident) || !getCountry(country) || !getCity(country, city)) notFound();
+  if (!profile || !isValidIncident(incident) || !getTravelerCountry(country) || !getTravelerCity(country, city)) notFound();
   const guide = getTravelerGuide(profile.code, country, city, incident as IncidentType);
   if (!guide) notFound();
   const locale: Locale = traveler === "kr" ? "ko" : "en";
   const ui = travelerUi(profile);
+  const relatedCitiesLabel = ({
+    ko: "관련 도시 가이드",
+    "zh-Hans": "相关城市指南",
+    ja: "関連都市のガイド",
+    "zh-Hant": "相關城市指南",
+    th: "คู่มือเมืองที่เกี่ยวข้อง",
+    vi: "Hướng dẫn thành phố liên quan",
+    en: "Related city guides",
+  } as const)[profile.language];
+  const relatedCities = getTravelerCountry(country)!.cities.filter((item) => item.slug !== city);
 
   return (
     <>
@@ -44,7 +55,7 @@ export default async function TravelerGuidePage({ params }: Props) {
         <nav className="mb-6 text-sm text-gray-500" aria-label="Breadcrumb">
           <Link href={`/${traveler}`} className="hover:text-blue-700">{profile.flag} {profile.nativeName}</Link>
           <span className="mx-2">/</span>
-          <span>{travelerName(profile, city, getCity(country, city)?.name.en ?? city)}</span>
+          <span>{travelerName(profile, city, getTravelerCity(country, city)?.name.en ?? city)}</span>
         </nav>
 
         <header className="mb-8">
@@ -69,6 +80,19 @@ export default async function TravelerGuidePage({ params }: Props) {
             ))}
           </div>
         </section>
+
+        {relatedCities.length > 0 && (
+          <section className="mt-10 border-t border-gray-200 pt-8">
+            <h2 className="mb-4 text-lg font-bold">{relatedCitiesLabel}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {relatedCities.map((relatedCity) => (
+                <Link key={relatedCity.slug} href={`/${traveler}/${country}/${relatedCity.slug}/${incident}`} className="rounded-xl border border-gray-200 bg-white p-4 font-semibold text-gray-800 shadow-sm transition hover:border-blue-300 hover:bg-blue-50">
+                  {travelerName(profile, relatedCity.slug, relatedCity.name.en)} · {travelerIncident(profile, incident as IncidentType)} →
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </article>
       <EmergencyFab locale={locale} phone={guide.frontmatter.emergencyNumber} label={guide.frontmatter.title} />
     </>

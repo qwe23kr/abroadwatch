@@ -35,6 +35,8 @@ export function ContactCard({
     "zh-Hans": { address: "地址", phone: "电话", hours: "受理时间", website: "官方网站" },
     ja: { address: "住所", phone: "電話", hours: "受付時間", website: "公式サイト" },
     "zh-Hant": { address: "地址", phone: "電話", hours: "受理時間", website: "官方網站" },
+    th: { address: "ที่อยู่", phone: "โทรศัพท์", hours: "เวลาทำการ", website: "เว็บไซต์" },
+    vi: { address: "Địa chỉ", phone: "Điện thoại", hours: "Giờ làm việc", website: "Trang web" },
     en: { address: "Address", phone: "Phone", hours: "Hours", website: "Website" },
   } as const;
   const label = (key: keyof typeof labels) =>

@@ -665,6 +665,47 @@ export const cityDataRegistry: Record<string, CityData> = {
     },
     reviewSource: { ko: "필리핀 여행 블로그", en: "PH travel blogs", url: "https://overseas.mofa.go.kr/ph-cebu-ko" },
   },
+
+  "south-korea/seoul": {
+    country: "south-korea",
+    slug: "seoul",
+    emergency: { number: "112", label: { ko: "대한민국 경찰", en: "Korea Police" } },
+    embassy: { name: { ko: "서울 주재 외국 공관", en: "Foreign mission in Seoul" }, address: { ko: "서울특별시", en: "Seoul" }, phone: "112", mapQuery: "Embassy district Seoul Korea" },
+    police: [
+      { name: { ko: "서울경찰청", en: "Seoul Metropolitan Police Agency" }, address: { ko: "서울특별시 종로구 사직로8길 31", en: "31 Sajik-ro 8-gil, Jongno-gu, Seoul" }, phone: "112", website: "https://www.smpa.go.kr/", mapQuery: "Seoul Metropolitan Police Agency" },
+      { name: { ko: "명동파출소", en: "Myeongdong Police Box" }, address: { ko: "서울특별시 중구 명동길 30", en: "30 Myeongdong-gil, Jung-gu, Seoul" }, phone: "112", mapQuery: "Myeongdong Police Box Seoul" },
+    ],
+    hospitals: [
+      { name: { ko: "서울대학교병원 응급의료센터", en: "Seoul National University Hospital Emergency Medical Center" }, address: { ko: "서울특별시 종로구 대학로 101", en: "101 Daehak-ro, Jongno-gu, Seoul" }, phone: "+82-2-2072-2114", website: "https://www.snuh.org/", mapQuery: "Seoul National University Hospital Emergency Medical Center" },
+    ],
+    reviewSource: { ko: "KoreaTravel 여행자 후기", en: "KoreaTravel traveler reports", url: "https://www.reddit.com/r/koreatravel/search/?q=police%20hospital%20passport&restrict_sr=1" },
+  },
+  "south-korea/busan": {
+    country: "south-korea",
+    slug: "busan",
+    emergency: { number: "112", label: { ko: "대한민국 경찰", en: "Korea Police" } },
+    embassy: { name: { ko: "서울 주재 외국 공관", en: "Foreign mission in Seoul" }, address: { ko: "서울특별시", en: "Seoul" }, phone: "112", mapQuery: "Embassy district Seoul Korea" },
+    police: [
+      { name: { ko: "부산경찰청", en: "Busan Metropolitan Police Agency" }, address: { ko: "부산광역시 연제구 중앙대로 999", en: "999 Jungang-daero, Yeonje-gu, Busan" }, phone: "112", website: "https://www.bspolice.go.kr/", mapQuery: "Busan Metropolitan Police Agency" },
+    ],
+    hospitals: [
+      { name: { ko: "부산대학교병원 권역응급의료센터", en: "Pusan National University Hospital Emergency Center" }, address: { ko: "부산광역시 서구 구덕로 179", en: "179 Gudeok-ro, Seo-gu, Busan" }, phone: "+82-51-240-7000", website: "https://www.pnuh.or.kr/", mapQuery: "Pusan National University Hospital Emergency Center" },
+    ],
+    reviewSource: { ko: "KoreaTravel 여행자 후기", en: "KoreaTravel traveler reports", url: "https://www.reddit.com/r/koreatravel/search/?q=Busan%20police%20hospital&restrict_sr=1" },
+  },
+  "south-korea/jeju": {
+    country: "south-korea",
+    slug: "jeju",
+    emergency: { number: "112", label: { ko: "대한민국 경찰", en: "Korea Police" } },
+    embassy: { name: { ko: "서울 주재 외국 공관", en: "Foreign mission in Seoul" }, address: { ko: "서울특별시", en: "Seoul" }, phone: "112", mapQuery: "Embassy district Seoul Korea" },
+    police: [
+      { name: { ko: "제주경찰청", en: "Jeju Provincial Police Agency" }, address: { ko: "제주특별자치도 제주시 수목원서길 37", en: "37 Sumogwonseo-gil, Jeju-si, Jeju" }, phone: "112", website: "https://www.jjpolice.go.kr/", mapQuery: "Jeju Provincial Police Agency" },
+    ],
+    hospitals: [
+      { name: { ko: "제주대학교병원 응급의료센터", en: "Jeju National University Hospital Emergency Center" }, address: { ko: "제주특별자치도 제주시 아란13길 15", en: "15 Aran 13-gil, Jeju-si, Jeju" }, phone: "+82-64-717-1114", website: "https://www.jejunuh.co.kr/", mapQuery: "Jeju National University Hospital Emergency Center" },
+    ],
+    reviewSource: { ko: "KoreaTravel 여행자 후기", en: "KoreaTravel traveler reports", url: "https://www.reddit.com/r/koreatravel/search/?q=Jeju%20police%20hospital&restrict_sr=1" },
+  },
 };
 
 /** 프리미엄 수동 작성 페이지 — 덮어쓰기 방지 */

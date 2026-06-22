@@ -6,13 +6,14 @@ import type { Locale } from "@/lib/site-config";
 
 interface LocaleHtmlLangProps {
   locale: Locale;
+  htmlLang?: string;
 }
 
 /** document.documentElement.lang 동적 설정 */
-export function LocaleHtmlLang({ locale }: LocaleHtmlLangProps) {
+export function LocaleHtmlLang({ locale, htmlLang }: LocaleHtmlLangProps) {
   useEffect(() => {
-    document.documentElement.lang = getHtmlLang(locale);
-  }, [locale]);
+    document.documentElement.lang = htmlLang ?? getHtmlLang(locale);
+  }, [htmlLang, locale]);
 
   return null;
 }

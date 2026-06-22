@@ -80,6 +80,26 @@ export const travelerProfiles = [
     consularHotline: "+1-613-996-8885",
     officialGuidance: "https://travel.gc.ca/assistance/emergency-info/lost-stolen-passport",
   },
+  {
+    code: "th",
+    countryCode: "TH",
+    flag: "🇹🇭",
+    nativeName: "ประเทศไทย",
+    language: "th",
+    htmlLang: "th-TH",
+    consularHotline: "+66-2-572-8442",
+    officialGuidance: "https://consular.mfa.go.th/",
+  },
+  {
+    code: "vn",
+    countryCode: "VN",
+    flag: "🇻🇳",
+    nativeName: "Việt Nam",
+    language: "vi",
+    htmlLang: "vi-VN",
+    consularHotline: "+84-981-84-84-84",
+    officialGuidance: "https://lanhsuvietnam.gov.vn/",
+  },
 ] as const;
 
 export type TravelerCode = (typeof travelerProfiles)[number]["code"];

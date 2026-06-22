@@ -1,16 +1,18 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { countries, incidentTypes } from "../src/lib/site-config";
+import { incidentTypes } from "../src/lib/site-config";
+import { travelerDestinations } from "../src/lib/traveler-destinations";
 import { travelerProfiles } from "../src/lib/traveler-profiles";
 import { getTravelerMissionSource, type DestinationCode } from "./traveler-missions";
 
 const contentDir = path.join(process.cwd(), "content");
 const errors: string[] = [];
+const reviewSignatures = new Map<string, Set<string>>();
 let count = 0;
 
 for (const profile of travelerProfiles) {
-  for (const country of countries) {
+  for (const country of travelerDestinations) {
     const mission = getTravelerMissionSource(
       profile.code,
       country.slug as DestinationCode,
@@ -39,7 +41,7 @@ for (const profile of travelerProfiles) {
           }
         }
         const hasOfficialSource =
-          profile.code === "kr"
+          profile.code === "kr" && country.slug !== "south-korea"
             ? /https:\/\/(?:overseas\.mofa\.go\.kr|www\.0404\.go\.kr)/.test(content)
             : content.includes(mission.officialUrl);
         if (!hasOfficialSource) {
@@ -66,6 +68,15 @@ for (const profile of travelerProfiles) {
           if (contactCount < 2) errors.push(`${relative}: expected at least 2 contacts, found ${contactCount}`);
           if (timelineCount < 6) errors.push(`${relative}: expected 6 timeline steps, found ${timelineCount}`);
           if (actionCount < 6) errors.push(`${relative}: expected 6 action steps, found ${actionCount}`);
+          const reviewsAt = content.lastIndexOf("<ReviewQuotes");
+          const faqAt = content.lastIndexOf("<FaqItem");
+          if (reviewsAt < 0 || faqAt < reviewsAt) errors.push(`${relative}: footer reviews must appear before FAQ`);
+          const reviewRows = [...content.matchAll(/<ReviewQuoteRow text="([^"]+)" source="([^"]+)" \/>/g)];
+          if (reviewRows.length !== 3) errors.push(`${relative}: expected 3 incident reviews, found ${reviewRows.length}`);
+          const reviewKey = `${profile.code}/${country.slug}/${city.slug}`;
+          const signatures = reviewSignatures.get(reviewKey) ?? new Set<string>();
+          signatures.add(reviewRows.map((row) => row[1]).join("|"));
+          reviewSignatures.set(reviewKey, signatures);
           if (profile.code === "jp" && /旅行者在|遇到.+时的/.test(raw)) errors.push(`${relative}: Chinese grammar leaked into Japanese copy`);
         }
         if (profile.code !== "kr" && /대한민국 대사관|Korean mission|Embassy of Korea/.test(raw)) {
@@ -76,9 +87,15 @@ for (const profile of travelerProfiles) {
   }
 }
 
+for (const [reviewKey, signatures] of reviewSignatures) {
+  if (signatures.size !== incidentTypes.length) {
+    errors.push(`${reviewKey}: reviews are duplicated across incidents (${signatures.size}/${incidentTypes.length} unique)`);
+  }
+}
+
 const expected =
   travelerProfiles.length *
-  countries.reduce(
+  travelerDestinations.reduce(
     (sum, country) => sum + country.cities.length * incidentTypes.length,
     0,
   );

@@ -31,6 +31,8 @@ const OG_LOCALE_BY_LANGUAGE: Record<TravelerProfile["language"], string> = {
   ja: "ja_JP",
   "zh-Hans": "zh_CN",
   "zh-Hant": "zh_TW",
+  th: "th_TH",
+  vi: "vi_VN",
 };
 
 /** 사이트 전역 메타데이터 — 루트 레이아웃·검색엔진 기본값 */

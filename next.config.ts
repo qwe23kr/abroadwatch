@@ -8,11 +8,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/:traveler(kr|cn|us|jp|tw|au|gb|ca)",
+        source: "/:traveler(kr|cn|us|jp|tw|au|gb|ca|th|vn)",
         destination: "/guide/:traveler",
       },
       {
-        source: "/:traveler(kr|cn|us|jp|tw|au|gb|ca)/:path*",
+        source: "/:traveler(kr|cn|us|jp|tw|au|gb|ca|th|vn)/:path*",
         destination: "/guide/:traveler/:path*",
       },
     ];

@@ -145,7 +145,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   for (const profile of travelerProfiles) {
     entries.push({
       url: `${baseUrl}/${profile.code}`,
-      lastModified: new Date("2026-06-19"),
+      lastModified: new Date("2026-06-22"),
       changeFrequency: "weekly",
       priority: 0.9,
     });

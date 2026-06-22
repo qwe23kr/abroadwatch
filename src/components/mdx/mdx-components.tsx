@@ -30,7 +30,7 @@ export function createMdxComponents(
     InfoRow,
     InfoRows,
     LocalPhrase: (props) => <LocalPhrase {...props} uiLanguage={uiLanguage} />,
-    ReviewNote: (props) => <ReviewNote {...props} locale={locale} />,
+    ReviewNote: (props) => <ReviewNote {...props} locale={locale} uiLanguage={uiLanguage} />,
     ReviewQuotes,
     ReviewQuote,
     ReviewQuoteRow,

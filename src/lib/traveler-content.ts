@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { countries, incidentTypes, type IncidentType } from "./site-config";
+import { incidentTypes, type IncidentType } from "./site-config";
+import { travelerDestinations } from "./traveler-destinations";
 import { travelerProfiles, type TravelerCode } from "./traveler-profiles";
 
 export interface TravelerGuide {
@@ -43,7 +44,7 @@ export function getTravelerGuide(
 
 export function getAllTravelerGuideParams() {
   return travelerProfiles.flatMap((traveler) =>
-    countries.flatMap((country) =>
+    travelerDestinations.flatMap((country) =>
       country.cities.flatMap((city) =>
         incidentTypes.map((incident) => ({
           traveler: traveler.code,
@@ -57,7 +58,7 @@ export function getAllTravelerGuideParams() {
 }
 
 export function getTravelerGuides(traveler: TravelerCode): TravelerGuide[] {
-  return countries.flatMap((country) =>
+  return travelerDestinations.flatMap((country) =>
     country.cities.flatMap((city) =>
       incidentTypes.flatMap((incident) => {
         const guide = getTravelerGuide(traveler, country.slug, city.slug, incident);

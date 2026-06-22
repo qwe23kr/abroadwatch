@@ -5,7 +5,7 @@ interface GoogleMapProps {
   title?: string;
   /** 지도 높이(px) */
   height?: number;
-  uiLanguage?: "ko" | "zh-Hans" | "ja" | "zh-Hant" | "en";
+  uiLanguage?: "ko" | "zh-Hans" | "ja" | "zh-Hant" | "th" | "vi" | "en";
 }
 
 /** Google Maps 임베드 — API 키 없이 place 검색 기반 */
@@ -16,12 +16,14 @@ export function GoogleMap({
   uiLanguage = "ko",
 }: GoogleMapProps) {
   const encoded = encodeURIComponent(query);
-  const mapLanguage = { ko: "ko", "zh-Hans": "zh-CN", ja: "ja", "zh-Hant": "zh-TW", en: "en" }[uiLanguage];
+  const mapLanguage = { ko: "ko", "zh-Hans": "zh-CN", ja: "ja", "zh-Hant": "zh-TW", th: "th", vi: "vi", en: "en" }[uiLanguage];
   const linkLabel = {
     ko: "Google Maps에서 길찾기 →",
     "zh-Hans": "在 Google 地图中查看路线 →",
     ja: "Google マップで経路を見る →",
     "zh-Hant": "在 Google 地圖中查看路線 →",
+    th: "ดูเส้นทางใน Google Maps →",
+    vi: "Xem đường đi trên Google Maps →",
     en: "Get directions in Google Maps →",
   }[uiLanguage];
   const src = `https://maps.google.com/maps?q=${encoded}&z=16&output=embed&hl=${mapLanguage}`;
