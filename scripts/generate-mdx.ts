@@ -15,6 +15,7 @@ import {
   cityDataRegistry,
   getCityData,
   getConsulate,
+  premiumPages,
   type CityData,
   type Location,
 } from "./city-data";
@@ -30,6 +31,11 @@ import {
 import { localPhraseBlock } from "./local-phrases";
 import { getHospitalCopy } from "./hospital-terms";
 import { getScamGuide, scamReviewBlock, scamReviewQuotesBlock, scamTypesBlock } from "./scam-terms";
+import {
+  buildExperienceSection,
+  buildGuideFaqs,
+  experienceTimelineBlock,
+} from "./incident-guide-extras";
 import { incidentReviewQuotesBlock } from "./incident-reviews";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
@@ -87,15 +93,21 @@ function sourceBlock(data: CityData, locale: Locale): string {
 </ReviewNote>`;
 }
 
-/** 공식 출처 + 실제 후기 요약 블록 */
+/** 공식 출처 + 실제 후기·경험담 블록 */
 function buildReviewSection(
   data: CityData,
   locale: Locale,
   country: string,
   citySlug: string,
   incident: IncidentType,
+  cityName: string,
 ): string {
   const official = sourceBlock(data, locale);
+  const experience = buildExperienceSection(country, citySlug, incident, locale, {
+    ko: cityName,
+    en: cityName,
+  });
+  if (experience) return `${official}\n\n${experience}`;
   const quotes = incidentReviewQuotesBlock(country, citySlug, incident, locale);
   return quotes ? `${official}\n\n${quotes}` : official;
 }
@@ -254,7 +266,7 @@ function generateLostPassport(
       cost: isJapan ? "약 6,500~6,890엔" : "공관 문의",
       time: isJapan ? "1~2영업일" : "1~3영업일",
       emergency: data.emergency,
-      review: buildReviewSection(data, "ko", country, citySlug, "lost-passport"),
+      review: buildReviewSection(data, "ko", country, citySlug, "lost-passport", cityName),
       timelineTitle: `${cityName} 여권 분실 대응 타임라인`,
       timeline,
       actions,
@@ -277,16 +289,7 @@ function generateLostPassport(
       ],
       locations: [consulate, ...data.police],
       locationHeaders: ["공관·영사관", ...data.police.map(() => policeSectionHeader(country))],
-      faqs: [
-        {
-          q: `${cityName}에서 가장 가까운 한국 공관?`,
-          a: `**${consulate.name.ko}** · ${consulate.phone} · 방문 전 전화 필수`,
-        },
-        {
-          q: "몇 일 걸리나요?",
-          a: isJapan ? "통상 **1~2영업일**이지만 공관에 현재 처리시간을 확인하세요." : "통상 **1~3영업일**이며 공관과 신청 시점에 따라 달라집니다.",
-        },
-      ],
+      faqs: buildGuideFaqs("lost-passport", "ko", country, cityName, data),
     });
   }
 
@@ -360,7 +363,7 @@ function generateLostPassport(
     cost: isJapan ? "~¥6,500–6,890" : "Contact mission",
     time: isJapan ? "1–2 business days" : "1–3 business days",
     emergency: data.emergency,
-    review: buildReviewSection(data, "en", country, citySlug, "lost-passport"),
+    review: buildReviewSection(data, "en", country, citySlug, "lost-passport", cityName),
     timelineTitle: `Lost passport timeline — ${cityName}`,
     timeline,
     actions,
@@ -383,16 +386,7 @@ function generateLostPassport(
     locations: [consulate, ...data.police],
     locationHeaders: ["Mission", ...data.police.map(() => "Police")],
     afterActions: localPhraseBlock("en", country, "lost-passport"),
-    faqs: [
-      {
-        q: `Nearest Korean mission from ${cityName}?`,
-        a: `**${consulate.name.en}** — ${consulate.phone}`,
-      },
-      {
-        q: "How long?",
-        a: isJapan ? "Usually **1–2 business days**; confirm current processing time with the mission." : "Usually **1–3 business days**, depending on the mission and application time.",
-      },
-    ],
+    faqs: buildGuideFaqs("lost-passport", "en", country, cityName, data),
   });
 }
 
@@ -471,7 +465,7 @@ function generateLostPhone(
       cost: "경찰 신고 0원",
       time: "경찰 1~3시간 · 보험 2~4주",
       emergency: { number: emergency, label: { ko: isThailand ? "관광경찰 1155" : data.emergency.label.ko, en: "" } },
-      review: buildReviewSection(data, "ko", country, citySlug, "lost-phone"),
+      review: buildReviewSection(data, "ko", country, citySlug, "lost-phone", cityName),
       timelineTitle: `${cityName} 휴대폰 분실 타임라인`,
       timeline,
       actions,
@@ -486,7 +480,7 @@ function generateLostPhone(
       locations: [...data.police, data.embassy],
       locationHeaders: [...data.police.map(() => "경찰"), "대사관"],
       afterActions: localPhraseBlock("ko", data.country, "lost-phone"),
-      faqs: [{ q: "경찰 확인서 없이 보험 청구?", a: "**불가** — " + insuranceReportRequest(data.country) }],
+      faqs: buildGuideFaqs("lost-phone", "ko", country, cityName, data),
     });
   }
 
@@ -512,7 +506,7 @@ function generateLostPhone(
     cost: "Police report free",
     time: "Police 1–3 hrs · insurance 2–4 weeks",
     emergency: { number: emergency, label: { ko: "", en: isThailand ? "Tourist Police 1155" : data.emergency.label.en } },
-    review: buildReviewSection(data, "en", country, citySlug, "lost-phone"),
+    review: buildReviewSection(data, "en", country, citySlug, "lost-phone", cityName),
     timelineTitle: `Lost phone timeline — ${cityName}`,
     timeline, actions,
     warning: { title: "Insurance", body: "Request **Stolen** not **Lost** on police report." },
@@ -525,7 +519,7 @@ function generateLostPhone(
     locations: [...data.police, data.embassy],
     locationHeaders: [...data.police.map(() => "Police"), "Embassy"],
     afterActions: localPhraseBlock("en", data.country, "lost-phone"),
-    faqs: [{ q: "Insurance without report?", a: "Unlikely — explicitly request Police Report for insurance." }],
+    faqs: buildGuideFaqs("lost-phone", "en", country, cityName, data),
   });
 }
 
@@ -561,14 +555,14 @@ function generateLostWallet(
       summary: `${countryName} ${cityName} 지갑·카드 분실 시 즉시 조치.`,
       cost: "경찰 0원", time: "카드 정지 즉시 · 경찰 1~2시간",
       emergency: data.emergency,
-      review: buildReviewSection(data, "ko", country, citySlug, "lost-wallet"),
+      review: buildReviewSection(data, "ko", country, citySlug, "lost-wallet", cityName),
       timelineTitle: `${cityName} 지갑 분실 타임라인`, timeline, actions,
       warning: { title: "골든타임", body: "카드 정지는 **분실 발견 즉시**. 24시간 내 결제 도용 다수." },
       info: [{ label: "경찰 신고 확인서", value: "보험 청구 시 필수" }, { label: "카드사", value: "분실신고 접수번호" }],
       costTable: [["경찰", "0원"], ["현금 분실", "본인 부담(보험 담보 확인)"]],
       locations: [...data.police, consulate], locationHeaders: [...data.police.map(() => "경찰"), "공관"],
       afterActions: localPhraseBlock("ko", data.country, "lost-wallet"),
-      faqs: [{ q: "현금만 잃었어요?", a: "보험 **현금 분실** 담보 있으면 경찰 확인서 필요. 없으면 카드 정지만으로 2차 피해 방지." }],
+      faqs: buildGuideFaqs("lost-wallet", "ko", country, cityName, data),
     });
   }
 
@@ -589,14 +583,14 @@ function generateLostWallet(
     summary: `Block cards, police report — ${cityName}, ${countryName}.`,
     cost: "Police free", time: "Card block immediate",
     emergency: data.emergency,
-    review: buildReviewSection(data, "en", country, citySlug, "lost-wallet"),
+    review: buildReviewSection(data, "en", country, citySlug, "lost-wallet", cityName),
     timelineTitle: `Lost wallet timeline`, timeline, actions,
     warning: { title: "Golden window", body: "Block cards **immediately** upon discovery." },
     info: [{ label: "Police report", value: "Required for insurance" }],
     costTable: [["Police", "Free"]],
     locations: [...data.police, consulate], locationHeaders: [...data.police.map(() => "Police"), "Mission"],
     afterActions: localPhraseBlock("en", data.country, "lost-wallet"),
-    faqs: [{ q: "Cash only?", a: "Insurance may require report if cash loss is covered." }],
+    faqs: buildGuideFaqs("lost-wallet", "en", country, cityName, data),
   });
 }
 
@@ -654,7 +648,7 @@ function generateHospital(
       cost: hospital.estimatedCost,
       time: "대기 30분~2시간",
       emergency: medicalEmergency,
-      review: buildReviewSection(data, "ko", country, citySlug, "hospital"),
+      review: buildReviewSection(data, "ko", country, citySlug, "hospital", cityName),
       timelineTitle: `${cityName} 병원 이용 타임라인`, timeline, actions,
       warning: { title: hospital.warningTitle, body: hospital.warningBody },
       info: [
@@ -665,7 +659,7 @@ function generateHospital(
       costTable: hospital.costTable,
       locations: hospitals.length > 0 ? hospitals : [data.embassy],
       locationHeaders: (hospitals.length > 0 ? hospitals : [data.embassy]).map(() => "병원"),
-      faqs: [{ q: "병원 직접 청구?", a: hospital.faqAnswer }],
+      faqs: buildGuideFaqs("hospital", "ko", country, cityName, data),
     });
   }
 
@@ -688,14 +682,14 @@ function generateHospital(
     cost: hospital.estimatedCost,
     time: "Wait 30min–2hrs",
     emergency: medicalEmergency,
-    review: buildReviewSection(data, "en", country, citySlug, "hospital"),
+    review: buildReviewSection(data, "en", country, citySlug, "hospital", cityName),
     timelineTitle: `Hospital timeline — ${cityName}`, timeline, actions,
     warning: { title: hospital.warningTitle, body: hospital.warningBody },
     info: [{ label: "Passport", value: "Required" }, { label: "Insurance", value: "Direct billing check" }],
     costTable: hospital.costTable,
     locations: hospitals.length > 0 ? hospitals : [data.embassy],
     locationHeaders: (hospitals.length > 0 ? hospitals : [data.embassy]).map(() => "Hospitals"),
-    faqs: [{ q: "Direct billing?", a: hospital.faqAnswer }],
+    faqs: buildGuideFaqs("hospital", "en", country, cityName, data),
   });
 }
 
@@ -780,7 +774,7 @@ function generateScam(
       cost: guide.estimatedLoss.ko,
       time: "예방 즉시 · 신고 1~3시간",
       emergency,
-      review: `${scamReviewBlock(guide, "ko")}\n\n${scamReviewQuotesBlock(guide, "ko")}`,
+      review: `${scamReviewBlock(guide, "ko")}\n\n${scamReviewQuotesBlock(guide, "ko")}\n\n${experienceTimelineBlock(country, citySlug, "scam", "ko", { ko: cityName, en: cityName })}`,
       timelineTitle: `${cityName} 여행 사기 대응 타임라인`,
       timeline,
       actions,
@@ -801,10 +795,7 @@ function generateScam(
           q: `${cityName}에서 가장 흔한 사기는?`,
           a: `${guide.scams[0].label.ko} — ${guide.scams[0].value.ko}`,
         },
-        {
-          q: "돈을 냈는데 환불 가능?",
-          a: "카드 결제면 카드사 분쟁을 검토하세요. 현금·ATM 유도는 회수 어려운 경우가 많습니다. 경찰 신고와 대사관 상담을 병행하세요.",
-        },
+        ...buildGuideFaqs("scam", "ko", country, cityName, data),
       ],
     });
   }
@@ -860,7 +851,7 @@ function generateScam(
     cost: guide.estimatedLoss.en,
     time: "Prevention: immediate · Report: 1–3 hrs",
     emergency,
-    review: `${scamReviewBlock(guide, "en")}\n\n${scamReviewQuotesBlock(guide, "en")}`,
+    review: `${scamReviewBlock(guide, "en")}\n\n${scamReviewQuotesBlock(guide, "en")}\n\n${experienceTimelineBlock(country, citySlug, "scam", "en", { ko: cityName, en: cityName })}`,
     timelineTitle: `Scam response timeline — ${cityName}`,
     timeline,
     actions,
@@ -881,10 +872,7 @@ function generateScam(
         q: `Most common scam in ${cityName}?`,
         a: `${guide.scams[0].label.en} — ${guide.scams[0].value.en}`,
       },
-      {
-        q: "Can I get a refund?",
-        a: "Card payments: try chargeback/dispute. Cash/ATM coercion is often hard to recover — file a police report and contact your embassy.",
-      },
+      ...buildGuideFaqs("scam", "en", country, cityName, data),
     ],
   });
 }
@@ -922,7 +910,7 @@ function generatePoliceReport(
       summary: `${countryName} ${cityName} 도난·분실 경찰 신고, ${reportName}, 보험.`,
       cost: "무료", time: "1~3시간",
       emergency: data.emergency,
-      review: buildReviewSection(data, "ko", country, citySlug, "police-report"),
+      review: buildReviewSection(data, "ko", country, citySlug, "police-report", cityName),
       timelineTitle: `${cityName} 경찰 신고 타임라인`, timeline, actions,
       warning: { title: "보험용 서류", body: insuranceReportRequest(data.country) + "라고 처음부터 요청하지 않으면 일반 접수로 끝날 수 있습니다." },
       info: [
@@ -933,7 +921,7 @@ function generatePoliceReport(
       costTable: [["경찰 신고", "0원"]],
       locations: [...data.police, consulate], locationHeaders: [...data.police.map(() => "경찰"), "공관"],
       afterActions: localPhraseBlock("ko", data.country, "police-report"),
-      faqs: [{ q: "언어가 통하지 않아요", a: isTaiwan ? "경찰 **번역 앱** · 외국인 안내 0800-024-111" : data.country === "thailand" ? "관광경찰 1155 · 호텔 직원 동행" : "번역 앱을 사용하고 호텔 직원에게 통역 도움을 요청하세요." }],
+      faqs: buildGuideFaqs("police-report", "ko", country, cityName, data),
     });
   }
 
@@ -955,14 +943,14 @@ function generatePoliceReport(
     summary: `Theft/loss report, insurance certificate — ${cityName}, ${countryName}.`,
     cost: "Free", time: "1–3 hours",
     emergency: data.emergency,
-    review: buildReviewSection(data, "en", country, citySlug, "police-report"),
+    review: buildReviewSection(data, "en", country, citySlug, "police-report", cityName),
     timelineTitle: `Police report timeline`, timeline, actions,
     warning: { title: "For insurance", body: "Say **Police Report for insurance** at the start." },
     info: [{ label: "Passport", value: "Original + copy" }, { label: "Item list", value: "English/local language" }],
     costTable: [["Police report", "Free"]],
     locations: [...data.police, consulate], locationHeaders: [...data.police.map(() => "Police"), "Mission"],
     afterActions: localPhraseBlock("en", data.country, "police-report"),
-    faqs: [{ q: "Language barrier?", a: isTaiwan ? "Translation apps · foreigner assistance 0800-024-111" : data.country === "thailand" ? "Tourist Police 1155 or hotel staff" : "Use a translation app and ask hotel staff for interpretation help." }],
+    faqs: buildGuideFaqs("police-report", "en", country, cityName, data),
   });
 }
 
@@ -1100,6 +1088,9 @@ function main() {
         if (!cityDataRegistry[key]) continue;
 
         for (const incident of incidentTypes) {
+          const pageKey = `${locale}/${country.slug}/${city.slug}/${incident}`;
+          if (premiumPages.has(pageKey)) continue;
+
           const dir = path.join(CONTENT_DIR, locale, country.slug, city.slug);
           const filePath = path.join(dir, `${incident}.mdx`);
 

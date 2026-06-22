@@ -36,16 +36,6 @@ export default function RootLayout({
 
 export const metadata: Metadata = {
   ...buildSiteMetadata(),
-  icons: {
-    icon: [
-      { url: "/brand-icon/48", sizes: "48x48", type: "image/png" },
-      { url: "/icon", sizes: "96x96", type: "image/png" },
-      { url: "/brand-icon/192", sizes: "192x192", type: "image/png" },
-      { url: "/brand-icon/512", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
-    shortcut: "/icon",
-  },
   verification: {
     google: siteConfig.googleSiteVerification,
     other: {

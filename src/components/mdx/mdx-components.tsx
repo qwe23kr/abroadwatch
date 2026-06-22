@@ -9,6 +9,7 @@ import { FaqItem } from "./FaqItem";
 import { GoogleMap } from "./GoogleMap";
 import { InfoRow, InfoRows } from "./InfoRow";
 import { LocalPhrase } from "./LocalPhrase";
+import { RealTimeline, RealTimelineStep } from "./RealTimeline";
 import { ReviewNote } from "./ReviewNote";
 import { ReviewQuotes, ReviewQuote, ReviewQuoteRow } from "./ReviewQuotes";
 import { ScamHotspots, ScamType, ScamTypeList, ScamTypeRow } from "./ScamTypeList";
@@ -30,6 +31,8 @@ export function createMdxComponents(
     InfoRow,
     InfoRows,
     LocalPhrase: (props) => <LocalPhrase {...props} uiLanguage={uiLanguage} />,
+    RealTimeline,
+    RealTimelineStep,
     ReviewNote: (props) => <ReviewNote {...props} locale={locale} uiLanguage={uiLanguage} />,
     ReviewQuotes,
     ReviewQuote,

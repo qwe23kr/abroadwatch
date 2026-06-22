@@ -6,7 +6,8 @@ import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
 import { getTravelerProfile } from "@/lib/traveler-profiles";
 import { getTravelerCity, getTravelerCountry } from "@/lib/traveler-destinations";
-import { travelerIncident, travelerName, travelerUi } from "@/lib/traveler-ui";
+import { travelerIncident, travelerName, travelerTagCopy, travelerUi } from "@/lib/traveler-ui";
+import { siteIcons } from "@/lib/brand-icon";
 import { isValidIncident, type IncidentType, type Locale } from "@/lib/site-config";
 
 interface Props {
@@ -26,6 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: guide.frontmatter.title,
     description: guide.frontmatter.summary,
+    icons: siteIcons,
     alternates: { canonical: `/${traveler}/${country}/${city}/${incident}` },
   };
 }
@@ -38,6 +40,18 @@ export default async function TravelerGuidePage({ params }: Props) {
   if (!guide) notFound();
   const locale: Locale = traveler === "kr" ? "ko" : "en";
   const ui = travelerUi(profile);
+  const tagCopy = travelerTagCopy(profile);
+  const cityName = travelerName(profile, city, getTravelerCity(country, city)?.name.en ?? city);
+  const countryName = travelerName(profile, country, getTravelerCountry(country)?.name.en ?? country);
+  const incidentName = travelerIncident(profile, incident as IncidentType);
+  const hashtag = (value: string) => `#${value.replace(/[\s·・,.'’/()\-]/g, "")}`;
+  const tags = [
+    { label: hashtag(`${cityName}${tagCopy.city}`), href: `/${traveler}/search?query=${encodeURIComponent(cityName)}` },
+    { label: hashtag(incidentName), href: `/${traveler}/search?incident=${incident}` },
+    { label: hashtag(`${countryName}${tagCopy.country}`), href: `/${traveler}/search?query=${encodeURIComponent(countryName)}` },
+    { label: hashtag(`${profile.nativeName}${tagCopy.traveler}`), href: `/${traveler}` },
+    { label: hashtag(tagCopy.guide), href: `/${traveler}/search?incident=${incident}` },
+  ];
   const relatedCitiesLabel = ({
     ko: "관련 도시 가이드",
     "zh-Hans": "相关城市指南",
@@ -66,6 +80,20 @@ export default async function TravelerGuidePage({ params }: Props) {
             <div className="rounded-lg bg-gray-50 p-3"><dt className="text-xs text-gray-500">{ui.updated}</dt><dd className="font-semibold">{guide.frontmatter.updatedAt}</dd></div>
             <div className="rounded-lg bg-gray-50 p-3"><dt className="text-xs text-gray-500">{ui.nationality}</dt><dd className="font-semibold">{profile.nativeName}</dd></div>
           </dl>
+          <nav className="mt-5" aria-label={tagCopy.heading}>
+            <p className="sr-only">{tagCopy.heading}</p>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <Link
+                  key={tag.label}
+                  href={tag.href}
+                  className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 transition hover:bg-blue-100 hover:text-blue-900"
+                >
+                  {tag.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
         </header>
 
         <div className="prose-guide">

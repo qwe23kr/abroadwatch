@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getGuidePath } from "./content";
-import { brandLogoUrl } from "./brand-icon";
+import { brandLogoUrl, siteIcons } from "./brand-icon";
 import {
   buildGuideMetaDescription,
   buildGuideShareTitle,
@@ -64,6 +64,7 @@ export function buildSiteMetadata(): Metadata {
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
+    icons: siteIcons,
   };
 }
 
@@ -78,6 +79,7 @@ export function buildTravelerHomeMetadata(profile: TravelerProfile): Metadata {
   return {
     title: ui.hub,
     description: metaDescription,
+    icons: siteIcons,
     alternates: { canonical: canonicalUrl },
     openGraph: {
       title: shareTitle,
@@ -139,6 +141,7 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
   return {
     title,
     description: metaDescription,
+    icons: siteIcons,
     alternates: {
       canonical: canonicalUrl,
       languages,

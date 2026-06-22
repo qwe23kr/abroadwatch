@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: "/favicon.ico",
+        destination: "/icon",
+      },
+      {
         source: "/:traveler(kr|cn|us|jp|tw|au|gb|ca|th|vn)",
         destination: "/guide/:traveler",
       },

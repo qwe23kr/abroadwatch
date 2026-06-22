@@ -61,6 +61,18 @@ export function travelerIncident(profile: TravelerProfile, incident: IncidentTyp
   return incidents[incident][profile.language];
 }
 
+export function travelerTagCopy(profile: TravelerProfile) {
+  return ({
+    ko: { heading: "관련 태그", country: "여행안전", city: "여행", traveler: "여행자", guide: "긴급여행가이드" },
+    "zh-Hans": { heading: "相关标签", country: "旅行安全", city: "旅行", traveler: "游客", guide: "旅行应急指南" },
+    ja: { heading: "関連タグ", country: "旅行安全", city: "旅行", traveler: "旅行者", guide: "海外緊急ガイド" },
+    "zh-Hant": { heading: "相關標籤", country: "旅遊安全", city: "旅遊", traveler: "旅客", guide: "旅遊緊急指南" },
+    th: { heading: "แท็กที่เกี่ยวข้อง", country: "เที่ยวปลอดภัย", city: "เที่ยว", traveler: "นักเดินทาง", guide: "คู่มือฉุกเฉินท่องเที่ยว" },
+    vi: { heading: "Thẻ liên quan", country: "DuLịchAnToàn", city: "DuLịch", traveler: "DuKhách", guide: "HướngDẫnKhẩnCấpDuLịch" },
+    en: { heading: "Related tags", country: "TravelSafety", city: "Travel", traveler: "Traveler", guide: "TravelEmergencyGuide" },
+  } as const)[profile.language];
+}
+
 export function travelerUi(profile: TravelerProfile) {
   const coverage = ({
     ko: "6개국 22개 도시 · 상황별 1,320개 국적 가이드",
