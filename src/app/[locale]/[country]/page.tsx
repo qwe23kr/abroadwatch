@@ -38,13 +38,14 @@ export async function generateMetadata({ params }: CountryHubPageProps): Promise
   const locale = lp as Locale;
   const countryData = getCountry(country)!;
 
-  return buildMetadata({
+  const metadata = buildMetadata({
     locale,
     title: buildCountryHubTitle(locale, country),
     description: `${countryData.name[locale]} ${t(locale, "countryHubDescription")}`,
     path: `/${locale}/${country}`,
     alternatePaths: { ko: `/ko/${country}`, en: `/en/${country}` },
   });
+  return { ...metadata, robots: { index: false, follow: true } };
 }
 
 /** 국가 허브 — 도시 목록 + 사기·병원 랜딩 */

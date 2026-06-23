@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: SegmentPageProps): Promise<Me
   const countryData = getCountry(country)!;
 
   if (isSeoIncident(segment)) {
-    return buildMetadata({
+    const metadata = buildMetadata({
       locale,
       title: buildCountryIncidentHubTitle(locale, country, segment),
       description: t(locale, "countryIncidentHubDescription"),
@@ -70,18 +70,20 @@ export async function generateMetadata({ params }: SegmentPageProps): Promise<Me
         en: `/en/${country}/${segment}`,
       },
     });
+    return { ...metadata, robots: { index: false, follow: true } };
   }
 
   const cityData = getCity(country, segment);
   if (!cityData) return {};
 
-  return buildMetadata({
+  const metadata = buildMetadata({
     locale,
     title: buildCityHubTitle(locale, country, segment),
     description: `${cityData.name[locale]}, ${countryData.name[locale]} — ${t(locale, "cityHubDescription")}`,
     path: `/${locale}/${country}/${segment}`,
     alternatePaths: { ko: `/ko/${country}/${segment}`, en: `/en/${country}/${segment}` },
   });
+  return { ...metadata, robots: { index: false, follow: true } };
 }
 
 /** 도시 허브 또는 국가별 사기·병원 SEO 랜딩 */

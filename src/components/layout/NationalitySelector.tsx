@@ -68,7 +68,7 @@ export function NationalitySelector({ locale }: { locale: Locale }) {
           value={nationality}
           onChange={(event) => handleChange(event.target.value)}
           aria-label={locale === "ko" ? "국적 선택" : "Select nationality"}
-          className="h-10 max-w-32 cursor-pointer rounded-lg border border-gray-200 bg-white px-2 text-sm font-medium text-gray-700 outline-none transition hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:max-w-none"
+          className="h-10 w-28 cursor-pointer rounded-lg border border-gray-200 bg-white px-1.5 text-sm font-medium text-gray-700 outline-none transition hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 min-[360px]:w-32 sm:w-auto sm:max-w-none sm:px-2"
         >
           {travelerProfiles.map((item) => (
             <option key={item.countryCode} value={item.countryCode}>

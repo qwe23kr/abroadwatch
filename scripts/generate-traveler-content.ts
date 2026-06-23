@@ -366,17 +366,6 @@ function reviewPatterns(language: CopyLanguage, incident: IncidentType, city: st
   return patterns[language][incident];
 }
 
-function legacyReviewRows(country: DestinationCode, city: string, incident: IncidentType) {
-  if (country === "south-korea") return [];
-  const file = path.join(contentDir, "en", country, city, `${incident}.mdx`);
-  if (!fs.existsSync(file)) return [];
-  const raw = fs.readFileSync(file, "utf8");
-  return [...raw.matchAll(/<ReviewQuoteRow text="([^"]+)" source="([^"]+)" \/>/g)].map((match) => ({
-    text: match[1].replaceAll("&quot;", '"'),
-    source: match[2].replaceAll("&quot;", '"'),
-  }));
-}
-
 function completionSteps(incident: IncidentType, language: CopyLanguage): string[] {
   const byLanguage: Record<CopyLanguage, Record<IncidentType, string[]>> = {
     ko: {
@@ -473,18 +462,10 @@ function generateGuide(traveler: TravelerCode, country: DestinationCode, city: s
     en: ["Item", "Guidance", "Police", "Authority / provider", "Extra travel cost", "Keep every receipt for insurance"],
   } as const)[language];
   const reviewSources = ({ ko: ["여행자 후기 · Reddit", "경찰·보험 사례", "영사·서비스 제공기관 사례"], "zh-Hans": ["旅客报告 · Reddit", "警方与保险案例", "领事及服务机构案例"], ja: ["旅行者報告・Reddit", "警察・保険事例", "領事・事業者事例"], "zh-Hant": ["旅客報告 · Reddit", "警方與保險案例", "領事及服務機構案例"], th: ["รีวิวนักเดินทาง · Reddit", "กรณีตำรวจและประกัน", "กรณีกงสุลและผู้ให้บริการ"], vi: ["Trải nghiệm du khách · Reddit", "Trường hợp cảnh sát và bảo hiểm", "Trường hợp lãnh sự và nhà cung cấp"], en: ["Traveler reports · Reddit", "Police and insurance reports", "Consular and provider reports"] } as const)[language];
-  const legacyReviews = legacyReviewRows(country, city, incident);
-  const reviews = language === "en" && legacyReviews.length >= 3
-    ? legacyReviews.slice(0, 3).map((review, index) => ({
-        text: review.text.replace(/Korean mission|Korean embassy|Embassy of Korea/gi, mission.officialName),
-        source: /Korean mission|Korean embassy|Embassy of Korea/i.test(review.source)
-          ? reviewSources[index]
-          : review.source,
-      }))
-    : translatedReviews.map((text, index) => ({
-        text,
-        source: legacyReviews[index]?.source ?? reviewSources[index],
-      }));
+  const reviews = translatedReviews.map((text, index) => ({
+    text,
+    source: reviewSources[index],
+  }));
   const communitySource = ({ ko: "여행자 커뮤니티 후기", "zh-Hans": "旅客社区报告", ja: "旅行者コミュニティ報告", "zh-Hant": "旅客社群報告", th: "รายงานจากชุมชนนักเดินทาง", vi: "Báo cáo từ cộng đồng du khách", en: "Traveler community reports" } as const)[language];
   const reviewUrl = `https://www.reddit.com/r/${reviewCommunities[country]}/search/?q=${encodeURIComponent(incidentNames[incident].en)}&restrict_sr=1`;
 

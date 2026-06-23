@@ -6,13 +6,14 @@ export const BRAND_BLUE = "#2563eb";
 /** 전역 favicon·앱 아이콘 — 모든 페이지 탭에 동일 적용 */
 export const siteIcons: Metadata["icons"] = {
   icon: [
+    { url: "/favicon.ico", sizes: "16x16 32x32 48x48 256x256", type: "image/x-icon" },
     { url: "/icon", sizes: "96x96", type: "image/png" },
     { url: "/brand-icon/48", sizes: "48x48", type: "image/png" },
     { url: "/brand-icon/192", sizes: "192x192", type: "image/png" },
     { url: "/brand-icon/512", sizes: "512x512", type: "image/png" },
   ],
   apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
-  shortcut: "/icon",
+  shortcut: "/favicon.ico",
 };
 
 /** ImageResponse용 AW 로고 JSX (size × size px) */

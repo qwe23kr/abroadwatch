@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { TravelerDepthSection } from "@/components/guide/TravelerDepthSection";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
 import { getTravelerProfile } from "@/lib/traveler-profiles";
 import { getTravelerCity, getTravelerCountry } from "@/lib/traveler-destinations";
 import { travelerIncident, travelerName, travelerTagCopy, travelerUi } from "@/lib/traveler-ui";
-import { siteIcons } from "@/lib/brand-icon";
+import { buildTravelerGuideMetadata } from "@/lib/seo";
 import { isValidIncident, type IncidentType, type Locale } from "@/lib/site-config";
 
 interface Props {
@@ -24,12 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!profile || !isValidIncident(incident)) return {};
   const guide = getTravelerGuide(profile.code, country, city, incident);
   if (!guide) return {};
-  return {
-    title: guide.frontmatter.title,
-    description: guide.frontmatter.summary,
-    icons: siteIcons,
-    alternates: { canonical: `/${traveler}/${country}/${city}/${incident}` },
-  };
+  return buildTravelerGuideMetadata(profile, country, city, incident, guide.frontmatter);
 }
 
 export default async function TravelerGuidePage({ params }: Props) {
@@ -99,6 +95,14 @@ export default async function TravelerGuidePage({ params }: Props) {
         <div className="prose-guide">
           <MdxContent source={guide.content} locale={locale} uiLanguage={profile.language} />
         </div>
+
+        <TravelerDepthSection
+          profile={profile}
+          countryName={countryName}
+          cityName={cityName}
+          incidentName={incidentName}
+          incident={incident as IncidentType}
+        />
 
         <section className="mt-10 border-t border-gray-200 pt-8">
           <h2 className="mb-4 text-lg font-bold">{ui.other}</h2>

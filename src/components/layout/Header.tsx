@@ -22,13 +22,13 @@ export function Header({ locale, traveler }: HeaderProps) {
   const nativeNav = traveler ? travelerNav(traveler) : undefined;
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-1.5 px-2.5 py-3 min-[360px]:gap-2 min-[360px]:px-3 sm:px-4 md:px-6">
         <Link
           href={traveler ? `/${traveler.code}` : `/${locale}`}
-          className="flex items-center gap-2 transition-opacity hover:opacity-80"
+          className="flex min-w-0 flex-1 items-center gap-1.5 transition-opacity hover:opacity-80 min-[360px]:gap-2 md:flex-none"
         >
-          <BrandMark size={32} />
-          <span className="text-lg font-bold text-gray-900">
+          <BrandMark size={30} className="shrink-0 min-[360px]:h-8 min-[360px]:w-8" />
+          <span className="whitespace-nowrap text-sm font-bold tracking-tight text-gray-900 min-[360px]:text-base min-[360px]:tracking-normal sm:text-lg">
             {siteConfig.name}
           </span>
         </Link>
@@ -45,7 +45,7 @@ export function Header({ locale, traveler }: HeaderProps) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <NationalitySelector locale={locale} />
           <MobileNav locale={locale} traveler={traveler} />
         </div>

@@ -15,8 +15,9 @@ import {
   type IncidentType,
   type Locale,
 } from "./site-config";
-import type { TravelerProfile } from "./traveler-profiles";
-import { travelerUi } from "./traveler-ui";
+import { getTravelerCity, getTravelerCountry } from "./traveler-destinations";
+import { travelerProfiles, type TravelerProfile } from "./traveler-profiles";
+import { travelerIncident, travelerName, travelerUi } from "./traveler-ui";
 
 const OG_IMAGE = {
   url: "/opengraph-image",
@@ -34,6 +35,22 @@ const OG_LOCALE_BY_LANGUAGE: Record<TravelerProfile["language"], string> = {
   th: "th_TH",
   vi: "vi_VN",
 };
+
+export function travelerPath(profile: TravelerProfile, suffix = "") {
+  return `/${profile.code}${suffix}`;
+}
+
+export function travelerAlternateLanguages(suffix = ""): Record<string, string> {
+  return {
+    ...Object.fromEntries(
+      travelerProfiles.map((profile) => [
+        profile.htmlLang,
+        `${siteConfig.url}${travelerPath(profile, suffix)}`,
+      ]),
+    ),
+    "x-default": `${siteConfig.url}${travelerPath(travelerProfiles[0], suffix)}`,
+  };
+}
 
 /** 사이트 전역 메타데이터 — 루트 레이아웃·검색엔진 기본값 */
 export function buildSiteMetadata(): Metadata {
@@ -80,7 +97,10 @@ export function buildTravelerHomeMetadata(profile: TravelerProfile): Metadata {
     title: ui.hub,
     description: metaDescription,
     icons: siteIcons,
-    alternates: { canonical: canonicalUrl },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: travelerAlternateLanguages(),
+    },
     openGraph: {
       title: shareTitle,
       description: metaDescription,
@@ -96,6 +116,69 @@ export function buildTravelerHomeMetadata(profile: TravelerProfile): Metadata {
       description: metaDescription,
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
+    },
+  };
+}
+
+export function buildTravelerGuideMetadata(
+  profile: TravelerProfile,
+  country: string,
+  city: string,
+  incident: IncidentType,
+  frontmatter: { title: string; summary: string; publishedAt?: string; updatedAt: string },
+): Metadata {
+  const suffix = `/${country}/${city}/${incident}`;
+  const canonicalUrl = `${siteConfig.url}${travelerPath(profile, suffix)}`;
+  const metaDescription = truncateMetaDescription(frontmatter.summary);
+  const countryName = travelerName(
+    profile,
+    country,
+    getTravelerCountry(country)?.name.en ?? country,
+  );
+  const cityName = travelerName(
+    profile,
+    city,
+    getTravelerCity(country, city)?.name.en ?? city,
+  );
+  const incidentName = travelerIncident(profile, incident);
+
+  return {
+    title: frontmatter.title,
+    description: metaDescription,
+    icons: siteIcons,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: travelerAlternateLanguages(suffix),
+    },
+    keywords: [
+      frontmatter.title,
+      incidentName,
+      cityName,
+      countryName,
+      profile.nativeName,
+      "AbroadWatch",
+    ],
+    openGraph: {
+      title: frontmatter.title,
+      description: metaDescription,
+      url: canonicalUrl,
+      siteName: siteConfig.name,
+      locale: OG_LOCALE_BY_LANGUAGE[profile.language],
+      type: "article",
+      images: [OG_IMAGE],
+      ...(frontmatter.publishedAt && { publishedTime: frontmatter.publishedAt }),
+      modifiedTime: frontmatter.updatedAt,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: frontmatter.title,
+      description: metaDescription,
+      site: siteConfig.twitterHandle,
+      images: [OG_IMAGE.url],
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
