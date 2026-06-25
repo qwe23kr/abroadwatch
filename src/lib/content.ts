@@ -81,13 +81,17 @@ export function getGuide(
 
 /** 가이드 URL 경로 생성 */
 /** 가이드 URL 경로 생성 */
+export function localeToTravelerCode(locale: Locale): "kr" | "us" {
+  return locale === "ko" ? "kr" : "us";
+}
+
 export function getGuidePath(
   locale: Locale,
   country: string,
   city: string,
   incident: IncidentType,
 ): string {
-  return `/${locale}/${country}/${city}/${incident}`;
+  return `/${localeToTravelerCode(locale)}/${country}/${city}/${incident}`;
 }
 
 export function getCityHubPath(locale: Locale, country: string, city: string): string {

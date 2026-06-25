@@ -68,6 +68,23 @@ export function getTravelerGuides(traveler: TravelerCode): TravelerGuide[] {
   );
 }
 
+export function getTravelerCountryGuides(
+  traveler: TravelerCode,
+  country: string,
+): TravelerGuide[] {
+  return getTravelerGuides(traveler).filter((guide) => guide.country === country);
+}
+
+export function getTravelerCityGuides(
+  traveler: TravelerCode,
+  country: string,
+  city: string,
+): TravelerGuide[] {
+  return getTravelerCountryGuides(traveler, country).filter(
+    (guide) => guide.city === city,
+  );
+}
+
 const popularGuideKeys = [
   ["japan", "tokyo", "lost-passport"],
   ["thailand", "bangkok", "lost-phone"],

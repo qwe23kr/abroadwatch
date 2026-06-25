@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/site-config";
+import { trackEvent } from "@/lib/analytics-events";
 
 interface EmergencyFabProps {
   locale: Locale;
@@ -33,6 +34,13 @@ export function EmergencyFab({ locale, phone, label }: EmergencyFabProps) {
       )}
       <a
         href={href}
+        onClick={() =>
+          trackEvent("emergency_call_click", {
+            phone: displayPhone,
+            label: label ?? displayPhone,
+            path: pathname ?? undefined,
+          })
+        }
         className="flex items-center gap-2 rounded-full bg-red-600 px-4 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-red-700 hover:shadow-xl active:scale-95"
         aria-label={`${t(locale, "emergencyFab")}: ${label ?? displayPhone}`}
       >

@@ -183,6 +183,104 @@ export function buildTravelerGuideMetadata(
   };
 }
 
+export function buildTravelerCountryMetadata(
+  profile: TravelerProfile,
+  country: string,
+): Metadata {
+  const ui = travelerUi(profile);
+  const countryName = travelerName(
+    profile,
+    country,
+    getTravelerCountry(country)?.name.en ?? country,
+  );
+  const suffix = `/${country}`;
+  const canonicalUrl = `${siteConfig.url}${travelerPath(profile, suffix)}`;
+  const title = `${countryName} - ${ui.hub}`;
+  const description = truncateMetaDescription(`${countryName}: ${ui.subtitle}`);
+
+  return {
+    title,
+    description,
+    icons: siteIcons,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: travelerAlternateLanguages(suffix),
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: siteConfig.name,
+      locale: OG_LOCALE_BY_LANGUAGE[profile.language],
+      type: "website",
+      images: [OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      site: siteConfig.twitterHandle,
+      images: [OG_IMAGE.url],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+export function buildTravelerCityMetadata(
+  profile: TravelerProfile,
+  country: string,
+  city: string,
+): Metadata {
+  const ui = travelerUi(profile);
+  const countryName = travelerName(
+    profile,
+    country,
+    getTravelerCountry(country)?.name.en ?? country,
+  );
+  const cityName = travelerName(
+    profile,
+    city,
+    getTravelerCity(country, city)?.name.en ?? city,
+  );
+  const suffix = `/${country}/${city}`;
+  const canonicalUrl = `${siteConfig.url}${travelerPath(profile, suffix)}`;
+  const title = `${cityName}, ${countryName} - ${ui.hub}`;
+  const description = truncateMetaDescription(`${cityName}, ${countryName}: ${ui.subtitle}`);
+
+  return {
+    title,
+    description,
+    icons: siteIcons,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: travelerAlternateLanguages(suffix),
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: siteConfig.name,
+      locale: OG_LOCALE_BY_LANGUAGE[profile.language],
+      type: "website",
+      images: [OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      site: siteConfig.twitterHandle,
+      images: [OG_IMAGE.url],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
 interface PageMetadataOptions {
   locale: Locale;
   title: string;
@@ -395,7 +493,101 @@ export function buildFaqJsonLd(
   };
 }
 
+export function buildTravelerBreadcrumbJsonLd(
+  items: Array<{ name: string; path: string }>,
+): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: `${siteConfig.url}${item.path}`,
+    })),
+  };
+}
+
+export function buildTravelerArticleJsonLd(
+  profile: TravelerProfile,
+  options: {
+    countryName: string;
+    cityName: string;
+    incidentName: string;
+    path: string;
+    title: string;
+    description: string;
+    updatedAt: string;
+  },
+): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: options.title,
+    description: truncateMetaDescription(options.description),
+    dateModified: options.updatedAt,
+    author: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: {
+        "@type": "ImageObject",
+        url: brandLogoUrl(siteConfig.url, 512),
+        width: 512,
+        height: 512,
+      },
+    },
+    mainEntityOfPage: `${siteConfig.url}${options.path}`,
+    isAccessibleForFree: true,
+    genre: "Travel emergency guide",
+    keywords: [
+      options.incidentName,
+      options.cityName,
+      options.countryName,
+      profile.nativeName,
+      "travel emergency",
+      "AbroadWatch",
+    ],
+    contentLocation: {
+      "@type": "City",
+      name: options.cityName,
+      containedInPlace: {
+        "@type": "Country",
+        name: options.countryName,
+      },
+    },
+    about: {
+      "@type": "Thing",
+      name: `${options.cityName} ${options.incidentName}`,
+    },
+    inLanguage: profile.htmlLang,
+  };
+}
+
 /** WebSite JSON-LD 생성 */
+export function buildTravelerItemListJsonLd(
+  name: string,
+  items: Array<{ name: string; path: string; description?: string }>,
+): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${siteConfig.url}${item.path}`,
+      name: item.name,
+      ...(item.description && { description: truncateMetaDescription(item.description) }),
+    })),
+  };
+}
+
 export function buildWebsiteJsonLd(): object {
   return {
     "@context": "https://schema.org",
@@ -416,7 +608,7 @@ export function buildWebsiteJsonLd(): object {
     },
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteConfig.url}/ko/search?query={search_term_string}`,
+      target: `${siteConfig.url}/kr/search?query={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };

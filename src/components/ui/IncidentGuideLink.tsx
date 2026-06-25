@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getGuidePath } from "@/lib/content";
 import { incidentDescriptions, incidentIcons } from "@/lib/incident-ui";
 import { incidentLabels, type IncidentType, type Locale } from "@/lib/site-config";
 
@@ -20,7 +21,7 @@ export function IncidentGuideLink({
 }: IncidentGuideLinkProps) {
   return (
     <Link
-      href={`/${locale}/${country}/${city}/${incident}`}
+      href={getGuidePath(locale, country, city, incident)}
       className={`flex gap-2.5 rounded-lg border border-gray-100 bg-gray-50/80 p-2.5 transition hover:border-blue-200 hover:bg-blue-50 ${className}`}
     >
       <span

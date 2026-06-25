@@ -22,7 +22,7 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const nativeNav = traveler ? travelerNav(traveler) : undefined;
   const homePath = traveler ? `/${traveler.code}` : `/${locale}`;
-  const searchPath = traveler ? `/guide/${traveler.code}/search` : `/${locale}/search`;
+  const searchPath = traveler ? `/${traveler.code}/search` : `/${locale}/search`;
 
   return (
     <div className="md:hidden">

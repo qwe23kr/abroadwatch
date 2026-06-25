@@ -1,3 +1,7 @@
+"use client";
+
+import { trackEvent } from "@/lib/analytics-events";
+
 interface GoogleMapProps {
   /** Google Maps 검색 쿼리 (주소 또는 장소명) */
   query: string;
@@ -45,6 +49,7 @@ export function GoogleMap({
         href={`https://www.google.com/maps/search/?api=1&query=${encoded}`}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackEvent("map_click", { query, title })}
         className="block bg-gray-50 px-4 py-2 text-center text-sm font-medium text-blue-600 hover:bg-gray-100"
       >
         {linkLabel}

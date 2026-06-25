@@ -1,3 +1,7 @@
+"use client";
+
+import { trackEvent } from "@/lib/analytics-events";
+
 interface FaqItemProps {
   question: string;
   children: React.ReactNode;
@@ -6,7 +10,14 @@ interface FaqItemProps {
 /** FAQ 항목 — 접근성 지원 아코디언 스타일 */
 export function FaqItem({ question, children }: FaqItemProps) {
   return (
-    <details className="group rounded-lg border border-gray-200 bg-white">
+    <details
+      className="group rounded-lg border border-gray-200 bg-white"
+      onToggle={(event) => {
+        if (event.currentTarget.open) {
+          trackEvent("faq_open", { question });
+        }
+      }}
+    >
       <summary className="cursor-pointer list-none px-5 py-4 font-medium text-gray-900 transition-colors hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
         <span className="flex items-center justify-between gap-4">
           {question}

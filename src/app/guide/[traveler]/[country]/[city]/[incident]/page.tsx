@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Script from "next/script";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { TravelerDepthSection } from "@/components/guide/TravelerDepthSection";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
@@ -8,7 +10,12 @@ import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-cont
 import { getTravelerProfile } from "@/lib/traveler-profiles";
 import { getTravelerCity, getTravelerCountry } from "@/lib/traveler-destinations";
 import { travelerIncident, travelerName, travelerTagCopy, travelerUi } from "@/lib/traveler-ui";
-import { buildTravelerGuideMetadata } from "@/lib/seo";
+import {
+  buildFaqJsonLd,
+  buildTravelerArticleJsonLd,
+  buildTravelerBreadcrumbJsonLd,
+  buildTravelerGuideMetadata,
+} from "@/lib/seo";
 import { isValidIncident, type IncidentType, type Locale } from "@/lib/site-config";
 
 interface Props {
@@ -40,6 +47,26 @@ export default async function TravelerGuidePage({ params }: Props) {
   const cityName = travelerName(profile, city, getTravelerCity(country, city)?.name.en ?? city);
   const countryName = travelerName(profile, country, getTravelerCountry(country)?.name.en ?? country);
   const incidentName = travelerIncident(profile, incident as IncidentType);
+  const canonicalPath = `/${traveler}/${country}/${city}/${incident}`;
+  const breadcrumbJsonLd = buildTravelerBreadcrumbJsonLd([
+    { name: profile.nativeName, path: `/${traveler}` },
+    { name: countryName, path: `/${traveler}/${country}` },
+    { name: cityName, path: `/${traveler}/${country}/${city}` },
+    { name: incidentName, path: canonicalPath },
+  ]);
+  const articleJsonLd = buildTravelerArticleJsonLd(profile, {
+    countryName,
+    cityName,
+    incidentName,
+    path: canonicalPath,
+    title: guide.frontmatter.title,
+    description: guide.frontmatter.summary,
+    updatedAt: guide.frontmatter.updatedAt,
+  });
+  const faqItems = Array.from(
+    guide.content.matchAll(/<FaqItem question="([^"]+)">\s*([\s\S]*?)\s*<\/FaqItem>/g),
+    (match) => ({ question: match[1], answer: match[2].replace(/[*_`]/g, "").trim() }),
+  );
   const hashtag = (value: string) => `#${value.replace(/[\s·・,.'’/()\-]/g, "")}`;
   const tags = [
     { label: hashtag(`${cityName}${tagCopy.city}`), href: `/${traveler}/search?query=${encodeURIComponent(cityName)}` },
@@ -61,11 +88,32 @@ export default async function TravelerGuidePage({ params }: Props) {
 
   return (
     <>
+      <Script
+        id="traveler-breadcrumb-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <Script
+        id="traveler-article-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      {faqItems.length > 0 && (
+        <Script
+          id="traveler-faq-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(faqItems)) }}
+        />
+      )}
       <article className="mx-auto max-w-3xl px-4 py-8 pb-24 md:px-6 md:py-12">
         <nav className="mb-6 text-sm text-gray-500" aria-label="Breadcrumb">
           <Link href={`/${traveler}`} className="hover:text-blue-700">{profile.flag} {profile.nativeName}</Link>
           <span className="mx-2">/</span>
-          <span>{travelerName(profile, city, getTravelerCity(country, city)?.name.en ?? city)}</span>
+          <Link href={`/${traveler}/${country}`} className="hover:text-blue-700">{countryName}</Link>
+          <span className="mx-2">/</span>
+          <Link href={`/${traveler}/${country}/${city}`} className="hover:text-blue-700">{cityName}</Link>
+          <span className="mx-2">/</span>
+          <span>{incidentName}</span>
         </nav>
 
         <header className="mb-8">
@@ -108,7 +156,15 @@ export default async function TravelerGuidePage({ params }: Props) {
           <h2 className="mb-4 text-lg font-bold">{ui.other}</h2>
           <div className="flex flex-wrap gap-2">
             {(["lost-passport", "lost-phone", "lost-wallet", "hospital", "police-report", "scam"] as const).filter((item) => item !== incident).map((item) => (
-              <Link key={item} href={`/${traveler}/${country}/${city}/${item}`} className="rounded-full border border-gray-200 px-3 py-2 text-sm hover:bg-blue-50">{travelerIncident(profile, item)}</Link>
+              <TrackedLink
+                key={item}
+                href={`/${traveler}/${country}/${city}/${item}`}
+                eventName="related_page_click"
+                eventParams={{ from: canonicalPath, to_incident: item, relation: "same_city" }}
+                className="rounded-full border border-gray-200 px-3 py-2 text-sm hover:bg-blue-50"
+              >
+                {travelerIncident(profile, item)}
+              </TrackedLink>
             ))}
           </div>
         </section>
@@ -118,9 +174,15 @@ export default async function TravelerGuidePage({ params }: Props) {
             <h2 className="mb-4 text-lg font-bold">{relatedCitiesLabel}</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {relatedCities.map((relatedCity) => (
-                <Link key={relatedCity.slug} href={`/${traveler}/${country}/${relatedCity.slug}/${incident}`} className="rounded-xl border border-gray-200 bg-white p-4 font-semibold text-gray-800 shadow-sm transition hover:border-blue-300 hover:bg-blue-50">
+                <TrackedLink
+                  key={relatedCity.slug}
+                  href={`/${traveler}/${country}/${relatedCity.slug}/${incident}`}
+                  eventName="related_page_click"
+                  eventParams={{ from: canonicalPath, to_city: relatedCity.slug, relation: "same_incident" }}
+                  className="rounded-xl border border-gray-200 bg-white p-4 font-semibold text-gray-800 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
+                >
                   {travelerName(profile, relatedCity.slug, relatedCity.name.en)} · {travelerIncident(profile, incident as IncidentType)} →
-                </Link>
+                </TrackedLink>
               ))}
             </div>
           </section>

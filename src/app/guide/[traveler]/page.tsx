@@ -101,9 +101,9 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
           <div className="grid gap-6 lg:grid-cols-2">
             {travelerDestinations.map((country) => (
               <article key={country.slug} className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                <div className="bg-gradient-to-r from-blue-700 to-cyan-600 px-5 py-4 text-white"><h3 className="text-xl font-bold">{travelerName(profile, country.slug, country.name.en)}</h3></div>
+                <Link href={`/${profile.code}/${country.slug}`} className="block bg-gradient-to-r from-blue-700 to-cyan-600 px-5 py-4 text-white transition hover:from-blue-800 hover:to-cyan-700"><h3 className="text-xl font-bold">{travelerName(profile, country.slug, country.name.en)}</h3></Link>
                 <div className="space-y-5 p-5">{country.cities.map((city) => (
-                  <div key={city.slug}><h4 className="mb-2 font-semibold text-gray-800">{travelerName(profile, city.slug, city.name.en)}</h4><div className="flex flex-wrap gap-2">{incidentTypes.map((incident) => (
+                  <div key={city.slug}><Link href={`/${profile.code}/${country.slug}/${city.slug}`} className="mb-2 inline-block font-semibold text-gray-800 hover:text-blue-700">{travelerName(profile, city.slug, city.name.en)}</Link><div className="flex flex-wrap gap-2">{incidentTypes.map((incident) => (
                     <Link key={incident} href={`/${profile.code}/${country.slug}/${city.slug}/${incident}`} className="rounded-full border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:border-blue-300 hover:bg-blue-50">{travelerIncident(profile, incident)}</Link>
                   ))}</div></div>
                 ))}</div>
