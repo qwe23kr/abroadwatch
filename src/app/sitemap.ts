@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site-config";
 import { travelerAlternateLanguages, travelerPath } from "@/lib/seo";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
-import { travelerDestinations } from "@/lib/traveler-destinations";
+import { getTravelerDestinations } from "@/lib/traveler-destinations";
 import { travelerProfiles, type TravelerProfile } from "@/lib/traveler-profiles";
 
 function homeEntry(profile: TravelerProfile): MetadataRoute.Sitemap[number] {
@@ -10,7 +10,7 @@ function homeEntry(profile: TravelerProfile): MetadataRoute.Sitemap[number] {
     url: `${siteConfig.url}${travelerPath(profile)}`,
     lastModified: new Date("2026-06-23"),
     alternates: {
-      languages: travelerAlternateLanguages(),
+      languages: travelerAlternateLanguages(profile),
     },
   };
 }
@@ -19,13 +19,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = travelerProfiles.map(homeEntry);
 
   for (const profile of travelerProfiles) {
-    for (const country of travelerDestinations) {
+    for (const country of getTravelerDestinations(profile)) {
       const countrySuffix = `/${country.slug}`;
       entries.push({
         url: `${siteConfig.url}${travelerPath(profile, countrySuffix)}`,
         lastModified: new Date("2026-06-25"),
         alternates: {
-          languages: travelerAlternateLanguages(countrySuffix),
+          languages: travelerAlternateLanguages(profile, countrySuffix),
         },
       });
 
@@ -35,7 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           url: `${siteConfig.url}${travelerPath(profile, citySuffix)}`,
           lastModified: new Date("2026-06-25"),
           alternates: {
-            languages: travelerAlternateLanguages(citySuffix),
+            languages: travelerAlternateLanguages(profile, citySuffix),
           },
         });
       }
@@ -59,7 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
       lastModified: new Date(guide.frontmatter.updatedAt),
       alternates: {
-        languages: travelerAlternateLanguages(suffix),
+        languages: travelerAlternateLanguages(profile, suffix),
       },
     });
   }

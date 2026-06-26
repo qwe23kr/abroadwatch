@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { incidentTypes, type IncidentType } from "../src/lib/site-config";
-import { travelerDestinations } from "../src/lib/traveler-destinations";
+import { getTravelerDestinations } from "../src/lib/traveler-destinations";
 import { travelerProfiles, type TravelerCode } from "../src/lib/traveler-profiles";
 import { getCityData } from "./city-data";
 import { getTravelerMissionSource, type DestinationCode } from "./traveler-missions";
@@ -428,6 +428,76 @@ function completionSteps(incident: IncidentType, language: CopyLanguage): string
   return byLanguage[language][incident];
 }
 
+function actionDetail(
+  language: CopyLanguage,
+  step: string,
+  index: number,
+  city: string,
+  country: string,
+  mission: string,
+) {
+  const detailByLanguage: Record<CopyLanguage, string[]> = {
+    ko: [
+      `${city}에서 먼저 안전한 장소로 이동한 뒤, 분실 장소·숙소·교통기관을 확인하고 시간과 위치를 메모하세요.`,
+      `현지 경찰이나 담당 창구에서 사건번호가 있는 원본 확인서를 요청하고 사진으로 백업하세요.`,
+      `${mission} 방문 전 전화로 예약, 접수 마감, 원본 서류, 사진 규격, 결제수단을 확인하세요.`,
+      `항공권·숙박 변경은 담당기관의 발급 가능 시간을 확인한 뒤 진행하고 영수증을 보관하세요.`,
+      `필요 서류를 한 폴더에 모아 원본과 사본을 분리하고, 보험사 제출용 사진도 함께 저장하세요.`,
+      `${country} 출국 전 항공사·입국 심사 요건을 다시 확인하고 귀국 후 정식 서류 재발급을 진행하세요.`,
+    ],
+    "zh-Hans": [
+      `先在${city}转移到安全地点，再确认遗失地点、住宿和交通机构，并记录时间与位置。`,
+      `向当地警方或负责窗口索取带案件编号的证明原件，并拍照备份。`,
+      `前往${mission}前，电话确认预约、截止时间、原件、照片规格和付款方式。`,
+      `在确认主管机构办理时间后再改签航班或住宿，并保留所有收据。`,
+      `把所需材料集中保存，原件和复印件分开，并准备保险提交用照片。`,
+      `离开${country}前再次确认航空公司和入境要求，回国后办理正式证件。`,
+    ],
+    ja: [
+      `${city}ではまず安全な場所へ移動し、紛失場所・宿泊先・交通機関を確認して時刻と場所を記録してください。`,
+      `現地警察または担当窓口で受理番号入りの原本を依頼し、写真でバックアップしてください。`,
+      `${mission}へ行く前に、予約、受付締切、原本、写真規格、支払方法を電話で確認してください。`,
+      `発給見込みを確認してから航空便・宿泊を変更し、領収書を保管してください。`,
+      `必要書類をまとめ、原本と写しを分け、保険提出用の写真も保存してください。`,
+      `${country}出国前に航空会社と入国条件を再確認し、帰国後に正式書類を再発行してください。`,
+    ],
+    "zh-Hant": [
+      `先在${city}移動到安全地點，再確認遺失地點、住宿與交通機構，並記錄時間和位置。`,
+      `向當地警方或負責窗口索取有案件編號的證明正本，並拍照備份。`,
+      `前往${mission}前，電話確認預約、截止時間、正本文件、照片規格與付款方式。`,
+      `在確認主管機關辦理時間後再更改航班或住宿，並保留所有收據。`,
+      `集中保存所需文件，正本與影本分開，並準備保險提交用照片。`,
+      `離開${country}前再次確認航空公司及入境要求，返國後辦理正式證件。`,
+    ],
+    th: [
+      `เมื่ออยู่ใน ${city} ให้ไปยังจุดปลอดภัยก่อน แล้วตรวจสอบสถานที่หาย ที่พัก และระบบขนส่ง พร้อมจดเวลาและตำแหน่ง`,
+      `ขอเอกสารต้นฉบับที่มีเลขคดีจากตำรวจหรือหน่วยงานท้องถิ่น และถ่ายรูปสำรองไว้`,
+      `ก่อนติดต่อ ${mission} ให้โทรยืนยันนัดหมาย เวลาปิดรับ เอกสารต้นฉบับ รูปถ่าย และวิธีชำระเงิน`,
+      `เปลี่ยนเที่ยวบินหรือที่พักหลังทราบเวลาการออกเอกสาร และเก็บใบเสร็จทั้งหมด`,
+      `รวมเอกสารที่ต้องใช้ แยกต้นฉบับกับสำเนา และบันทึกรูปสำหรับยื่นประกัน`,
+      `ก่อนออกจาก ${country} ให้ยืนยันเงื่อนไขกับสายการบินและด่านตรวจคนเข้าเมืองอีกครั้ง`,
+    ],
+    vi: [
+      `Tại ${city}, hãy đến nơi an toàn trước, rồi kiểm tra điểm thất lạc, nơi ở và đơn vị vận chuyển; ghi lại thời gian và vị trí.`,
+      `Xin bản gốc giấy xác nhận có số vụ việc từ cảnh sát hoặc cơ quan phụ trách và chụp lại để dự phòng.`,
+      `Trước khi đến ${mission}, gọi xác nhận lịch hẹn, giờ nhận hồ sơ, bản gốc, ảnh và cách thanh toán.`,
+      `Chỉ đổi vé hoặc chỗ ở sau khi biết thời gian xử lý và giữ tất cả hóa đơn.`,
+      `Gom giấy tờ cần thiết, tách bản gốc và bản sao, lưu ảnh để nộp bảo hiểm.`,
+      `Trước khi rời ${country}, xác nhận lại yêu cầu lên máy bay và nhập cảnh; sau đó làm lại giấy tờ chính thức.`,
+    ],
+    en: [
+      `In ${city}, get to a safe place first, then check the loss site, hotel, and transport operator while recording time and location.`,
+      `Ask the local police or responsible desk for an original document with a case number, then photograph it as backup.`,
+      `Before visiting ${mission}, call to confirm appointment rules, intake cutoff, originals, photo specs, and payment method.`,
+      `Change flights or lodging only after confirming document timing, and keep every receipt for insurance.`,
+      `Group the required documents, separate originals from copies, and save photos for insurer or authority submission.`,
+      `Before leaving ${country}, reconfirm airline and entry requirements, then complete the full replacement process at home.`,
+    ],
+  };
+
+  return detailByLanguage[language][index] ?? step;
+}
+
 function generateGuide(traveler: TravelerCode, country: DestinationCode, city: string, incident: IncidentType): string {
   const profile = travelerProfiles.find((item) => item.code === traveler)!;
   const language = languageFor(traveler);
@@ -498,7 +568,7 @@ ${steps.map((step, index) => `<TimelineStep time="${index + 1}" action="${esc(st
 ## ${ui.now}
 
 <ActionGroup>
-${steps.map((step, index) => `<ActionStep n="${index + 1}" title="${esc(step)}" detail="${esc(step)}"${index === 0 ? ' urgent="true"' : ""} />`).join("\n")}
+${steps.map((step, index) => `<ActionStep n="${index + 1}" title="${esc(step)}" detail="${esc(actionDetail(language, step, index, cityName, countryName, mission.officialName))}"${index === 0 ? ' urgent="true"' : ""} />`).join("\n")}
 </ActionGroup>
 
 <Callout variant="warning" title="${esc(ui.warning)}">
@@ -576,7 +646,7 @@ ${reviews.map((review) => `<ReviewQuoteRow text="${esc(review.text)}" source="${
 
 let generated = 0;
 for (const profile of travelerProfiles) {
-  for (const country of travelerDestinations) {
+  for (const country of getTravelerDestinations(profile)) {
     for (const city of country.cities) {
       for (const incident of incidentTypes) {
         const target = path.join(contentDir, profile.code, country.slug, city.slug, `${incident}.mdx`);

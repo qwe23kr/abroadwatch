@@ -1,4 +1,4 @@
-import { getGuide, type GuideContent } from "./content";
+import { getGuide } from "./content";
 import type { IncidentType, Locale } from "./site-config";
 
 const countryFallback: Record<string, { number: string; label: { ko: string; en: string } }> = {

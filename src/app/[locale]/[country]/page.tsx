@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { SectionHeading } from "@/components/home/HomeSections";
 import {
-  getCountryHubPath,
   getCountryIncidentHubPath,
   getCityHubPath,
 } from "@/lib/content";

@@ -16,7 +16,7 @@ import { getLatestGuides, getPopularGuides } from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { buildFaqJsonLd, buildMetadata, buildWebsiteJsonLd } from "@/lib/seo";
 import { buildHomeTabTitle } from "@/lib/seo-titles";
-import { countries, getCountry, isValidLocale, type Locale } from "@/lib/site-config";
+import { getCountry, isValidLocale, type Locale } from "@/lib/site-config";
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;

@@ -343,8 +343,6 @@ export function buildGuideFaqs(
   cityName: string,
   data: CityData,
 ): { q: string; a: string }[] {
-  const c = ctx(country);
-  const consulate = getConsulate(data);
   const items = buildGuideFaqItems(incident, country, { ko: cityName, en: cityName }, data);
   return items.map((f) => ({ q: f.q[locale], a: f.a[locale] }));
 }

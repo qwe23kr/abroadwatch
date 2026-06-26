@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { incidentTypes } from "../src/lib/site-config";
-import { travelerDestinations } from "../src/lib/traveler-destinations";
+import { getTravelerDestinations } from "../src/lib/traveler-destinations";
 import { travelerProfiles } from "../src/lib/traveler-profiles";
 import { getTravelerMissionSource, type DestinationCode } from "./traveler-missions";
 
@@ -12,7 +12,7 @@ const reviewSignatures = new Map<string, Set<string>>();
 let count = 0;
 
 for (const profile of travelerProfiles) {
-  for (const country of travelerDestinations) {
+  for (const country of getTravelerDestinations(profile)) {
     const mission = getTravelerMissionSource(
       profile.code,
       country.slug as DestinationCode,
@@ -94,9 +94,13 @@ for (const [reviewKey, signatures] of reviewSignatures) {
 }
 
 const expected =
-  travelerProfiles.length *
-  travelerDestinations.reduce(
-    (sum, country) => sum + country.cities.length * incidentTypes.length,
+  travelerProfiles.reduce(
+    (sum, profile) =>
+      sum +
+      getTravelerDestinations(profile).reduce(
+        (profileSum, country) => profileSum + country.cities.length * incidentTypes.length,
+        0,
+      ),
     0,
   );
 

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { IncidentGuideChip } from "@/components/ui/IncidentGuideChip";
-import { t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import {
   countries,

@@ -25,7 +25,6 @@ export function buildGuideTabTitle(
   incident: IncidentType,
 ): string {
   const cityName = getCity(country, city)?.name[locale] ?? city;
-  const label = incidentLabels[incident][locale];
 
   if (locale === "ko") {
     const ko: Record<IncidentType, string> = {
@@ -77,7 +76,6 @@ export function buildGuideMetaDescription(
 ): string {
   const cityName = getCity(country, city)?.name[locale] ?? city;
   const countryName = getCountry(country)?.name[locale] ?? country;
-  const label = incidentLabels[incident][locale];
   const cleaned = summary ? stripMarkdown(summary) : "";
 
   if (cleaned.length >= 40 && cleaned.length <= META_DESC_MAX) {

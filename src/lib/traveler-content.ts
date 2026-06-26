@@ -2,7 +2,10 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { incidentTypes, type IncidentType } from "./site-config";
-import { travelerDestinations } from "./traveler-destinations";
+import {
+  getTravelerDestinations,
+  isDomesticTravelerDestination,
+} from "./traveler-destinations";
 import { travelerProfiles, type TravelerCode } from "./traveler-profiles";
 
 export interface TravelerGuide {
@@ -29,6 +32,7 @@ export function getTravelerGuide(
   city: string,
   incident: IncidentType,
 ): TravelerGuide | null {
+  if (isDomesticTravelerDestination(traveler, country)) return null;
   const file = path.join(contentDir, traveler, country, city, `${incident}.mdx`);
   if (!fs.existsSync(file)) return null;
   const { data, content } = matter(fs.readFileSync(file, "utf8"));
@@ -44,7 +48,7 @@ export function getTravelerGuide(
 
 export function getAllTravelerGuideParams() {
   return travelerProfiles.flatMap((traveler) =>
-    travelerDestinations.flatMap((country) =>
+    getTravelerDestinations(traveler).flatMap((country) =>
       country.cities.flatMap((city) =>
         incidentTypes.map((incident) => ({
           traveler: traveler.code,
@@ -58,7 +62,10 @@ export function getAllTravelerGuideParams() {
 }
 
 export function getTravelerGuides(traveler: TravelerCode): TravelerGuide[] {
-  return travelerDestinations.flatMap((country) =>
+  const profile = travelerProfiles.find((item) => item.code === traveler);
+  if (!profile) return [];
+
+  return getTravelerDestinations(profile).flatMap((country) =>
     country.cities.flatMap((city) =>
       incidentTypes.flatMap((incident) => {
         const guide = getTravelerGuide(traveler, country.slug, city.slug, incident);

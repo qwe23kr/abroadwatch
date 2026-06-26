@@ -1,4 +1,5 @@
 import { countries, type CountryConfig } from "./site-config";
+import type { TravelerProfile } from "./traveler-profiles";
 
 export const southKoreaDestination: CountryConfig = {
   slug: "south-korea",
@@ -11,6 +12,27 @@ export const southKoreaDestination: CountryConfig = {
 };
 
 export const travelerDestinations = [southKoreaDestination, ...countries];
+
+const domesticDestinationByTraveler: Partial<Record<TravelerProfile["code"], string>> = {
+  kr: "south-korea",
+  jp: "japan",
+  tw: "taiwan",
+  th: "thailand",
+  vn: "vietnam",
+};
+
+export function isDomesticTravelerDestination(
+  traveler: TravelerProfile["code"],
+  destination: string,
+) {
+  return domesticDestinationByTraveler[traveler] === destination;
+}
+
+export function getTravelerDestinations(profile: TravelerProfile) {
+  return travelerDestinations.filter(
+    (country) => !isDomesticTravelerDestination(profile.code, country.slug),
+  );
+}
 
 export function getTravelerCountry(slug: string) {
   return travelerDestinations.find((country) => country.slug === slug);

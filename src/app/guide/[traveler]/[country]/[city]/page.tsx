@@ -9,9 +9,10 @@ import {
   type TravelerGuide,
 } from "@/lib/traveler-content";
 import {
+  getTravelerDestinations,
   getTravelerCity,
   getTravelerCountry,
-  travelerDestinations,
+  isDomesticTravelerDestination,
 } from "@/lib/traveler-destinations";
 import {
   buildTravelerBreadcrumbJsonLd,
@@ -31,7 +32,7 @@ interface Props {
 
 export function generateStaticParams() {
   return travelerProfiles.flatMap((profile) =>
-    travelerDestinations.flatMap((country) =>
+    getTravelerDestinations(profile).flatMap((country) =>
       country.cities.map((city) => ({
         traveler: profile.code,
         country: country.slug,
@@ -44,7 +45,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { traveler, country, city } = await params;
   const profile = getTravelerProfile(traveler);
-  if (!profile || !getTravelerCountry(country) || !getTravelerCity(country, city)) {
+  if (!profile || isDomesticTravelerDestination(profile.code, country) || !getTravelerCountry(country) || !getTravelerCity(country, city)) {
     return {};
   }
   return buildTravelerCityMetadata(profile, country, city);
@@ -83,7 +84,7 @@ export default async function TravelerCityPage({ params }: Props) {
   const profile = getTravelerProfile(traveler);
   const countryData = getTravelerCountry(country);
   const cityData = getTravelerCity(country, city);
-  if (!profile || !countryData || !cityData) notFound();
+  if (!profile || !countryData || !cityData || isDomesticTravelerDestination(profile.code, country)) notFound();
 
   const ui = travelerUi(profile);
   const countryName = travelerName(profile, country, countryData.name.en);

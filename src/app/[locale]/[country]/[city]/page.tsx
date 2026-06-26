@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { GuideCard } from "@/components/ui/GuideCard";
 import { IncidentGuideLink } from "@/components/ui/IncidentGuideLink";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
@@ -10,7 +9,6 @@ import {
   getAllGuides,
   getCityGuides,
   getCountryHubPath,
-  getGuidePath,
 } from "@/lib/content";
 import { getCityEmergency } from "@/lib/emergency";
 import { t } from "@/lib/i18n";

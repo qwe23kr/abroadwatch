@@ -16,7 +16,7 @@ import {
   type Locale,
 } from "./site-config";
 import { getTravelerCity, getTravelerCountry } from "./traveler-destinations";
-import { travelerProfiles, type TravelerProfile } from "./traveler-profiles";
+import type { TravelerProfile } from "./traveler-profiles";
 import { travelerIncident, travelerName, travelerUi } from "./traveler-ui";
 
 const OG_IMAGE = {
@@ -40,15 +40,13 @@ export function travelerPath(profile: TravelerProfile, suffix = "") {
   return `/${profile.code}${suffix}`;
 }
 
-export function travelerAlternateLanguages(suffix = ""): Record<string, string> {
+export function travelerAlternateLanguages(
+  profile: TravelerProfile,
+  suffix = "",
+): Record<string, string> {
   return {
-    ...Object.fromEntries(
-      travelerProfiles.map((profile) => [
-        profile.htmlLang,
-        `${siteConfig.url}${travelerPath(profile, suffix)}`,
-      ]),
-    ),
-    "x-default": `${siteConfig.url}${travelerPath(travelerProfiles[0], suffix)}`,
+    [profile.htmlLang]: `${siteConfig.url}${travelerPath(profile, suffix)}`,
+    "x-default": `${siteConfig.url}${travelerPath(profile, suffix)}`,
   };
 }
 
@@ -99,7 +97,7 @@ export function buildTravelerHomeMetadata(profile: TravelerProfile): Metadata {
     icons: siteIcons,
     alternates: {
       canonical: canonicalUrl,
-      languages: travelerAlternateLanguages(),
+      languages: travelerAlternateLanguages(profile),
     },
     openGraph: {
       title: shareTitle,
@@ -148,7 +146,7 @@ export function buildTravelerGuideMetadata(
     icons: siteIcons,
     alternates: {
       canonical: canonicalUrl,
-      languages: travelerAlternateLanguages(suffix),
+      languages: travelerAlternateLanguages(profile, suffix),
     },
     keywords: [
       frontmatter.title,
@@ -204,7 +202,7 @@ export function buildTravelerCountryMetadata(
     icons: siteIcons,
     alternates: {
       canonical: canonicalUrl,
-      languages: travelerAlternateLanguages(suffix),
+      languages: travelerAlternateLanguages(profile, suffix),
     },
     openGraph: {
       title,
@@ -256,7 +254,7 @@ export function buildTravelerCityMetadata(
     icons: siteIcons,
     alternates: {
       canonical: canonicalUrl,
-      languages: travelerAlternateLanguages(suffix),
+      languages: travelerAlternateLanguages(profile, suffix),
     },
     openGraph: {
       title,
