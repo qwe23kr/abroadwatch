@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { NationalityProofSection } from "@/components/guide/NationalityProofSection";
 import { SearchIntentSection } from "@/components/guide/SearchIntentSection";
 import { TravelerDepthSection } from "@/components/guide/TravelerDepthSection";
 import { MdxContent } from "@/components/mdx/MdxContent";
@@ -158,6 +159,15 @@ export default async function TravelerGuidePage({ params }: Props) {
           cityName={cityName}
           incidentName={incidentName}
           incident={incident as IncidentType}
+        />
+
+        <NationalityProofSection
+          profile={profile}
+          countryName={countryName}
+          cityName={cityName}
+          incidentName={incidentName}
+          incident={incident as IncidentType}
+          emergencyNumber={guide.frontmatter.emergencyNumber}
         />
 
         <section className="mt-10 border-t border-gray-200 pt-8">

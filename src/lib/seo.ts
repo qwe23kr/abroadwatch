@@ -593,6 +593,7 @@ export function buildTravelerArticleJsonLd(
       },
     },
     mainEntityOfPage: `${siteConfig.url}${options.path}`,
+    citation: profile.officialGuidance,
     isAccessibleForFree: true,
     genre: "Travel emergency guide",
     keywords: [
@@ -600,6 +601,7 @@ export function buildTravelerArticleJsonLd(
       options.cityName,
       options.countryName,
       profile.nativeName,
+      profile.consularHotline,
       "travel emergency",
       "AbroadWatch",
     ],
