@@ -5,10 +5,14 @@ import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-cont
 import { getTravelerDestinations } from "@/lib/traveler-destinations";
 import { travelerProfiles, type TravelerProfile } from "@/lib/traveler-profiles";
 
+const staticPageSlugs = ["about", "contact", "privacy", "terms", "disclaimer", "editorial"];
+
 function homeEntry(profile: TravelerProfile): MetadataRoute.Sitemap[number] {
   return {
     url: `${siteConfig.url}${travelerPath(profile)}`,
     lastModified: new Date("2026-06-23"),
+    changeFrequency: "weekly",
+    priority: profile.code === "kr" || profile.code === "us" ? 1 : 0.9,
     alternates: {
       languages: travelerAlternateLanguages(profile),
     },
@@ -17,6 +21,36 @@ function homeEntry(profile: TravelerProfile): MetadataRoute.Sitemap[number] {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = travelerProfiles.map(homeEntry);
+  const staticPageLastModified = new Date("2026-06-18");
+
+  for (const slug of staticPageSlugs) {
+    entries.push({
+      url: `${siteConfig.url}/ko/${slug}`,
+      lastModified: staticPageLastModified,
+      changeFrequency: "yearly",
+      priority: 0.35,
+      alternates: {
+        languages: {
+          ko: `${siteConfig.url}/ko/${slug}`,
+          en: `${siteConfig.url}/en/${slug}`,
+          "x-default": `${siteConfig.url}/ko/${slug}`,
+        },
+      },
+    });
+    entries.push({
+      url: `${siteConfig.url}/en/${slug}`,
+      lastModified: staticPageLastModified,
+      changeFrequency: "yearly",
+      priority: 0.35,
+      alternates: {
+        languages: {
+          ko: `${siteConfig.url}/ko/${slug}`,
+          en: `${siteConfig.url}/en/${slug}`,
+          "x-default": `${siteConfig.url}/ko/${slug}`,
+        },
+      },
+    });
+  }
 
   for (const profile of travelerProfiles) {
     for (const country of getTravelerDestinations(profile)) {
@@ -24,6 +58,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       entries.push({
         url: `${siteConfig.url}${travelerPath(profile, countrySuffix)}`,
         lastModified: new Date("2026-06-25"),
+        changeFrequency: "weekly",
+        priority: 0.72,
         alternates: {
           languages: travelerAlternateLanguages(profile, countrySuffix),
         },
@@ -34,6 +70,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         entries.push({
           url: `${siteConfig.url}${travelerPath(profile, citySuffix)}`,
           lastModified: new Date("2026-06-25"),
+          changeFrequency: "weekly",
+          priority: 0.78,
           alternates: {
             languages: travelerAlternateLanguages(profile, citySuffix),
           },
@@ -58,6 +96,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entries.push({
       url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
       lastModified: new Date(guide.frontmatter.updatedAt),
+      changeFrequency: "monthly",
+      priority: 0.86,
       alternates: {
         languages: travelerAlternateLanguages(profile, suffix),
       },

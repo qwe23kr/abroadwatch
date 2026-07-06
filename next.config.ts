@@ -1,9 +1,16 @@
 import type { NextConfig } from "next";
 import path from "path";
 
+const legacyCountryPattern = "japan|thailand|vietnam|taiwan|philippines";
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
+  },
+  experimental: {
+    staticGenerationRetryCount: 1,
+    staticGenerationMaxConcurrency: 2,
+    staticGenerationMinPagesPerWorker: 1000,
   },
   async redirects() {
     return [
@@ -18,32 +25,32 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/ko/:country/:city/:incident",
+        source: `/ko/:country(${legacyCountryPattern})/:city/:incident`,
         destination: "/kr/:country/:city/:incident",
         permanent: true,
       },
       {
-        source: "/en/:country/:city/:incident",
+        source: `/en/:country(${legacyCountryPattern})/:city/:incident`,
         destination: "/us/:country/:city/:incident",
         permanent: true,
       },
       {
-        source: "/ko/:country",
+        source: `/ko/:country(${legacyCountryPattern})`,
         destination: "/kr/:country",
         permanent: true,
       },
       {
-        source: "/en/:country",
+        source: `/en/:country(${legacyCountryPattern})`,
         destination: "/us/:country",
         permanent: true,
       },
       {
-        source: "/ko/:country/:city",
+        source: `/ko/:country(${legacyCountryPattern})/:city`,
         destination: "/kr/:country/:city",
         permanent: true,
       },
       {
-        source: "/en/:country/:city",
+        source: `/en/:country(${legacyCountryPattern})/:city`,
         destination: "/us/:country/:city",
         permanent: true,
       },

@@ -36,6 +36,27 @@ const OG_LOCALE_BY_LANGUAGE: Record<TravelerProfile["language"], string> = {
   vi: "vi_VN",
 };
 
+export const INDEXABLE_ROBOTS: NonNullable<Metadata["robots"]> = {
+  index: true,
+  follow: true,
+  googleBot: {
+    index: true,
+    follow: true,
+    "max-video-preview": -1,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+  },
+};
+
+export const NOINDEX_ROBOTS: NonNullable<Metadata["robots"]> = {
+  index: false,
+  follow: true,
+  googleBot: {
+    index: false,
+    follow: true,
+  },
+};
+
 export function travelerPath(profile: TravelerProfile, suffix = "") {
   return `/${profile.code}${suffix}`;
 }
@@ -58,6 +79,16 @@ export function buildSiteMetadata(): Metadata {
   return {
     metadataBase: new URL(siteConfig.url),
     applicationName: siteConfig.name,
+    creator: siteConfig.name,
+    publisher: siteConfig.name,
+    category: "travel",
+    keywords: [
+      "travel emergency",
+      "lost passport abroad",
+      "travel safety",
+      "consular assistance",
+      "AbroadWatch",
+    ],
     title: {
       default: title,
       template: `%s | ${siteConfig.name}`,
@@ -79,6 +110,7 @@ export function buildSiteMetadata(): Metadata {
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
+    robots: INDEXABLE_ROBOTS,
     icons: siteIcons,
   };
 }
@@ -90,11 +122,22 @@ export function buildTravelerHomeMetadata(profile: TravelerProfile): Metadata {
   const canonicalUrl = `${siteConfig.url}${path}`;
   const metaDescription = truncateMetaDescription(ui.subtitle);
   const shareTitle = `${siteConfig.name} | ${ui.hub}`;
+  const emergencyKeywords = [
+    "lost passport",
+    "lost phone",
+    "lost wallet",
+    "hospital abroad",
+    "police report abroad",
+    "travel scam",
+    profile.nativeName,
+    siteConfig.name,
+  ];
 
   return {
     title: ui.hub,
     description: metaDescription,
     icons: siteIcons,
+    keywords: emergencyKeywords,
     alternates: {
       canonical: canonicalUrl,
       languages: travelerAlternateLanguages(profile),
@@ -174,10 +217,7 @@ export function buildTravelerGuideMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: INDEXABLE_ROBOTS,
   };
 }
 
@@ -185,7 +225,6 @@ export function buildTravelerCountryMetadata(
   profile: TravelerProfile,
   country: string,
 ): Metadata {
-  const ui = travelerUi(profile);
   const countryName = travelerName(
     profile,
     country,
@@ -193,13 +232,24 @@ export function buildTravelerCountryMetadata(
   );
   const suffix = `/${country}`;
   const canonicalUrl = `${siteConfig.url}${travelerPath(profile, suffix)}`;
-  const title = `${countryName} - ${ui.hub}`;
-  const description = truncateMetaDescription(`${countryName}: ${ui.subtitle}`);
+  const title = `${countryName} travel emergency guide for ${profile.nativeName}`;
+  const description = truncateMetaDescription(
+    `${countryName} emergency guide for ${profile.nativeName}: lost passport, phone, wallet, hospital, police report, and travel scam steps by city.`,
+  );
 
   return {
     title,
     description,
     icons: siteIcons,
+    keywords: [
+      `${countryName} lost passport`,
+      `${countryName} emergency number`,
+      `${countryName} police report`,
+      `${countryName} hospital`,
+      `${countryName} travel scam`,
+      profile.nativeName,
+      siteConfig.name,
+    ],
     alternates: {
       canonical: canonicalUrl,
       languages: travelerAlternateLanguages(profile, suffix),
@@ -220,10 +270,7 @@ export function buildTravelerCountryMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: INDEXABLE_ROBOTS,
   };
 }
 
@@ -232,7 +279,6 @@ export function buildTravelerCityMetadata(
   country: string,
   city: string,
 ): Metadata {
-  const ui = travelerUi(profile);
   const countryName = travelerName(
     profile,
     country,
@@ -245,13 +291,25 @@ export function buildTravelerCityMetadata(
   );
   const suffix = `/${country}/${city}`;
   const canonicalUrl = `${siteConfig.url}${travelerPath(profile, suffix)}`;
-  const title = `${cityName}, ${countryName} - ${ui.hub}`;
-  const description = truncateMetaDescription(`${cityName}, ${countryName}: ${ui.subtitle}`);
+  const title = `${cityName} emergency guide for ${profile.nativeName}`;
+  const description = truncateMetaDescription(
+    `${cityName}, ${countryName} emergency guide for ${profile.nativeName}: what to do for lost passport, lost phone, hospital care, police reports, and scams.`,
+  );
 
   return {
     title,
     description,
     icons: siteIcons,
+    keywords: [
+      `${cityName} lost passport`,
+      `${cityName} lost phone`,
+      `${cityName} police report`,
+      `${cityName} hospital`,
+      `${cityName} travel scam`,
+      countryName,
+      profile.nativeName,
+      siteConfig.name,
+    ],
     alternates: {
       canonical: canonicalUrl,
       languages: travelerAlternateLanguages(profile, suffix),
@@ -272,10 +330,7 @@ export function buildTravelerCityMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: INDEXABLE_ROBOTS,
   };
 }
 
@@ -343,10 +398,7 @@ export function buildMetadata(options: PageMetadataOptions): Metadata {
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: INDEXABLE_ROBOTS,
   };
 }
 

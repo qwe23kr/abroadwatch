@@ -34,6 +34,23 @@ export interface GuideContent {
 }
 
 const contentDir = path.join(process.cwd(), "content");
+const guideCache = new Map<string, GuideContent | null>();
+
+function assertContentSegment(segment: string): string {
+  if (!/^[a-z0-9-]+$/.test(segment)) {
+    throw new Error(`Invalid content path segment: ${segment}`);
+  }
+  return segment;
+}
+
+function guideCacheKey(
+  locale: Locale,
+  country: string,
+  city: string,
+  incident: IncidentType,
+): string {
+  return [locale, country, city, incident].join("/");
+}
 
 /** content 디렉터리 내 MDX 파일 경로 생성 */
 function getMdxPath(
@@ -42,7 +59,13 @@ function getMdxPath(
   city: string,
   incident: IncidentType,
 ): string {
-  return path.join(contentDir, locale, country, city, `${incident}.mdx`);
+  return path.join(
+    contentDir,
+    assertContentSegment(locale),
+    assertContentSegment(country),
+    assertContentSegment(city),
+    `${assertContentSegment(incident)}.mdx`,
+  );
 }
 
 /** MDX 파일 존재 여부 확인 */
@@ -62,13 +85,19 @@ export function getGuide(
   city: string,
   incident: IncidentType,
 ): GuideContent | null {
+  const cacheKey = guideCacheKey(locale, country, city, incident);
+  if (guideCache.has(cacheKey)) return guideCache.get(cacheKey) ?? null;
+
   const filePath = getMdxPath(locale, country, city, incident);
-  if (!fs.existsSync(filePath)) return null;
+  if (!fs.existsSync(filePath)) {
+    guideCache.set(cacheKey, null);
+    return null;
+  }
 
   const raw = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(raw);
 
-  return {
+  const guide = {
     locale,
     country,
     city,
@@ -77,6 +106,8 @@ export function getGuide(
     content,
     slug: `${locale}/${country}/${city}/${incident}`,
   };
+  guideCache.set(cacheKey, guide);
+  return guide;
 }
 
 /** 가이드 URL 경로 생성 */

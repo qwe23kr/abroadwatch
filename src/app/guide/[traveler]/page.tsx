@@ -2,10 +2,16 @@ import Form from "next/form";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
+import { HomeIntentCluster } from "@/components/guide/TrafficGrowthSections";
 import { SectionHeading } from "@/components/home/HomeSections";
 import { incidentIcons } from "@/lib/incident-ui";
-import { buildTravelerHomeMetadata } from "@/lib/seo";
+import {
+  buildFaqJsonLd,
+  buildTravelerHomeMetadata,
+  buildTravelerItemListJsonLd,
+} from "@/lib/seo";
 import { incidentTypes } from "@/lib/site-config";
 import { getTravelerDestinations } from "@/lib/traveler-destinations";
 import {
@@ -59,9 +65,32 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
   const latestGuides = getLatestTravelerGuides(profile.code, 6);
   const destinations = getTravelerDestinations(profile);
   const cityCount = destinations.reduce((sum, country) => sum + country.cities.length, 0);
+  const faqJsonLd = buildFaqJsonLd([
+    { question: ui.faq1q, answer: ui.faq1a },
+    { question: ui.faq2q, answer: ui.faq2a },
+    { question: ui.faq3q, answer: ui.faq3a },
+  ]);
+  const itemListJsonLd = buildTravelerItemListJsonLd(
+    ui.popular,
+    popularGuides.map((guide) => ({
+      name: guide.frontmatter.title,
+      description: guide.frontmatter.summary,
+      path: `/${profile.code}/${guide.country}/${guide.city}/${guide.incident}`,
+    })),
+  );
 
   return (
     <>
+      <Script
+        id="traveler-home-faq-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <Script
+        id="traveler-home-itemlist-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 px-4 py-16 text-white md:py-24">
         <div className="relative mx-auto max-w-4xl text-center">
           <p className="mb-3 text-sm font-semibold text-blue-200">{profile.flag} {profile.nativeName}</p>
@@ -91,6 +120,12 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
             </dl>
           </div>
         </section>
+
+        <HomeIntentCluster
+          profile={profile}
+          countries={destinations}
+          incidents={incidentTypes}
+        />
 
         <section className="mb-16">
           <SectionHeading title={ui.popular} />

@@ -1,5 +1,6 @@
 import Script from "next/script";
 import { IncidentTabs } from "@/components/guide/IncidentTabs";
+import { SearchIntentSection } from "@/components/guide/SearchIntentSection";
 import { ShareGuide } from "@/components/guide/ShareGuide";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { MdxContent } from "@/components/mdx/MdxContent";
@@ -133,6 +134,14 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
         </header>
 
         <IncidentTabs locale={locale} country={country} city={city} current={incident} />
+
+        <SearchIntentSection
+          locale={locale}
+          cityName={cityData?.name[locale] ?? city}
+          countryName={countryData?.name[locale] ?? country}
+          incident={incident}
+          incidentLabel={incidentLabel}
+        />
 
         <div className="prose-guide">
           <MdxContent source={guide.content} locale={locale} />

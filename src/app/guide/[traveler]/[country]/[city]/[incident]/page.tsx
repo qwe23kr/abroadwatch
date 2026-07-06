@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { SearchIntentSection } from "@/components/guide/SearchIntentSection";
 import { TravelerDepthSection } from "@/components/guide/TravelerDepthSection";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
@@ -141,6 +142,13 @@ export default async function TravelerGuidePage({ params }: Props) {
         </header>
 
         <div className="prose-guide">
+          <SearchIntentSection
+            locale={locale}
+            cityName={cityName}
+            countryName={countryName}
+            incident={incident as IncidentType}
+            incidentLabel={incidentName}
+          />
           <MdxContent source={guide.content} locale={locale} uiLanguage={profile.language} />
         </div>
 

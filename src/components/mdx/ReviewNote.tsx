@@ -1,4 +1,4 @@
-import { t } from "@/lib/i18n";
+﻿import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/site-config";
 import type { TravelerProfile } from "@/lib/traveler-profiles";
 
@@ -13,7 +13,6 @@ interface ReviewNoteProps {
   children: React.ReactNode;
 }
 
-/** 실제 블로그·후기 인용 박스 */
 export function ReviewNote({
   source,
   url,
@@ -22,19 +21,25 @@ export function ReviewNote({
   uiLanguage,
   children,
 }: ReviewNoteProps) {
-  const displayLabel = label ?? `📌 ${t(locale, "reviewVerified")}`;
+  const displayLabel =
+    label ??
+    (locale === "ko" ? "확인 기준 및 참고 자료" : `Reference: ${t(locale, "reviewVerified")}`);
   const sourceLabel = uiLanguage
-    ? ({ ko: "출처", "zh-Hans": "来源", ja: "出典", "zh-Hant": "來源", th: "แหล่งที่มา", vi: "Nguồn", en: "Source" } as const)[uiLanguage]
-    : t(locale, "reviewSource");
+    ? ({
+        ko: "참고",
+        "zh-Hans": "Source",
+        ja: "Source",
+        "zh-Hant": "Source",
+        th: "Source",
+        vi: "Source",
+        en: "Source",
+      } as const)[uiLanguage]
+    : locale === "ko"
+      ? "참고"
+      : t(locale, "reviewSource");
 
   return (
-    <blockquote className="relative my-6 overflow-hidden rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-sm">
-      <div
-        className="pointer-events-none absolute -right-2 -top-4 text-6xl font-serif text-amber-200/80"
-        aria-hidden="true"
-      >
-        &ldquo;
-      </div>
+    <aside className="relative my-6 overflow-hidden rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-sm">
       <p className="relative mb-3 text-xs font-semibold uppercase tracking-wide text-amber-900">
         {displayLabel}
       </p>
@@ -62,6 +67,6 @@ export function ReviewNote({
           <span>{source}</span>
         )}
       </footer>
-    </blockquote>
+    </aside>
   );
 }

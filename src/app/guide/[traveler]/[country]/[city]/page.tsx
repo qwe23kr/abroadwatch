@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { CityIntentCluster } from "@/components/guide/TrafficGrowthSections";
 import { SectionHeading } from "@/components/home/HomeSections";
 import {
   getTravelerCityGuides,
@@ -19,6 +20,7 @@ import {
   buildTravelerCityMetadata,
   buildTravelerItemListJsonLd,
 } from "@/lib/seo";
+import { incidentTypes } from "@/lib/site-config";
 import {
   getTravelerProfile,
   travelerProfiles,
@@ -139,6 +141,13 @@ export default async function TravelerCityPage({ params }: Props) {
             {ui.subtitle}
           </p>
         </header>
+
+        <CityIntentCluster
+          profile={profile}
+          country={countryData}
+          city={cityData}
+          incidents={incidentTypes}
+        />
 
         <section className="mb-12">
           <SectionHeading title={ui.browseIncident} />

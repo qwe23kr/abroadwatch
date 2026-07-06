@@ -25,6 +25,38 @@ export interface TravelerGuide {
 }
 
 const contentDir = path.join(process.cwd(), "content");
+const travelerGuideCache = new Map<string, TravelerGuide | null>();
+
+function assertContentSegment(segment: string): string {
+  if (!/^[a-z0-9-]+$/.test(segment)) {
+    throw new Error(`Invalid content path segment: ${segment}`);
+  }
+  return segment;
+}
+
+function travelerGuideCacheKey(
+  traveler: TravelerCode,
+  country: string,
+  city: string,
+  incident: IncidentType,
+): string {
+  return [traveler, country, city, incident].join("/");
+}
+
+function getTravelerGuidePath(
+  traveler: TravelerCode,
+  country: string,
+  city: string,
+  incident: IncidentType,
+): string {
+  return path.join(
+    contentDir,
+    assertContentSegment(traveler),
+    assertContentSegment(country),
+    assertContentSegment(city),
+    `${assertContentSegment(incident)}.mdx`,
+  );
+}
 
 export function getTravelerGuide(
   traveler: TravelerCode,
@@ -33,10 +65,18 @@ export function getTravelerGuide(
   incident: IncidentType,
 ): TravelerGuide | null {
   if (isDomesticTravelerDestination(traveler, country)) return null;
-  const file = path.join(contentDir, traveler, country, city, `${incident}.mdx`);
-  if (!fs.existsSync(file)) return null;
+  const cacheKey = travelerGuideCacheKey(traveler, country, city, incident);
+  if (travelerGuideCache.has(cacheKey)) {
+    return travelerGuideCache.get(cacheKey) ?? null;
+  }
+
+  const file = getTravelerGuidePath(traveler, country, city, incident);
+  if (!fs.existsSync(file)) {
+    travelerGuideCache.set(cacheKey, null);
+    return null;
+  }
   const { data, content } = matter(fs.readFileSync(file, "utf8"));
-  return {
+  const guide = {
     traveler,
     country,
     city,
@@ -44,6 +84,8 @@ export function getTravelerGuide(
     frontmatter: data as TravelerGuide["frontmatter"],
     content,
   };
+  travelerGuideCache.set(cacheKey, guide);
+  return guide;
 }
 
 export function getAllTravelerGuideParams() {

@@ -1,9 +1,31 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { NOINDEX_ROBOTS, travelerPath } from "@/lib/seo";
 import { incidentTypes, type IncidentType } from "@/lib/site-config";
 import { getTravelerGuides, searchTravelerGuides } from "@/lib/traveler-content";
 import { getTravelerProfile } from "@/lib/traveler-profiles";
 import { travelerIncident, travelerName, travelerUi } from "@/lib/traveler-ui";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ traveler: string }>;
+}): Promise<Metadata> {
+  const { traveler } = await params;
+  const profile = getTravelerProfile(traveler);
+  if (!profile) return {};
+  const ui = travelerUi(profile);
+
+  return {
+    title: ui.searchButton,
+    description: ui.searchPlaceholder,
+    alternates: {
+      canonical: travelerPath(profile, "/search"),
+    },
+    robots: NOINDEX_ROBOTS,
+  };
+}
 
 export default async function TravelerSearchPage({
   params,
