@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { CityQualitySection } from "@/components/guide/HubQualitySections";
 import { CityIntentCluster } from "@/components/guide/TrafficGrowthSections";
 import { SectionHeading } from "@/components/home/HomeSections";
 import {
@@ -143,6 +144,13 @@ export default async function TravelerCityPage({ params }: Props) {
         </header>
 
         <CityIntentCluster
+          profile={profile}
+          country={countryData}
+          city={cityData}
+          incidents={incidentTypes}
+        />
+
+        <CityQualitySection
           profile={profile}
           country={countryData}
           city={cityData}

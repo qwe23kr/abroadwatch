@@ -16,6 +16,7 @@ import {
   type IncidentType,
   type Locale,
 } from "@/lib/site-config";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 interface GuidePageProps {
   params: Promise<{
@@ -48,13 +49,15 @@ export async function generateMetadata({
   const guide = getGuide(locale, country, city, incident as IncidentType);
   if (!guide) return {};
 
-  return buildGuideMetadata(
+  const metadata = buildGuideMetadata(
     locale as Locale,
     country,
     city,
     incident as IncidentType,
     guide.frontmatter,
   );
+
+  return { ...metadata, robots: NOINDEX_ROBOTS };
 }
 
 /** MDX 기반 가이드 상세 페이지 */

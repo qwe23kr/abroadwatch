@@ -1,7 +1,6 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { LocaleHtmlLang } from "@/components/layout/LocaleHtmlLang";
-import { GoogleAdSense } from "@/components/analytics/GoogleAdSense";
 import { EmrldTracker } from "@/components/analytics/EmrldTracker";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { isProductionRuntime } from "@/lib/runtime";
@@ -30,7 +29,6 @@ export default async function LocaleLayout({
       <Header locale={locale} />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} />
-      {enableThirdParty && <GoogleAdSense />}
       {enableThirdParty && <EmrldTracker />}
       <ServiceWorkerRegister />
     </>

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { CountryQualitySection } from "@/components/guide/HubQualitySections";
 import { CountryIntentCluster } from "@/components/guide/TrafficGrowthSections";
 import { SectionHeading } from "@/components/home/HomeSections";
 import {
@@ -130,6 +131,12 @@ export default async function TravelerCountryPage({ params }: Props) {
         </header>
 
         <CountryIntentCluster
+          profile={profile}
+          country={countryData}
+          incidents={incidentTypes}
+        />
+
+        <CountryQualitySection
           profile={profile}
           country={countryData}
           incidents={incidentTypes}

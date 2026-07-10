@@ -16,6 +16,7 @@ import {
   type Locale,
 } from "./site-config";
 import { getTravelerCity, getTravelerCountry } from "./traveler-destinations";
+import { isAdsenseReadyTravelerProfile } from "./quality";
 import type { TravelerProfile } from "./traveler-profiles";
 import { travelerIncident, travelerName, travelerUi } from "./traveler-ui";
 
@@ -158,6 +159,7 @@ export function buildTravelerHomeMetadata(profile: TravelerProfile): Metadata {
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
+    robots: isAdsenseReadyTravelerProfile(profile) ? INDEXABLE_ROBOTS : NOINDEX_ROBOTS,
   };
 }
 
@@ -217,7 +219,7 @@ export function buildTravelerGuideMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: INDEXABLE_ROBOTS,
+    robots: isAdsenseReadyTravelerProfile(profile) ? INDEXABLE_ROBOTS : NOINDEX_ROBOTS,
   };
 }
 
@@ -270,7 +272,7 @@ export function buildTravelerCountryMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: INDEXABLE_ROBOTS,
+    robots: isAdsenseReadyTravelerProfile(profile) ? INDEXABLE_ROBOTS : NOINDEX_ROBOTS,
   };
 }
 
@@ -330,7 +332,7 @@ export function buildTravelerCityMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: INDEXABLE_ROBOTS,
+    robots: isAdsenseReadyTravelerProfile(profile) ? INDEXABLE_ROBOTS : NOINDEX_ROBOTS,
   };
 }
 

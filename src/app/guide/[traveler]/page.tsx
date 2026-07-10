@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
+import { HomeQualitySection } from "@/components/guide/HubQualitySections";
 import { HomeIntentCluster } from "@/components/guide/TrafficGrowthSections";
 import { SectionHeading } from "@/components/home/HomeSections";
 import { incidentIcons } from "@/lib/incident-ui";
@@ -122,6 +123,12 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
         </section>
 
         <HomeIntentCluster
+          profile={profile}
+          countries={destinations}
+          incidents={incidentTypes}
+        />
+
+        <HomeQualitySection
           profile={profile}
           countries={destinations}
           incidents={incidentTypes}

@@ -53,15 +53,114 @@ const ui = {
   en: { hub: "Travel emergency guides for your nationality", hero: "When something goes wrong abroad, follow guidance built for your nationality", subtitle: "Lost passport, phone or wallet, hospital care, police reports, and scams — local steps plus your own government's consular guidance.", coverage: "5 countries, 19 cities · 912 nationality-specific guides", browseCountry: "Choose a destination and city", browseCountryDescription: "Pick a city, then open the guide for the situation you need.", browseIncident: "Find by emergency situation", official: "Official authority sources are checked alongside recurring patterns in real traveler reports.", searchPlaceholder: "Search city or situation", searchButton: "Search", popular: "Popular guides", latest: "Latest travel safety guides", faq: "Frequently asked questions", faq1q: "Is the information tailored to my nationality?", faq1a: "Yes. It uses the selected nationality's language, passport process, responsible mission, and consular emergency contacts.", faq2q: "Are local police and hospital details checked?", faq2a: "Local official information is checked alongside recurring patterns in real traveler reports.", faq3q: "Should I still call before visiting?", faq3a: "Yes. Hours, documents, and fees can change, so reconfirm on the official site and by phone.", emergency: "Emergency", updated: "Updated", nationality: "Nationality", other: "Other situations in this city" },
 } satisfies Record<Language, Record<string, string>>;
 
+const cleanKoNames: Record<string, string> = {
+  "south-korea": "대한민국",
+  seoul: "서울",
+  busan: "부산",
+  jeju: "제주",
+  japan: "일본",
+  thailand: "태국",
+  vietnam: "베트남",
+  taiwan: "대만",
+  philippines: "필리핀",
+  tokyo: "도쿄",
+  osaka: "오사카",
+  fukuoka: "후쿠오카",
+  kyoto: "교토",
+  sapporo: "삿포로",
+  bangkok: "방콕",
+  phuket: "푸켓",
+  "chiang-mai": "치앙마이",
+  pattaya: "파타야",
+  danang: "다낭",
+  hanoi: "하노이",
+  "ho-chi-minh-city": "호치민",
+  "nha-trang": "나트랑",
+  taipei: "타이베이",
+  taichung: "타이중",
+  kaohsiung: "가오슝",
+  manila: "마닐라",
+  cebu: "세부",
+  boracay: "보라카이",
+};
+
+const cleanKoIncidents: Record<IncidentType, string> = {
+  "lost-passport": "여권 분실",
+  "lost-phone": "휴대폰 분실",
+  "lost-wallet": "지갑 분실",
+  hospital: "병원 이용",
+  "police-report": "경찰 신고",
+  scam: "여행 사기",
+};
+
+const cleanKoUi = {
+  hub: "한국 여행자를 위한 해외 비상 가이드",
+  hero: "해외에서 문제가 생겼을 때 한국인에게 맞는 해결 순서",
+  subtitle:
+    "여권, 휴대폰, 지갑 분실부터 병원, 경찰 신고, 여행 사기까지 현지 절차와 한국 공관 확인 포인트를 함께 정리합니다.",
+  coverage: "6개국 22개 도시, 상황별 국적 맞춤 가이드",
+  browseCountry: "여행 국가와 도시 선택",
+  browseCountryDescription: "도시를 고른 뒤 필요한 상황별 가이드를 바로 확인하세요.",
+  browseIncident: "상황별 빠른 찾기",
+  official:
+    "공식기관 출처와 실제 여행자가 반복해서 막히는 지점을 함께 검토해 실행 순서로 정리합니다.",
+  searchPlaceholder: "도시 또는 상황 검색",
+  searchButton: "검색",
+  popular: "인기 가이드",
+  latest: "최신 여행 안전 가이드",
+  faq: "자주 묻는 질문",
+  faq1q: "정보가 한국 여행자에게 맞춰져 있나요?",
+  faq1a:
+    "네. 한국어, 여권 절차, 담당 공관, 영사 긴급 연락처를 기준으로 정리합니다.",
+  faq2q: "현지 경찰과 병원 정보도 확인했나요?",
+  faq2a:
+    "현지 공식 정보와 여행자 사례에서 반복되는 문제를 함께 확인해 안내합니다.",
+  faq3q: "방문 전에 다시 전화해야 하나요?",
+  faq3a:
+    "네. 운영시간, 서류, 비용은 바뀔 수 있으니 공식 페이지와 전화로 다시 확인하세요.",
+  emergency: "긴급번호",
+  updated: "최종 업데이트",
+  nationality: "국적",
+  other: "이 도시의 다른 상황",
+};
+
+const cleanKoTagCopy = {
+  heading: "관련 태그",
+  country: "여행안전",
+  city: "여행",
+  traveler: "한국여행자",
+  guide: "해외비상가이드",
+};
+
+const cleanKoNav = {
+  home: "홈",
+  about: "소개",
+  contact: "문의",
+  search: "검색",
+};
+
+const cleanKoFooter = {
+  about: "소개",
+  contact: "문의",
+  privacy: "개인정보처리방침",
+  terms: "이용약관",
+  disclaimer: "면책조항",
+  editorial: "편집 원칙",
+  tagline: "국적과 여행지에 맞춘 해외 비상 대응 가이드",
+};
+
 export function travelerName(profile: TravelerProfile, slug: string, fallback = slug) {
+  if (profile.language === "ko") return cleanKoNames[slug] ?? fallback;
   return names[slug]?.[profile.language] ?? fallback;
 }
 
 export function travelerIncident(profile: TravelerProfile, incident: IncidentType) {
+  if (profile.language === "ko") return cleanKoIncidents[incident];
   return incidents[incident][profile.language];
 }
 
 export function travelerTagCopy(profile: TravelerProfile) {
+  if (profile.language === "ko") return cleanKoTagCopy;
   return ({
     ko: { heading: "관련 태그", country: "여행안전", city: "여행", traveler: "여행자", guide: "긴급여행가이드" },
     "zh-Hans": { heading: "相关标签", country: "旅行安全", city: "旅行", traveler: "游客", guide: "旅行应急指南" },
@@ -74,6 +173,7 @@ export function travelerTagCopy(profile: TravelerProfile) {
 }
 
 export function travelerUi(profile: TravelerProfile) {
+  if (profile.language === "ko") return cleanKoUi;
   const coverage = ({
     ko: "6개국 22개 도시 · 상황별 1,320개 국적 가이드",
     "zh-Hans": "6个国家、22座城市 · 1,320份国籍专属指南",
@@ -87,6 +187,7 @@ export function travelerUi(profile: TravelerProfile) {
 }
 
 export function travelerNav(profile: TravelerProfile) {
+  if (profile.language === "ko") return cleanKoNav;
   return ({
     ko: { home: "홈", about: "소개", contact: "문의", search: "검색" },
     "zh-Hans": { home: "首页", about: "关于", contact: "联系", search: "搜索" },
@@ -99,6 +200,7 @@ export function travelerNav(profile: TravelerProfile) {
 }
 
 export function travelerFooter(profile: TravelerProfile) {
+  if (profile.language === "ko") return cleanKoFooter;
   return ({
     ko: { about: "소개", contact: "문의", privacy: "개인정보처리방침", terms: "이용약관", disclaimer: "면책조항", editorial: "편집 원칙", tagline: "국적과 여행지에 맞춘 해외 비상 대처 가이드" },
     "zh-Hans": { about: "关于", contact: "联系", privacy: "隐私政策", terms: "使用条款", disclaimer: "免责声明", editorial: "编辑原则", tagline: "根据国籍和目的地提供的海外应急指南" },

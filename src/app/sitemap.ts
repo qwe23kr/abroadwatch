@@ -3,6 +3,7 @@ import { siteConfig } from "@/lib/site-config";
 import { travelerAlternateLanguages, travelerPath } from "@/lib/seo";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
 import { getTravelerDestinations } from "@/lib/traveler-destinations";
+import { isAdsenseReadyTravelerProfile } from "@/lib/quality";
 import { travelerProfiles, type TravelerProfile } from "@/lib/traveler-profiles";
 
 const staticPageSlugs = ["about", "contact", "privacy", "terms", "disclaimer", "editorial"];
@@ -20,7 +21,8 @@ function homeEntry(profile: TravelerProfile): MetadataRoute.Sitemap[number] {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const entries: MetadataRoute.Sitemap = travelerProfiles.map(homeEntry);
+  const indexableProfiles = travelerProfiles.filter(isAdsenseReadyTravelerProfile);
+  const entries: MetadataRoute.Sitemap = indexableProfiles.map(homeEntry);
   const staticPageLastModified = new Date("2026-06-18");
 
   for (const slug of staticPageSlugs) {
@@ -52,7 +54,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   }
 
-  for (const profile of travelerProfiles) {
+  for (const profile of indexableProfiles) {
     for (const country of getTravelerDestinations(profile)) {
       const countrySuffix = `/${country.slug}`;
       entries.push({
@@ -91,7 +93,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     const suffix = `/${params.country}/${params.city}/${params.incident}`;
     const profile = travelerProfiles.find((item) => item.code === params.traveler);
-    if (!profile) continue;
+    if (!profile || !isAdsenseReadyTravelerProfile(profile)) continue;
 
     entries.push({
       url: `${siteConfig.url}${travelerPath(profile, suffix)}`,

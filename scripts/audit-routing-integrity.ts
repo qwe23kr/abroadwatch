@@ -10,6 +10,7 @@ import {
   getTravelerDestinations,
   isDomesticTravelerDestination,
 } from "../src/lib/traveler-destinations";
+import { isAdsenseReadyTravelerCode } from "../src/lib/quality";
 import { travelerProfiles } from "../src/lib/traveler-profiles";
 
 const problems: string[] = [];
@@ -122,17 +123,28 @@ if (domesticUrls.length) {
   problems.push(`domestic URLs in sitemap: ${domesticUrls.slice(0, 20).join(", ")}`);
 }
 
-const guideUrlSet = new Set(
-  existingGuides.map(
+const indexableGuideUrlSet = new Set(
+  existingGuides.filter((params) => isAdsenseReadyTravelerCode(params.traveler)).map(
     (params) =>
       `https://abroadwatch.com/${params.traveler}/${params.country}/${params.city}/${params.incident}`,
   ),
 );
-const missingGuideUrls = [...guideUrlSet].filter((url) => !urls.includes(url));
-console.log(`SITEMAP missingGuideUrls=${missingGuideUrls.length}`);
+const missingGuideUrls = [...indexableGuideUrlSet].filter((url) => !urls.includes(url));
+console.log(`SITEMAP missingIndexableGuideUrls=${missingGuideUrls.length}`);
 if (missingGuideUrls.length) {
   problems.push(
-    `missing guide urls in sitemap: ${missingGuideUrls.slice(0, 20).join(", ")}`,
+    `missing indexable guide urls in sitemap: ${missingGuideUrls.slice(0, 20).join(", ")}`,
+  );
+}
+
+const nonIndexableGuideUrls = urls.filter((url) => {
+  const traveler = new URL(url).pathname.split("/")[1];
+  return profileCodes.has(traveler) && !isAdsenseReadyTravelerCode(traveler);
+});
+console.log(`SITEMAP nonIndexableGuideUrls=${nonIndexableGuideUrls.length}`);
+if (nonIndexableGuideUrls.length) {
+  problems.push(
+    `non-indexable traveler urls in sitemap: ${nonIndexableGuideUrls.slice(0, 20).join(", ")}`,
   );
 }
 

@@ -18,7 +18,6 @@ const footerLinks: Array<{ key: TranslationKey; path: string }> = [
   { key: "editorial", path: "/editorial" },
 ];
 
-/** 사이트 푸터 — 링크, 저작권 */
 export function Footer({ locale, traveler }: FooterProps) {
   const year = new Date().getFullYear();
   const nativeFooter = traveler ? travelerFooter(traveler) : undefined;
@@ -42,13 +41,14 @@ export function Footer({ locale, traveler }: FooterProps) {
                 href={`/${locale}${link.path}`}
                 className="text-sm text-gray-600 transition-colors hover:text-blue-600"
               >
-                {nativeFooter?.[link.key as keyof Omit<typeof nativeFooter, "tagline">] ?? t(locale, link.key)}
+                {nativeFooter?.[link.key as keyof Omit<typeof nativeFooter, "tagline">] ??
+                  t(locale, link.key)}
               </Link>
             ))}
           </nav>
         </div>
         <p className="text-xs text-gray-500">
-          © {year} {siteConfig.name}. {t(locale, "footerRights")}
+          &copy; {year} {siteConfig.name}. {t(locale, "footerRights")}
         </p>
       </div>
     </footer>

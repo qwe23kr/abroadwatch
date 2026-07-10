@@ -30,9 +30,10 @@ export function NationalitySelector({ locale }: { locale: Locale }) {
     },
     () => {
       const segments = pathname.split("/");
-      const routeTraveler = segments[1] === "guide"
-        ? getTravelerProfile(segments[2] ?? "")
-        : getTravelerProfile(segments[1] ?? "");
+      const routeTraveler =
+        segments[1] === "guide"
+          ? getTravelerProfile(segments[2] ?? "")
+          : getTravelerProfile(segments[1] ?? "");
       if (routeTraveler) return routeTraveler.countryCode;
       const saved = window.localStorage.getItem(STORAGE_KEY);
       return saved && isNationalityCode(saved) ? saved : "KR";
@@ -59,25 +60,22 @@ export function NationalitySelector({ locale }: { locale: Locale }) {
   };
 
   return (
-    <>
-      <label className="relative inline-flex items-center gap-1.5">
-        <span className="hidden text-xs font-medium text-gray-500 lg:inline">
-          {locale === "ko" ? "국적" : "Nationality"}
-        </span>
-        <select
-          value={nationality}
-          onChange={(event) => handleChange(event.target.value)}
-          aria-label={locale === "ko" ? "국적 선택" : "Select nationality"}
-          className="h-10 w-28 cursor-pointer rounded-lg border border-gray-200 bg-white px-1.5 text-sm font-medium text-gray-700 outline-none transition hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 min-[360px]:w-32 sm:w-auto sm:max-w-none sm:px-2"
-        >
-          {travelerProfiles.map((item) => (
-            <option key={item.countryCode} value={item.countryCode}>
-              {item.flag} {item.nativeName}
-            </option>
-          ))}
-        </select>
-      </label>
-
-    </>
+    <label className="relative inline-flex items-center gap-1.5">
+      <span className="hidden text-xs font-medium text-gray-500 lg:inline">
+        {locale === "ko" ? "국적" : "Nationality"}
+      </span>
+      <select
+        value={nationality}
+        onChange={(event) => handleChange(event.target.value)}
+        aria-label={locale === "ko" ? "국적 선택" : "Select nationality"}
+        className="h-10 w-28 cursor-pointer rounded-lg border border-gray-200 bg-white px-1.5 text-sm font-medium text-gray-700 outline-none transition hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 min-[360px]:w-32 sm:w-auto sm:max-w-none sm:px-2"
+      >
+        {travelerProfiles.map((item) => (
+          <option key={item.countryCode} value={item.countryCode}>
+            {item.flag} {item.nativeName}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

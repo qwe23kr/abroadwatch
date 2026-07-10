@@ -2,7 +2,7 @@ export const travelerProfiles = [
   {
     code: "kr",
     countryCode: "KR",
-    flag: "🇰🇷",
+    flag: "KR",
     nativeName: "대한민국",
     language: "ko",
     htmlLang: "ko-KR",
@@ -12,8 +12,8 @@ export const travelerProfiles = [
   {
     code: "cn",
     countryCode: "CN",
-    flag: "🇨🇳",
-    nativeName: "中国",
+    flag: "CN",
+    nativeName: "China",
     language: "zh-Hans",
     htmlLang: "zh-CN",
     consularHotline: "+86-10-12308",
@@ -22,7 +22,7 @@ export const travelerProfiles = [
   {
     code: "us",
     countryCode: "US",
-    flag: "🇺🇸",
+    flag: "US",
     nativeName: "United States",
     language: "en",
     htmlLang: "en-US",
@@ -33,8 +33,8 @@ export const travelerProfiles = [
   {
     code: "jp",
     countryCode: "JP",
-    flag: "🇯🇵",
-    nativeName: "日本",
+    flag: "JP",
+    nativeName: "Japan",
     language: "ja",
     htmlLang: "ja-JP",
     consularHotline: "+81-3-3580-3311",
@@ -43,8 +43,8 @@ export const travelerProfiles = [
   {
     code: "tw",
     countryCode: "TW",
-    flag: "🇹🇼",
-    nativeName: "台灣",
+    flag: "TW",
+    nativeName: "Taiwan",
     language: "zh-Hant",
     htmlLang: "zh-TW",
     consularHotline: "+886-800-085-095",
@@ -53,7 +53,7 @@ export const travelerProfiles = [
   {
     code: "au",
     countryCode: "AU",
-    flag: "🇦🇺",
+    flag: "AU",
     nativeName: "Australia",
     language: "en",
     htmlLang: "en-AU",
@@ -63,7 +63,7 @@ export const travelerProfiles = [
   {
     code: "gb",
     countryCode: "GB",
-    flag: "🇬🇧",
+    flag: "GB",
     nativeName: "United Kingdom",
     language: "en",
     htmlLang: "en-GB",
@@ -73,7 +73,7 @@ export const travelerProfiles = [
   {
     code: "ca",
     countryCode: "CA",
-    flag: "🇨🇦",
+    flag: "CA",
     nativeName: "Canada",
     language: "en",
     htmlLang: "en-CA",
@@ -83,8 +83,8 @@ export const travelerProfiles = [
   {
     code: "th",
     countryCode: "TH",
-    flag: "🇹🇭",
-    nativeName: "ประเทศไทย",
+    flag: "TH",
+    nativeName: "Thailand",
     language: "th",
     htmlLang: "th-TH",
     consularHotline: "+66-2-572-8442",
@@ -93,8 +93,8 @@ export const travelerProfiles = [
   {
     code: "vn",
     countryCode: "VN",
-    flag: "🇻🇳",
-    nativeName: "Việt Nam",
+    flag: "VN",
+    nativeName: "Vietnam",
     language: "vi",
     htmlLang: "vi-VN",
     consularHotline: "+84-981-84-84-84",
