@@ -146,6 +146,7 @@ export default async function TravelerGuidePage({ params }: Props) {
         <div className="prose-guide">
           <SearchIntentSection
             locale={locale}
+            uiLanguage={profile.language}
             cityName={cityName}
             countryName={countryName}
             incident={incident as IncidentType}
