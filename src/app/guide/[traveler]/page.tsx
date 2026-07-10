@@ -12,6 +12,7 @@ import {
   buildFaqJsonLd,
   buildTravelerHomeMetadata,
   buildTravelerItemListJsonLd,
+  buildWebsiteJsonLd,
 } from "@/lib/seo";
 import { incidentTypes } from "@/lib/site-config";
 import { getTravelerDestinations } from "@/lib/traveler-destinations";
@@ -79,9 +80,15 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
       path: `/${profile.code}/${guide.country}/${guide.city}/${guide.incident}`,
     })),
   );
+  const websiteJsonLd = buildWebsiteJsonLd(profile);
 
   return (
     <>
+      <Script
+        id="traveler-home-website-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       <Script
         id="traveler-home-faq-jsonld"
         type="application/ld+json"

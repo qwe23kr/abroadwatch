@@ -642,13 +642,16 @@ export function buildTravelerItemListJsonLd(
   };
 }
 
-export function buildWebsiteJsonLd(): object {
+export function buildWebsiteJsonLd(profile?: TravelerProfile): object {
+  const searchPath = profile ? travelerPath(profile, "/search") : "/kr/search";
+  const description = profile ? travelerUi(profile).subtitle : siteConfig.seo.description;
+
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: siteConfig.name,
     url: siteConfig.url,
-    description: siteConfig.seo.description,
+    description,
     publisher: {
       "@type": "Organization",
       name: siteConfig.name,
@@ -662,7 +665,7 @@ export function buildWebsiteJsonLd(): object {
     },
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteConfig.url}/kr/search?query={search_term_string}`,
+      target: `${siteConfig.url}${searchPath}?query={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };

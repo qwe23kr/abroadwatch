@@ -7,11 +7,16 @@ import { isAdsenseReadyTravelerProfile } from "@/lib/quality";
 import { travelerProfiles, type TravelerProfile } from "@/lib/traveler-profiles";
 
 const staticPageSlugs = ["about", "contact", "privacy", "terms", "disclaimer", "editorial"];
+const qualityUpdateLastModified = new Date("2026-07-10");
+
+function latestDate(...dates: Date[]) {
+  return new Date(Math.max(...dates.map((date) => date.getTime())));
+}
 
 function homeEntry(profile: TravelerProfile): MetadataRoute.Sitemap[number] {
   return {
     url: `${siteConfig.url}${travelerPath(profile)}`,
-    lastModified: new Date("2026-06-23"),
+    lastModified: qualityUpdateLastModified,
     changeFrequency: "weekly",
     priority: profile.code === "kr" || profile.code === "us" ? 1 : 0.9,
     alternates: {
@@ -59,7 +64,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const countrySuffix = `/${country.slug}`;
       entries.push({
         url: `${siteConfig.url}${travelerPath(profile, countrySuffix)}`,
-        lastModified: new Date("2026-06-25"),
+        lastModified: qualityUpdateLastModified,
         changeFrequency: "weekly",
         priority: 0.72,
         alternates: {
@@ -71,7 +76,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         const citySuffix = `/${country.slug}/${city.slug}`;
         entries.push({
           url: `${siteConfig.url}${travelerPath(profile, citySuffix)}`,
-          lastModified: new Date("2026-06-25"),
+          lastModified: qualityUpdateLastModified,
           changeFrequency: "weekly",
           priority: 0.78,
           alternates: {
@@ -97,7 +102,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     entries.push({
       url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
-      lastModified: new Date(guide.frontmatter.updatedAt),
+      lastModified: latestDate(new Date(guide.frontmatter.updatedAt), qualityUpdateLastModified),
       changeFrequency: "monthly",
       priority: 0.86,
       alternates: {
