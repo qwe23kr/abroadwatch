@@ -7,6 +7,7 @@ import { NationalityProofSection } from "@/components/guide/NationalityProofSect
 import { GuideQualitySection } from "@/components/guide/GuideQualitySection";
 import { SearchIntentSection } from "@/components/guide/SearchIntentSection";
 import { TravelerDepthSection } from "@/components/guide/TravelerDepthSection";
+import { TravelProblemCta } from "@/components/guide/TravelProblemCta";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
@@ -108,7 +109,8 @@ export default async function TravelerGuidePage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(faqItems)) }}
         />
       )}
-      <article className="mx-auto max-w-3xl px-4 py-8 pb-24 md:px-6 md:py-12">
+      <main className="relative mx-auto max-w-3xl px-4 py-8 pb-24 md:px-6 md:py-12">
+      <article>
         <nav className="mb-6 text-sm text-gray-500" aria-label="Breadcrumb">
           <Link href={`/${traveler}`} className="hover:text-blue-700">{profile.flag} {profile.nativeName}</Link>
           <span className="mx-2">/</span>
@@ -217,6 +219,10 @@ export default async function TravelerGuidePage({ params }: Props) {
           </section>
         )}
       </article>
+      <div className="mt-8 xl:absolute xl:left-[calc(100%+1rem)] xl:top-12 xl:mt-0 xl:w-[220px] 2xl:w-[260px]">
+        <TravelProblemCta language={profile.language} />
+      </div>
+      </main>
       <EmergencyFab locale={locale} phone={guide.frontmatter.emergencyNumber} label={guide.frontmatter.title} />
     </>
   );

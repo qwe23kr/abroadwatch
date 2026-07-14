@@ -2,6 +2,7 @@ import Script from "next/script";
 import { IncidentTabs } from "@/components/guide/IncidentTabs";
 import { SearchIntentSection } from "@/components/guide/SearchIntentSection";
 import { ShareGuide } from "@/components/guide/ShareGuide";
+import { TravelProblemCta } from "@/components/guide/TravelProblemCta";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -98,7 +99,8 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <article className="mx-auto max-w-3xl px-4 py-8 pb-24 md:px-6 md:py-12 md:pb-28">
+      <main className="relative mx-auto max-w-3xl px-4 py-8 pb-24 md:px-6 md:py-12 md:pb-28">
+      <article>
         <Breadcrumbs items={breadcrumbItems} />
 
         <header className="mb-6">
@@ -160,6 +162,10 @@ export function GuidePageLayout({ guide, relatedGuides }: GuidePageLayoutProps) 
           </section>
         )}
       </article>
+      <div className="mt-8 xl:absolute xl:left-[calc(100%+1rem)] xl:top-12 xl:mt-0 xl:w-[220px] 2xl:w-[260px]">
+        <TravelProblemCta language={locale} />
+      </div>
+      </main>
 
       <EmergencyFab
         locale={locale}

@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { LocaleHtmlLang } from "@/components/layout/LocaleHtmlLang";
+import { TopTravelWidget } from "@/components/layout/TopTravelWidget";
 import { EmrldTracker } from "@/components/analytics/EmrldTracker";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { isProductionRuntime } from "@/lib/runtime";
@@ -27,6 +28,7 @@ export default async function LocaleLayout({
     <>
       <LocaleHtmlLang locale={locale} />
       <Header locale={locale} />
+      <TopTravelWidget />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} />
       {enableThirdParty && <EmrldTracker />}
