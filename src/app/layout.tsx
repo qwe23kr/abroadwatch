@@ -43,7 +43,4 @@ export const metadata: Metadata = {
       "msvalidate.01": siteConfig.bingSiteVerification,
     },
   },
-  other: {
-    "google-adsense-account": siteConfig.adsenseClientId,
-  },
 };

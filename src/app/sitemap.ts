@@ -31,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPageLastModified = new Date("2026-06-18");
 
   for (const profile of indexableProfiles) {
-    for (const [suffix, priority] of [["/tools/lost-phone", 0.92], ["/claims", 0.88]] as const) {
+    for (const [suffix, priority] of [["/prepare", 0.96], ["/tools/lost-phone", 0.92], ["/claims", 0.88]] as const) {
       entries.push({
         url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
         lastModified: new Date("2026-07-27"),

@@ -54,6 +54,8 @@ const incidentNames: Record<IncidentType, Record<CopyLanguage, string>> = {
   scam: { ko: "여행 사기", "zh-Hans": "旅行诈骗", ja: "旅行詐欺", "zh-Hant": "旅遊詐騙", th: "กลโกงการท่องเที่ยว", vi: "Lừa đảo du lịch", en: "Travel scams" },
 };
 
+// Kept as source material for a future verified-review import pipeline.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const reviewCommunities: Record<DestinationCode, string> = {
   "south-korea": "koreatravel",
   japan: "JapanTravel",
@@ -304,6 +306,8 @@ function requirementRows(traveler: TravelerCode, incident: IncidentType, languag
   return [labels.report, labels.identity, labels.evidence, labels.insurance];
 }
 
+// Kept as source material only; generated pages must not publish these unverified patterns.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function reviewPatterns(language: CopyLanguage, incident: IncidentType, city: string): string[] {
   const patterns: Record<CopyLanguage, Record<IncidentType, string[]>> = {
     ko: {
@@ -520,7 +524,6 @@ function generateGuide(traveler: TravelerCode, country: DestinationCode, city: s
   const hospital = cityData.hospitals?.[0];
   const extended = extendedLabels(language);
   const requirements = requirementRows(traveler, incident, language);
-  const translatedReviews = reviewPatterns(language, incident, cityName);
   const phrase = localPhraseBlock(language === "ko" ? "ko" : "en", country, incident) ?? fallbackPhrase(country);
   const table = ({
     ko: ["항목", "안내", "경찰", "담당기관·서비스", "추가 여행비", "보험 청구를 위해 모든 영수증을 보관하세요"],
@@ -531,13 +534,6 @@ function generateGuide(traveler: TravelerCode, country: DestinationCode, city: s
     vi: ["Hạng mục", "Hướng dẫn", "Cảnh sát", "Cơ quan hoặc nhà cung cấp", "Chi phí đi lại phát sinh", "Giữ mọi hóa đơn để yêu cầu bảo hiểm"],
     en: ["Item", "Guidance", "Police", "Authority / provider", "Extra travel cost", "Keep every receipt for insurance"],
   } as const)[language];
-  const reviewSources = ({ ko: ["여행자 후기 · Reddit", "경찰·보험 사례", "영사·서비스 제공기관 사례"], "zh-Hans": ["旅客报告 · Reddit", "警方与保险案例", "领事及服务机构案例"], ja: ["旅行者報告・Reddit", "警察・保険事例", "領事・事業者事例"], "zh-Hant": ["旅客報告 · Reddit", "警方與保險案例", "領事及服務機構案例"], th: ["รีวิวนักเดินทาง · Reddit", "กรณีตำรวจและประกัน", "กรณีกงสุลและผู้ให้บริการ"], vi: ["Trải nghiệm du khách · Reddit", "Trường hợp cảnh sát và bảo hiểm", "Trường hợp lãnh sự và nhà cung cấp"], en: ["Traveler reports · Reddit", "Police and insurance reports", "Consular and provider reports"] } as const)[language];
-  const reviews = translatedReviews.map((text, index) => ({
-    text,
-    source: reviewSources[index],
-  }));
-  const communitySource = ({ ko: "여행자 커뮤니티 후기", "zh-Hans": "旅客社区报告", ja: "旅行者コミュニティ報告", "zh-Hant": "旅客社群報告", th: "รายงานจากชุมชนนักเดินทาง", vi: "Báo cáo từ cộng đồng du khách", en: "Traveler community reports" } as const)[language];
-  const reviewUrl = `https://www.reddit.com/r/${reviewCommunities[country]}/search/?q=${encodeURIComponent(incidentNames[incident].en)}&restrict_sr=1`;
 
   return `---
 title: "${esc(title)}"
@@ -553,10 +549,6 @@ emergencyNumber: "${emergency}"
 
 <ReviewNote label="📌 ${esc(ui.source)}" source="${esc(mission.officialName)}" url="${mission.officialUrl}">
   ${ui.sourceNote}
-</ReviewNote>
-
-<ReviewNote label="💬 ${esc(ui.reviews)}" source="${communitySource}" url="${reviewUrl}">
-  ${ui.reviewText}
 </ReviewNote>
 
 ## ${ui.timeline}
@@ -626,12 +618,6 @@ ${hospital ? `
 
 <GoogleMap query="${esc(hospital.mapQuery)}" title="${esc(language === "ko" ? hospital.name.ko : safeEnglish(hospital.name.en, "Local medical provider"))}" />
 ` : ""}
-
-## ${ui.reviews}
-
-<ReviewQuotes title="${esc(ui.reviews)}">
-${reviews.map((review) => `<ReviewQuoteRow text="${esc(review.text)}" source="${esc(review.source)}" />`).join("\n")}
-</ReviewQuotes>
 
 ## ${extended.faq}
 

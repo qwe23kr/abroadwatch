@@ -88,6 +88,17 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
                   {nativeNav?.search ?? t(locale, "searchButton")}
                 </Link>
               </li>
+              {traveler && (
+                <li>
+                  <Link
+                    href={`/${traveler.code}/prepare`}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-lg bg-[#10221d] px-3 py-2.5 text-sm font-black text-[#c8f169]"
+                  >
+                    {traveler.code === "kr" ? "여행 준비" : "Trip preparation"}
+                  </Link>
+                </li>
+              )}
               {navItems.map((item) => (
                 <li key={item.key}>
                   <Link

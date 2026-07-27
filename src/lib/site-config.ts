@@ -13,7 +13,6 @@ export const siteConfig = {
     ogDescription:
       "여권 분실, 병원, 경찰 신고, 여행 사기까지 — 아시아 주요 여행지의 대사관·경찰·비상 연락처와 단계별 복구 절차를 제공합니다.",
   },
-  adsenseClientId: "ca-pub-5495602989008149",
   /** Google Analytics 4 측정 ID */
   gaMeasurementId: "G-123Z5X8X27",
   /** Google Search Console 소유 확인 */

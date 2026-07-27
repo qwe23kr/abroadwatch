@@ -30,13 +30,10 @@ import {
 } from "./ko-terms";
 import { localPhraseBlock } from "./local-phrases";
 import { getHospitalCopy } from "./hospital-terms";
-import { getScamGuide, scamReviewBlock, scamReviewQuotesBlock, scamTypesBlock } from "./scam-terms";
+import { getScamGuide, scamReviewBlock, scamTypesBlock } from "./scam-terms";
 import {
-  buildExperienceSection,
   buildGuideFaqs,
-  experienceTimelineBlock,
 } from "./incident-guide-extras";
-import { incidentReviewQuotesBlock } from "./incident-reviews";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -102,14 +99,11 @@ function buildReviewSection(
   incident: IncidentType,
   cityName: string,
 ): string {
-  const official = sourceBlock(data, locale);
-  const experience = buildExperienceSection(country, citySlug, incident, locale, {
-    ko: cityName,
-    en: cityName,
-  });
-  if (experience) return `${official}\n\n${experience}`;
-  const quotes = incidentReviewQuotesBlock(country, citySlug, incident, locale);
-  return quotes ? `${official}\n\n${quotes}` : official;
+  void country;
+  void citySlug;
+  void incident;
+  void cityName;
+  return sourceBlock(data, locale);
 }
 
 const medicalEmergencyNumbers: Record<
@@ -770,11 +764,11 @@ function generateScam(
     return buildPage({
       locale: "ko",
       title: `${cityName} 여행 사기 — 유형·예방·신고 (2026)`,
-      summary: `${countryName} ${cityName} 바·택시·환전 등 실제 후기 기반 사기 유형과 대응법.`,
+      summary: `${countryName} ${cityName} 바·택시·환전 등 공식 안내를 바탕으로 정리한 사기 유형과 대응법.`,
       cost: guide.estimatedLoss.ko,
       time: "예방 즉시 · 신고 1~3시간",
       emergency,
-      review: `${scamReviewBlock(guide, "ko")}\n\n${scamReviewQuotesBlock(guide, "ko")}\n\n${experienceTimelineBlock(country, citySlug, "scam", "ko", { ko: cityName, en: cityName })}`,
+      review: scamReviewBlock(guide, "ko"),
       timelineTitle: `${cityName} 여행 사기 대응 타임라인`,
       timeline,
       actions,
@@ -847,11 +841,11 @@ function generateScam(
   return buildPage({
     locale: "en",
     title: `Travel Scams in ${cityName} — Prevention & Reporting (2026)`,
-    summary: `Review-based scam types and what to do in ${cityName}, ${countryName}.`,
+    summary: `Common scam patterns and what to do in ${cityName}, ${countryName}.`,
     cost: guide.estimatedLoss.en,
     time: "Prevention: immediate · Report: 1–3 hrs",
     emergency,
-    review: `${scamReviewBlock(guide, "en")}\n\n${scamReviewQuotesBlock(guide, "en")}\n\n${experienceTimelineBlock(country, citySlug, "scam", "en", { ko: cityName, en: cityName })}`,
+    review: scamReviewBlock(guide, "en"),
     timelineTitle: `Scam response timeline — ${cityName}`,
     timeline,
     actions,

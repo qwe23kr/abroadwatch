@@ -37,6 +37,14 @@ export function Header({ locale, traveler }: HeaderProps) {
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Main">
+          {traveler && (
+            <Link
+              href={`/${traveler.code}/prepare`}
+              className="rounded-full bg-[#10221d] px-4 py-2 text-sm font-black text-[#c8f169] transition hover:-translate-y-0.5"
+            >
+              {traveler.code === "kr" ? "여행 준비" : "Trip prep"}
+            </Link>
+          )}
           {navItems.map((item) => (
             <Link
               key={item.key}

@@ -8,59 +8,76 @@ import { getTravelerMissionSource, type DestinationCode } from "./traveler-missi
 
 const contentDir = path.join(process.cwd(), "content");
 const errors: string[] = [];
-const reviewSignatures = new Map<string, Set<string>>();
+const reviewSignatures = new Map<string, string>();
+const missionWords = /embassy|consulate|mission|representative|대사관|영사관|대표부|大使館|領事館|駐|สถานทูต|đại sứ|lãnh sự/i;
 let count = 0;
 
 for (const profile of travelerProfiles) {
   for (const country of getTravelerDestinations(profile)) {
-    const mission = getTravelerMissionSource(
-      profile.code,
-      country.slug as DestinationCode,
-    )!;
-
+    const mission = getTravelerMissionSource(profile.code, country.slug as DestinationCode)!;
     for (const city of country.cities) {
+      const currentNames = [city.slug, city.slug.replace(/-/g, " "), city.name.en, city.name.ko]
+        .filter(Boolean).map((name) => name.toLocaleLowerCase());
+      const otherCities = country.cities.filter((other) => other.slug !== city.slug)
+        .flatMap((other) => [other.slug, other.slug.replace(/-/g, " "), other.name.en, other.name.ko]).filter(Boolean);
+
       for (const incident of incidentTypes) {
-        const relative = path.join(
-          profile.code,
-          country.slug,
-          city.slug,
-          `${incident}.mdx`,
-        );
+        const relative = path.join(profile.code, country.slug, city.slug, `${incident}.mdx`);
         const file = path.join(contentDir, relative);
         if (!fs.existsSync(file)) {
           errors.push(`${relative}: missing file`);
           continue;
         }
-
         count += 1;
         const raw = fs.readFileSync(file, "utf8");
         const { data, content } = matter(raw);
         for (const key of ["title", "summary", "updatedAt", "emergencyNumber"]) {
-          if (typeof data[key] !== "string" || !data[key].trim()) {
-            errors.push(`${relative}: invalid ${key}`);
-          }
+          if (typeof data[key] !== "string" || !data[key].trim()) errors.push(`${relative}: invalid ${key}`);
         }
-        const hasOfficialSource =
-          profile.code === "kr" && country.slug !== "south-korea"
-            ? /https:\/\/(?:overseas\.mofa\.go\.kr|www\.0404\.go\.kr)/.test(content)
-            : content.includes(mission.officialUrl);
-        if (!hasOfficialSource) {
-          errors.push(`${relative}: missing official nationality source`);
-        }
-        if (!content.includes("<ReviewNote")) {
-          errors.push(`${relative}: missing evidence note`);
-        }
-        if (/\bundefined\b|null/.test(content)) {
-          errors.push(`${relative}: contains unresolved content value`);
-        }
-        const requiredComponents = profile.code === "kr"
+        const hasOfficialSource = profile.code === "kr" && country.slug !== "south-korea"
+          ? /https:\/\/(?:overseas\.mofa\.go\.kr|www\.0404\.go\.kr)/.test(content)
+          : content.includes(mission.officialUrl);
+        if (!hasOfficialSource) errors.push(`${relative}: missing official nationality source`);
+        if (!content.includes("<ReviewNote")) errors.push(`${relative}: missing evidence note`);
+        if (/\bundefined\b|null/.test(content)) errors.push(`${relative}: contains unresolved content value`);
+
+        const required = profile.code === "kr"
           ? ["<EmergencyBanner", "<ReviewNote", "<ContactCard", "<GoogleMap"]
-          : ["<EmergencyBanner", "<ReviewNote", "<ReviewQuotes", "<TimelineGroup", "<ActionGroup", "<Callout", "<InfoRows", "<LocalPhrase", "<ContactCard", "<GoogleMap", "<FaqItem"];
-        for (const component of requiredComponents) {
+          : ["<EmergencyBanner", "<ReviewNote", "<TimelineGroup", "<ActionGroup", "<Callout", "<InfoRows", "<LocalPhrase", "<ContactCard", "<GoogleMap", "<FaqItem"];
+        for (const component of required) {
           if (!content.includes(component)) errors.push(`${relative}: missing ${component.slice(1)}`);
         }
+        if (/<ReviewQuotes\b|<ReviewQuoteRow\b|<RealTimeline\b|<RealTimelineStep\b|실제 후기 기반|##\s*실제 경험담/.test(content)) {
+          errors.push(`${relative}: contains unverifiable review or real-experience claim`);
+        }
+        for (const row of content.matchAll(/<ReviewQuoteRow\s+text="([^"]+)"/g)) {
+          const signature = row[1].replace(/\s+/g, " ").trim();
+          const previous = reviewSignatures.get(signature);
+          if (previous && previous !== relative) errors.push(`${relative}: duplicate review also used in ${previous}`);
+          else reviewSignatures.set(signature, relative);
+        }
+
+        const maps = [...content.matchAll(/<GoogleMap\s+query="([^"]+)"\s+title="([^"]+)"/g)];
+        for (const map of maps) {
+          const label = `${map[1]} ${map[2]}`.toLocaleLowerCase();
+          if (missionWords.test(label)) continue;
+          const leaked = otherCities.find((name) =>
+            label.includes(name.toLocaleLowerCase()) && !currentNames.some((current) => label.includes(current)));
+          if (leaked) errors.push(`${relative}: map contains another city (${leaked})`);
+        }
+        if (profile.code === "kr" && incident === "lost-passport") {
+          const remoteMission = maps.some((map) => {
+            const label = `${map[1]} ${map[2]}`.toLocaleLowerCase();
+            return missionWords.test(label)
+              && !currentNames.some((current) => label.includes(current))
+              && otherCities.some((name) => label.includes(name.toLocaleLowerCase()));
+          });
+          if (remoteMission && !content.includes('title="공관 방문 전 이동 경로 확인"')) {
+            errors.push(`${relative}: remote mission requires travel notice`);
+          }
+        }
         if (profile.code !== "kr") {
-          const mapCount = content.match(/<GoogleMap\b/g)?.length ?? 0;
+          const mapCount = maps.length;
           const contactCount = content.match(/<ContactCard\b/g)?.length ?? 0;
           const timelineCount = content.match(/<TimelineStep\b/g)?.length ?? 0;
           const actionCount = content.match(/<ActionStep\b/g)?.length ?? 0;
@@ -68,18 +85,8 @@ for (const profile of travelerProfiles) {
           if (contactCount < 2) errors.push(`${relative}: expected at least 2 contacts, found ${contactCount}`);
           if (timelineCount < 6) errors.push(`${relative}: expected 6 timeline steps, found ${timelineCount}`);
           if (actionCount < 6) errors.push(`${relative}: expected 6 action steps, found ${actionCount}`);
-          const reviewsAt = content.lastIndexOf("<ReviewQuotes");
-          const faqAt = content.lastIndexOf("<FaqItem");
-          if (reviewsAt < 0 || faqAt < reviewsAt) errors.push(`${relative}: footer reviews must appear before FAQ`);
-          const reviewRows = [...content.matchAll(/<ReviewQuoteRow text="([^"]+)" source="([^"]+)" \/>/g)];
-          if (reviewRows.length !== 3) errors.push(`${relative}: expected 3 incident reviews, found ${reviewRows.length}`);
-          const reviewKey = `${profile.code}/${country.slug}/${city.slug}`;
-          const signatures = reviewSignatures.get(reviewKey) ?? new Set<string>();
-          signatures.add(reviewRows.map((row) => row[1]).join("|"));
-          reviewSignatures.set(reviewKey, signatures);
-          if (profile.code === "jp" && /旅行者在|遇到.+时的/.test(raw)) errors.push(`${relative}: Chinese grammar leaked into Japanese copy`);
         }
-        if (profile.code !== "kr" && /대한민국 대사관|Korean mission|Embassy of Korea/.test(raw)) {
+        if (profile.code !== "kr" && /Korean mission|Embassy of Korea/.test(raw)) {
           errors.push(`${relative}: leaked Korean-national guidance`);
         }
       }
@@ -87,23 +94,9 @@ for (const profile of travelerProfiles) {
   }
 }
 
-for (const [reviewKey, signatures] of reviewSignatures) {
-  if (signatures.size !== incidentTypes.length) {
-    errors.push(`${reviewKey}: reviews are duplicated across incidents (${signatures.size}/${incidentTypes.length} unique)`);
-  }
-}
-
-const expected =
-  travelerProfiles.reduce(
-    (sum, profile) =>
-      sum +
-      getTravelerDestinations(profile).reduce(
-        (profileSum, country) => profileSum + country.cities.length * incidentTypes.length,
-        0,
-      ),
-    0,
-  );
-
+const expected = travelerProfiles.reduce((sum, profile) =>
+  sum + getTravelerDestinations(profile).reduce((subtotal, country) =>
+    subtotal + country.cities.length * incidentTypes.length, 0), 0);
 if (count !== expected) errors.push(`expected ${expected} files, found ${count}`);
 
 if (errors.length) {

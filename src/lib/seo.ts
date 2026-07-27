@@ -186,24 +186,24 @@ export function buildTravelerGuideMetadata(
   const intentTitle =
     profile.language === "ko"
       ? ({
-          "lost-passport": `${cityName}에서 여권 분실 시? 경찰신고·긴급여권·귀국 절차`,
-          "lost-phone": `${cityName} 휴대폰 분실·도난 시 잠금·신고·보험 청구`,
-          "lost-wallet": `${cityName} 지갑 분실 시 카드 정지·경찰 신고 순서`,
-          hospital: `${cityName} 병원·응급실 이용 방법, 비용·보험·통역`,
-          "police-report": `${cityName} 경찰 신고 방법과 보험용 확인서 받기`,
-          scam: `${cityName} 여행 사기 유형과 피해 신고·환불 대응`,
+          "lost-passport": `${cityName} 여권 분실 대처법 | 경찰 신고·긴급여권·영사관`,
+          "lost-phone": `${cityName} 휴대폰 분실 대처법 | 잠금·유심 정지·경찰 신고`,
+          "lost-wallet": `${cityName} 지갑 분실 대처법 | 카드 정지·경찰 신고`,
+          hospital: `${cityName} 병원·응급실 이용법 | 비용·통역·준비 서류`,
+          "police-report": `${cityName} 경찰 신고 방법 | 외국인 절차·신고서 받기`,
+          scam: `${cityName} 여행 사기 대처법 | 유형·신고·환불 절차`,
         } satisfies Record<IncidentType, string>)[incident]
       : frontmatter.title;
   const metaDescription =
     profile.language === "ko"
       ? truncateMetaDescription(
           ({
-            "lost-passport": `${countryName} ${cityName}에서 여권을 잃어버렸을 때 찾기, 경찰 신고, 한국 공관 긴급여권, 항공편 변경과 보험 서류까지 실제 처리 순서.`,
-            "lost-phone": `${cityName}에서 휴대폰을 잃어버렸을 때 원격 잠금, 유심 정지, 금융앱 보호, 경찰 신고와 여행자보험 증거 확보 순서.`,
-            "lost-wallet": `${cityName} 지갑·카드 분실 시 카드 정지, 현지 경찰 신고서, 부정결제 대응과 보험 청구 준비 방법.`,
-            hospital: `${cityName} 병원과 응급실 이용 시 긴급번호, 접수 방법, 예상 비용, 한국어 통역과 여행자보험 청구 서류.`,
-            "police-report": `${cityName}에서 분실·도난 피해를 신고하고 보험 청구용 접수번호와 경찰 확인서를 받는 외국인 절차.`,
-            scam: `${cityName}에서 자주 발생하는 여행 사기와 결제 취소, 증거 보존, 관광경찰 신고 및 카드 분쟁 대응 방법.`,
+            "lost-passport": `${countryName} ${cityName} 여권 분실 시 분실물 확인부터 경찰 신고, 한국 영사관 긴급여권 신청, 귀국 항공편 처리까지 순서대로 확인하세요.`,
+            "lost-phone": `${cityName} 휴대폰 분실 시 원격 잠금, SIM·eSIM 정지, 금융앱 보호, 경찰 신고와 증거 보존 순서를 확인하세요.`,
+            "lost-wallet": `${cityName} 지갑·카드 분실 시 카드 정지, 부정결제 확인, 현지 경찰 신고서 발급 순서를 확인하세요.`,
+            hospital: `${cityName} 병원·응급실 이용 시 긴급번호, 접수 방법, 비용, 한국어 통역 요청과 준비 서류를 확인하세요.`,
+            "police-report": `${cityName}에서 도난·분실을 신고하는 외국인 절차와 접수번호, 경찰 확인서를 받는 방법을 확인하세요.`,
+            scam: `${cityName} 여행 사기 피해 시 추가 결제 중단, 증거 보존, 관광경찰 신고와 카드 결제 분쟁 순서를 확인하세요.`,
           } satisfies Record<IncidentType, string>)[incident],
         )
       : truncateMetaDescription(frontmatter.summary);

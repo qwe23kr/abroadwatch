@@ -179,7 +179,7 @@ AbroadWatch는 현재 사용자 계정을 운영하지 않으며 이름, 주소,
 
 ## 쿠키
 
-Google Analytics와 Google AdSense는 쿠키를 사용할 수 있습니다. 맞춤 광고 설정은 Google 광고 설정에서 관리할 수 있습니다.
+Google Analytics는 방문 통계를 위해 쿠키를 사용할 수 있습니다. 브라우저 설정에서 쿠키 저장을 제한할 수 있습니다.
 
 ## 제3자 서비스
 
@@ -207,7 +207,7 @@ Google Analytics may collect information for service improvement:
 
 ## Cookies
 
-Google Analytics and Google AdSense may use cookies. Personalized advertising can be managed through Google Ads Settings.
+Google Analytics may use cookies for traffic measurement. You can restrict cookie storage in your browser settings.
 
 ## Third-party Services
 
