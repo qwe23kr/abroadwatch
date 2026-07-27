@@ -30,6 +30,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = indexableProfiles.map(homeEntry);
   const staticPageLastModified = new Date("2026-06-18");
 
+  for (const profile of indexableProfiles) {
+    for (const [suffix, priority] of [["/tools/lost-phone", 0.92], ["/claims", 0.88]] as const) {
+      entries.push({
+        url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
+        lastModified: new Date("2026-07-27"),
+        changeFrequency: "monthly",
+        priority,
+        alternates: { languages: travelerAlternateLanguages(profile, suffix) },
+      });
+    }
+  }
+
   for (const slug of staticPageSlugs) {
     entries.push({
       url: `${siteConfig.url}/ko/${slug}`,

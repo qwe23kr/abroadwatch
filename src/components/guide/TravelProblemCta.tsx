@@ -1,47 +1,30 @@
-import Image from "next/image";
+import Link from "next/link";
 import type { Locale } from "@/lib/site-config";
 import type { TravelerProfile } from "@/lib/traveler-profiles";
 
 type CtaLanguage = Locale | TravelerProfile["language"];
 
-const headlineByLanguage: Record<CtaLanguage, string> = {
-  ko: "여행중 문제가 생겼나요?!",
-  en: "Something went wrong during your trip?!",
-  "zh-Hans": "旅行中遇到问题了吗？！",
-  ja: "旅行中にトラブルが起きましたか？！",
-  "zh-Hant": "旅途中遇到問題了嗎？！",
-  th: "เกิดปัญหาระหว่างเดินทางใช่ไหม?!",
-  vi: "Bạn gặp vấn đề khi đang du lịch?!",
-};
-
 interface TravelProblemCtaProps {
   language: CtaLanguage;
+  travelerCode?: string;
+  incident?: string;
 }
 
-export function TravelProblemCta({ language }: TravelProblemCtaProps) {
-  const headline = headlineByLanguage[language] ?? headlineByLanguage.en;
-
+export function TravelProblemCta({ language, travelerCode = language === "ko" ? "kr" : "us", incident }: TravelProblemCtaProps) {
+  const isKo = language === "ko";
+  const isPhone = incident === "lost-phone";
   return (
-    <aside className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm">
-      <p className="text-base font-bold leading-snug text-gray-900">{headline}</p>
-      <div className="mt-4 overflow-hidden rounded-md border border-gray-100 bg-gray-50">
-        <Image
-          src="/tp-qr-code.jpeg"
-          alt={headline}
-          width={1600}
-          height={900}
-          className="h-auto w-full"
-          sizes="(min-width: 1024px) 240px, 100vw"
-        />
+    <aside className="overflow-hidden rounded-2xl border border-[#173c32]/10 bg-white shadow-[0_12px_40px_rgba(16,34,29,.08)]">
+      <div className="bg-[#10221d] p-5 text-white">
+        <p className="text-[10px] font-black tracking-[.14em] text-[#c8f169]">{isPhone ? "60-SECOND TOOL" : "RECOVERY DESK"}</p>
+        <p className="mt-3 text-lg font-black leading-snug">{isPhone ? (isKo ? "휴대폰 분실 대응 순서를 체크하세요." : "Check your lost-phone response.") : (isKo ? "보험 청구에 필요한 증거를 확인하세요." : "Preserve evidence for your claim.")}</p>
       </div>
-      <a
-        href="https://airhelp.tpo.li/mVx4XhSs"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-blue-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-800"
-      >
-        바로가기
-      </a>
+      <div className="p-4">
+        <p className="text-sm leading-6 text-[#61716b]">{isPhone ? (isKo ? "잠금부터 경찰 신고까지 완료한 항목을 바로 기록할 수 있습니다." : "Track every step from device lock to police report.") : (isKo ? "현장에서 놓치기 쉬운 서류를 사고 유형별로 정리했습니다." : "See the documents commonly missed at the scene.")}</p>
+        <Link href={isPhone ? `/${travelerCode}/tools/lost-phone` : `/${travelerCode}/claims`} className="mt-4 flex items-center justify-between rounded-xl bg-[#c8f169] px-4 py-3 text-sm font-black text-[#10221d]">
+          {isPhone ? (isKo ? "60초 대응 시작" : "Start the checklist") : (isKo ? "청구 체크리스트" : "Claims checklist")}<span>→</span>
+        </Link>
+      </div>
     </aside>
   );
 }

@@ -51,6 +51,26 @@ export default async function TravelerGuidePage({ params }: Props) {
   const cityName = travelerName(profile, city, getTravelerCity(country, city)?.name.en ?? city);
   const countryName = travelerName(profile, country, getTravelerCountry(country)?.name.en ?? country);
   const incidentName = travelerIncident(profile, incident as IncidentType);
+  const displayTitle = profile.language === "ko"
+    ? ({
+        "lost-passport": `${cityName}에서 여권을 잃어버렸다면?`,
+        "lost-phone": `${cityName}에서 휴대폰을 잃어버렸다면?`,
+        "lost-wallet": `${cityName}에서 지갑을 잃어버렸다면?`,
+        hospital: `${cityName}에서 병원에 가야 한다면?`,
+        "police-report": `${cityName}에서 경찰 신고가 필요하다면?`,
+        scam: `${cityName}에서 여행 사기를 당했다면?`,
+      } satisfies Record<IncidentType, string>)[incident as IncidentType]
+    : guide.frontmatter.title;
+  const firstActions = profile.language === "ko"
+    ? ({
+        "lost-passport": ["마지막으로 본 장소와 분실물 센터 확인", "경찰 접수번호와 서면 확인 확보", "한국 공관에 긴급여권 접수조건 확인"],
+        "lost-phone": ["원격 위치 확인 후 분실 모드 설정", "SIM·eSIM과 간편결제 즉시 정지", "IMEI와 위치 화면을 저장한 뒤 신고"],
+        "lost-wallet": ["카드와 모바일 결제 즉시 정지", "부정결제 내역과 시각 캡처", "보험 목적이면 경찰 확인서 확보"],
+        hospital: ["위급하면 보험사보다 긴급번호가 먼저", "여권·보험증권·결제수단 준비", "진단서와 영수증 원본 요청"],
+        "police-report": ["신고 목적을 분실·도난·보험으로 구분", "물품 정보와 발생 시각 정리", "접수번호가 적힌 문서 요청"],
+        scam: ["추가 결제와 상대방 연락 차단", "대화·영수증·위치 등 증거 저장", "카드사와 현지 경찰에 시간순 신고"],
+      } satisfies Record<IncidentType, string[]>)[incident as IncidentType]
+    : [];
   const canonicalPath = `/${traveler}/${country}/${city}/${incident}`;
   const breadcrumbJsonLd = buildTravelerBreadcrumbJsonLd([
     { name: profile.nativeName, path: `/${traveler}` },
@@ -109,10 +129,10 @@ export default async function TravelerGuidePage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(faqItems)) }}
         />
       )}
-      <main className="relative mx-auto max-w-3xl px-4 py-8 pb-24 md:px-6 md:py-12">
+      <main className="relative mx-auto max-w-4xl px-4 py-8 pb-24 md:px-6 md:py-14">
       <article>
-        <nav className="mb-6 text-sm text-gray-500" aria-label="Breadcrumb">
-          <Link href={`/${traveler}`} className="hover:text-blue-700">{profile.flag} {profile.nativeName}</Link>
+        <nav className="mb-8 text-sm font-semibold text-[#788983]" aria-label="Breadcrumb">
+          <Link href={`/${traveler}`} className="hover:text-[#0f766e]">{profile.flag} {profile.nativeName}</Link>
           <span className="mx-2">/</span>
           <Link href={`/${traveler}/${country}`} className="hover:text-blue-700">{countryName}</Link>
           <span className="mx-2">/</span>
@@ -121,13 +141,23 @@ export default async function TravelerGuidePage({ params }: Props) {
           <span>{incidentName}</span>
         </nav>
 
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">{guide.frontmatter.title}</h1>
-          <p className="mt-4 text-lg leading-relaxed text-gray-600">{guide.frontmatter.summary}</p>
+        <header className="mb-10">
+          <div className="mb-5 flex flex-wrap items-center gap-2"><span className="rounded-full bg-[#dff7ef] px-3 py-1.5 text-xs font-black text-[#0f766e]">{incidentName}</span><span className="text-xs font-bold text-[#788983]">{cityName} · {countryName}</span></div>
+          <h1 className="text-balance text-4xl font-black leading-[1.03] tracking-[-.055em] text-[#10221d] md:text-6xl">{displayTitle}</h1>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-[#61716b]">{guide.frontmatter.summary}</p>
+          {firstActions.length > 0 && (
+            <section className="mt-8 overflow-hidden rounded-[1.75rem] bg-[#10221d] p-6 text-white md:p-8">
+              <p className="text-xs font-black tracking-[.14em] text-[#c8f169]">FIRST 10 MINUTES</p>
+              <h2 className="mt-3 text-xl font-black">지금 먼저 할 일</h2>
+              <ol className="mt-5 grid gap-3 md:grid-cols-3">
+                {firstActions.map((action, index) => <li key={action} className="rounded-2xl bg-white/[.08] p-4 text-sm leading-6"><strong className="mr-2 text-[#c8f169]">0{index + 1}</strong>{action}</li>)}
+              </ol>
+            </section>
+          )}
           <dl className="mt-5 grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
-            <div className="rounded-lg bg-red-50 p-3"><dt className="text-xs text-red-700">{ui.emergency}</dt><dd className="font-bold text-red-800">{guide.frontmatter.emergencyNumber}</dd></div>
-            <div className="rounded-lg bg-gray-50 p-3"><dt className="text-xs text-gray-500">{ui.updated}</dt><dd className="font-semibold">{guide.frontmatter.updatedAt}</dd></div>
-            <div className="rounded-lg bg-gray-50 p-3"><dt className="text-xs text-gray-500">{ui.nationality}</dt><dd className="font-semibold">{profile.nativeName}</dd></div>
+            <div className="rounded-2xl bg-[#ffe9e8] p-4"><dt className="text-xs font-bold text-[#b4232b]">{ui.emergency}</dt><dd className="mt-1 font-black text-[#7a2529]">{guide.frontmatter.emergencyNumber}</dd></div>
+            <div className="rounded-2xl bg-white p-4 shadow-sm"><dt className="text-xs font-bold text-[#788983]">{ui.updated}</dt><dd className="mt-1 font-black">{guide.frontmatter.updatedAt}</dd></div>
+            <div className="rounded-2xl bg-white p-4 shadow-sm"><dt className="text-xs font-bold text-[#788983]">{ui.nationality}</dt><dd className="mt-1 font-black">{profile.nativeName}</dd></div>
           </dl>
           <nav className="mt-5" aria-label={tagCopy.heading}>
             <p className="sr-only">{tagCopy.heading}</p>
@@ -136,7 +166,7 @@ export default async function TravelerGuidePage({ params }: Props) {
                 <Link
                   key={tag.label}
                   href={tag.href}
-                  className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 transition hover:bg-blue-100 hover:text-blue-900"
+                  className="rounded-full border border-[#173c32]/10 bg-white px-3 py-1.5 text-sm font-bold text-[#52645e] transition hover:border-[#0f766e] hover:text-[#0f766e]"
                 >
                   {tag.label}
                 </Link>
@@ -220,7 +250,7 @@ export default async function TravelerGuidePage({ params }: Props) {
         )}
       </article>
       <div className="mt-8 xl:absolute xl:left-[calc(100%+1rem)] xl:top-12 xl:mt-0 xl:w-[220px] 2xl:w-[260px]">
-        <TravelProblemCta language={profile.language} />
+        <TravelProblemCta language={profile.language} travelerCode={profile.code} incident={incident} />
       </div>
       </main>
       <EmergencyFab locale={locale} phone={guide.frontmatter.emergencyNumber} label={guide.frontmatter.title} />

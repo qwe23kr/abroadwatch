@@ -21,24 +21,27 @@ const navItems = [
 export function Header({ locale, traveler }: HeaderProps) {
   const nativeNav = traveler ? travelerNav(traveler) : undefined;
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-1.5 px-2.5 py-3 min-[360px]:gap-2 min-[360px]:px-3 sm:px-4 md:px-6">
+    <header className="sticky top-0 z-50 border-b border-[#173c32]/10 bg-[#f6f7f2]/90 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 px-3 py-3.5 sm:px-5 md:px-8">
         <Link
           href={traveler ? `/${traveler.code}` : `/${locale}`}
-          className="flex min-w-0 flex-1 items-center gap-1.5 transition-opacity hover:opacity-80 min-[360px]:gap-2 md:flex-none"
+          className="flex min-w-0 flex-1 items-center gap-2 transition-opacity hover:opacity-75 md:flex-none"
         >
           <BrandMark size={30} className="shrink-0 min-[360px]:h-8 min-[360px]:w-8" />
-          <span className="whitespace-nowrap text-sm font-bold tracking-tight text-gray-900 min-[360px]:text-base min-[360px]:tracking-normal sm:text-lg">
+          <span className="whitespace-nowrap text-sm font-black tracking-[-0.03em] text-[#10221d] min-[360px]:text-base sm:text-lg">
             {siteConfig.name}
+          </span>
+          <span className="hidden rounded-full bg-[#10221d] px-2 py-1 text-[9px] font-bold tracking-[0.14em] text-[#c8f169] sm:inline">
+            TRAVEL READY
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-7 md:flex" aria-label="Main">
           {navItems.map((item) => (
             <Link
               key={item.key}
               href={`/${locale}${item.path}`}
-              className="text-sm font-medium text-gray-600 transition-colors hover:text-blue-600"
+              className="text-sm font-semibold text-[#52645e] transition-colors hover:text-[#0f766e]"
             >
               {nativeNav?.[item.key] ?? t(locale, item.key)}
             </Link>

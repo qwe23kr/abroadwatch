@@ -23,14 +23,14 @@ export function Footer({ locale, traveler }: FooterProps) {
   const nativeFooter = traveler ? travelerFooter(traveler) : undefined;
 
   return (
-    <footer className="mt-auto border-t border-gray-200 bg-gray-50">
-      <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
+    <footer className="mt-auto bg-[#10221d] text-white">
+      <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="mb-2 text-lg font-bold text-gray-900">
+            <p className="mb-2 text-lg font-black tracking-tight text-white">
               {siteConfig.name}
             </p>
-            <p className="max-w-sm text-sm text-gray-600">
+            <p className="max-w-sm text-sm leading-6 text-[#b8c8c2]">
               {nativeFooter?.tagline ?? t(locale, "footerTagline")}
             </p>
           </div>
@@ -39,7 +39,7 @@ export function Footer({ locale, traveler }: FooterProps) {
               <Link
                 key={link.key}
                 href={`/${locale}${link.path}`}
-                className="text-sm text-gray-600 transition-colors hover:text-blue-600"
+                className="text-sm text-[#b8c8c2] transition-colors hover:text-[#c8f169]"
               >
                 {nativeFooter?.[link.key as keyof Omit<typeof nativeFooter, "tagline">] ??
                   t(locale, link.key)}
@@ -47,7 +47,7 @@ export function Footer({ locale, traveler }: FooterProps) {
             ))}
           </nav>
         </div>
-        <p className="text-xs text-gray-500">
+        <p className="border-t border-white/10 pt-6 text-xs text-[#8ea39b]">
           &copy; {year} {siteConfig.name}. {t(locale, "footerRights")}
         </p>
       </div>

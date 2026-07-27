@@ -21,10 +21,10 @@ import type { TravelerProfile } from "./traveler-profiles";
 import { travelerIncident, travelerName, travelerUi } from "./traveler-ui";
 
 const OG_IMAGE = {
-  url: "/opengraph-image",
+  url: "/og.png",
   width: 1200,
   height: 630,
-  alt: "AbroadWatch — 아시아 여행 비상·안전 가이드",
+  alt: "AbroadWatch — 당황한 순간에도, 다음 행동은 선명하게.",
 } as const;
 
 const OG_LOCALE_BY_LANGUAGE: Record<TravelerProfile["language"], string> = {
@@ -172,7 +172,6 @@ export function buildTravelerGuideMetadata(
 ): Metadata {
   const suffix = `/${country}/${city}/${incident}`;
   const canonicalUrl = `${siteConfig.url}${travelerPath(profile, suffix)}`;
-  const metaDescription = truncateMetaDescription(frontmatter.summary);
   const countryName = travelerName(
     profile,
     country,
@@ -184,9 +183,32 @@ export function buildTravelerGuideMetadata(
     getTravelerCity(country, city)?.name.en ?? city,
   );
   const incidentName = travelerIncident(profile, incident);
-
+  const intentTitle =
+    profile.language === "ko"
+      ? ({
+          "lost-passport": `${cityName}에서 여권 분실 시? 경찰신고·긴급여권·귀국 절차`,
+          "lost-phone": `${cityName} 휴대폰 분실·도난 시 잠금·신고·보험 청구`,
+          "lost-wallet": `${cityName} 지갑 분실 시 카드 정지·경찰 신고 순서`,
+          hospital: `${cityName} 병원·응급실 이용 방법, 비용·보험·통역`,
+          "police-report": `${cityName} 경찰 신고 방법과 보험용 확인서 받기`,
+          scam: `${cityName} 여행 사기 유형과 피해 신고·환불 대응`,
+        } satisfies Record<IncidentType, string>)[incident]
+      : frontmatter.title;
+  const metaDescription =
+    profile.language === "ko"
+      ? truncateMetaDescription(
+          ({
+            "lost-passport": `${countryName} ${cityName}에서 여권을 잃어버렸을 때 찾기, 경찰 신고, 한국 공관 긴급여권, 항공편 변경과 보험 서류까지 실제 처리 순서.`,
+            "lost-phone": `${cityName}에서 휴대폰을 잃어버렸을 때 원격 잠금, 유심 정지, 금융앱 보호, 경찰 신고와 여행자보험 증거 확보 순서.`,
+            "lost-wallet": `${cityName} 지갑·카드 분실 시 카드 정지, 현지 경찰 신고서, 부정결제 대응과 보험 청구 준비 방법.`,
+            hospital: `${cityName} 병원과 응급실 이용 시 긴급번호, 접수 방법, 예상 비용, 한국어 통역과 여행자보험 청구 서류.`,
+            "police-report": `${cityName}에서 분실·도난 피해를 신고하고 보험 청구용 접수번호와 경찰 확인서를 받는 외국인 절차.`,
+            scam: `${cityName}에서 자주 발생하는 여행 사기와 결제 취소, 증거 보존, 관광경찰 신고 및 카드 분쟁 대응 방법.`,
+          } satisfies Record<IncidentType, string>)[incident],
+        )
+      : truncateMetaDescription(frontmatter.summary);
   return {
-    title: frontmatter.title,
+    title: intentTitle,
     description: metaDescription,
     icons: siteIcons,
     alternates: {
@@ -202,7 +224,7 @@ export function buildTravelerGuideMetadata(
       "AbroadWatch",
     ],
     openGraph: {
-      title: frontmatter.title,
+      title: intentTitle,
       description: metaDescription,
       url: canonicalUrl,
       siteName: siteConfig.name,
@@ -214,7 +236,7 @@ export function buildTravelerGuideMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: frontmatter.title,
+      title: intentTitle,
       description: metaDescription,
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],

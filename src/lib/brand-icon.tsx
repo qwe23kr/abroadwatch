@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 /** AW 로고 마크 — favicon·헤더·OG 아이콘 공통 디자인 */
-export const BRAND_BLUE = "#2563eb";
+export const BRAND_BLUE = "#0f766e";
 
 /** 전역 favicon·앱 아이콘 — 모든 페이지 탭에 동일 적용 */
 export const siteIcons: Metadata["icons"] = {

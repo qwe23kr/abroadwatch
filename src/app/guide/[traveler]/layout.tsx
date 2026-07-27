@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { LocaleHtmlLang } from "@/components/layout/LocaleHtmlLang";
-import { TopTravelWidget } from "@/components/layout/TopTravelWidget";
 import { GoogleAdSense } from "@/components/analytics/GoogleAdSense";
 import { EmrldTracker } from "@/components/analytics/EmrldTracker";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
@@ -33,7 +32,6 @@ export default async function TravelerLayout({
     <>
       <LocaleHtmlLang locale={locale} htmlLang={profile.htmlLang} />
       <Header locale={locale} traveler={profile} />
-      <TopTravelWidget />
       <main className="flex-1">{children}</main>
       <Footer locale={locale} traveler={profile} />
       {enableAds && <GoogleAdSense />}

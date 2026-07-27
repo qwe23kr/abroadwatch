@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${inter.variable} ${notoSansKr.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-white font-sans text-gray-900 antialiased">
+      <body className="site-shell min-h-full flex flex-col font-sans text-[#10221d] antialiased">
         {children}
         <GoogleAnalytics />
       </body>
