@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { incidentTypes } from "../src/lib/site-config";
 import { getTravelerDestinations } from "../src/lib/traveler-destinations";
 import { travelerProfiles } from "../src/lib/traveler-profiles";
+import { getTravelerPassportEvidence } from "../src/lib/emergency-passport-evidence";
 import { getTravelerMissionSource, type DestinationCode } from "./traveler-missions";
 
 const contentDir = path.join(process.cwd(), "content");
@@ -11,6 +12,8 @@ const errors: string[] = [];
 const reviewSignatures = new Map<string, string>();
 const missionWords = /embassy|consulate|mission|representative|대사관|영사관|대표부|大使館|領事館|駐|สถานทูต|đại sứ|lãnh sự/i;
 let count = 0;
+let activePassportCount = 0;
+let multilingualPassportCount = 0;
 
 for (const profile of travelerProfiles) {
   for (const country of getTravelerDestinations(profile)) {
@@ -29,6 +32,15 @@ for (const profile of travelerProfiles) {
           continue;
         }
         count += 1;
+        if (incident === "lost-passport") {
+          activePassportCount += 1;
+          if (profile.code !== "kr") {
+            multilingualPassportCount += 1;
+            if (!getTravelerPassportEvidence(profile.code)) {
+              errors.push(`${relative}: missing traveler passport evidence`);
+            }
+          }
+        }
         const raw = fs.readFileSync(file, "utf8");
         const { data, content } = matter(raw);
         for (const key of ["title", "summary", "updatedAt", "emergencyNumber"]) {
@@ -109,6 +121,8 @@ const expected = travelerProfiles.reduce((sum, profile) =>
   sum + getTravelerDestinations(profile).reduce((subtotal, country) =>
     subtotal + country.cities.length * incidentTypes.length, 0), 0);
 if (count !== expected) errors.push(`expected ${expected} files, found ${count}`);
+if (activePassportCount !== 201) errors.push(`expected 201 active passport guides, found ${activePassportCount}`);
+if (multilingualPassportCount !== 182) errors.push(`expected 182 non-Korean passport guides, found ${multilingualPassportCount}`);
 
 if (errors.length) {
   console.error(`Traveler content validation failed (${errors.length})`);

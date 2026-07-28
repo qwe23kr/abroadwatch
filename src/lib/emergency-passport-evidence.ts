@@ -1,6 +1,6 @@
 export interface EmergencyPassportEvidence {
   feeLabel: string;
-  feeAmount: number;
+  feeAmount?: number;
   currency: string;
   processing: string;
   extraFeeLabel?: string;
@@ -10,6 +10,114 @@ export interface EmergencyPassportEvidence {
   sourceLabel: string;
   sourceUrl: string;
   verifiedAt: string;
+}
+
+export interface TravelerPassportEvidence {
+  document: string;
+  fee: string;
+  processing: string;
+  note: string;
+  sourceLabel: string;
+  sourceUrl: string;
+  verifiedAt: string;
+  feeVerified: boolean;
+}
+
+const travelerEvidence: Record<string, TravelerPassportEvidence> = {
+  cn: {
+    document: "应急旅行证",
+    fee: "由受理使领馆按当地货币公布",
+    processing: "通过“中国领事”APP申请；紧急回国可选择“应急旅行证”",
+    note: "各使领馆的当地货币金额和加急安排不同。付款前以实际受理使领馆通知为准，不使用跨国家的平均金额。",
+    sourceLabel: "中国外交部：中国公民在海外申办护照、旅行证指南",
+    sourceUrl: "https://cs.mfa.gov.cn/zggmzhw/hzlxz/sbhzlxz/",
+    verifiedAt: "2026-07-28",
+    feeVerified: false,
+  },
+  us: {
+    document: "Limited-validity emergency passport",
+    fee: "US$130 adult passport-book application fee",
+    processing: "Most replacements are issued the next business day",
+    note: "Replacement passports generally cost the same as other passports. A free limited passport may be available for qualifying serious-crime or disaster victims who cannot pay.",
+    sourceLabel: "U.S. Department of State — Lost or Stolen Passport Abroad",
+    sourceUrl: "https://travel.state.gov/en/international-travel/help-abroad/lost-stolen-passport.html",
+    verifiedAt: "2026-07-28",
+    feeVerified: true,
+  },
+  jp: {
+    document: "帰国のための渡航書",
+    fee: "16,000円（基準額・現地通貨換算）",
+    processing: "緊急帰国向け。発給時刻は申請先公館に確認",
+    note: "通常の在外パスポート発給はおおむね2週間～1か月です。帰国を急ぐ場合は渡航書の対象になるか公館へ先に確認してください。",
+    sourceLabel: "外務省：旅券・帰国のための渡航書手数料",
+    sourceUrl: "https://www.mofa.go.jp/mofaj/files/100524236.pdf",
+    verifiedAt: "2026-07-28",
+    feeVerified: true,
+  },
+  tw: {
+    document: "入國證明書／補發護照",
+    fee: "由受理駐外館處按當地幣別確認",
+    processing: "無法等待補發護照時，可向駐外館處申請入國證明書",
+    note: "海外館處收費與領件時間依所在地不同。不要直接套用臺灣境內補發護照的新臺幣金額。",
+    sourceLabel: "外交部領事事務局：國外遺失護照處理",
+    sourceUrl: "https://www.boca.gov.tw/fp-24-6772-acc24-1.html",
+    verifiedAt: "2026-07-28",
+    feeVerified: false,
+  },
+  au: {
+    document: "Emergency passport",
+    fee: "AUD 265 (usually paid in local currency overseas)",
+    processing: "Contact the issuing mission before attending",
+    note: "The fee is converted to local currency overseas. Photos, transport to the mission and itinerary changes are separate costs.",
+    sourceLabel: "Australian Passport Office — Passport fees",
+    sourceUrl: "https://www.passports.gov.au/passports-explained/passport-fees",
+    verifiedAt: "2026-07-28",
+    feeVerified: true,
+  },
+  gb: {
+    document: "Emergency Travel Document",
+    fee: "£125 including courier",
+    processing: "Apply online; the mission confirms collection or delivery",
+    note: "An ETD normally covers a single or defined journey. Check transit-country acceptance before changing flights.",
+    sourceLabel: "GOV.UK — Consular services fees",
+    sourceUrl: "https://www.gov.uk/guidance/consular-services-fees",
+    verifiedAt: "2026-07-28",
+    feeVerified: true,
+  },
+  ca: {
+    document: "Temporary passport or emergency travel document",
+    fee: "Temporary passport CAN$125.75; confirm ETD fee with the mission",
+    processing: "Urgency and document type are assessed by the issuing mission",
+    note: "A temporary passport and an emergency travel document are different products. The mission decides which one fits the itinerary and confirms any lost-passport surcharge.",
+    sourceLabel: "Government of Canada — Passport fee changes",
+    sourceUrl: "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/fees/fee-changes-passport.html",
+    verifiedAt: "2026-07-28",
+    feeVerified: true,
+  },
+  th: {
+    document: "หนังสือเดินทางฉุกเฉินหรือเอกสารเดินทาง",
+    fee: "ตรวจสอบค่าธรรมเนียมสกุลเงินท้องถิ่นกับสถานทูตที่รับคำร้อง",
+    processing: "สถานทูตเป็นผู้พิจารณาประเภทเอกสารและเวลารับจริง",
+    note: "อัตราหนังสือเดินทางด่วนในประเทศไทยไม่ใช่อัตราเดียวกับเอกสารฉุกเฉินในต่างประเทศ จึงไม่ใช้ตัวเลขในประเทศมาแทน",
+    sourceLabel: "กรมการกงสุล กระทรวงการต่างประเทศ",
+    sourceUrl: "https://consular.mfa.go.th/",
+    verifiedAt: "2026-07-28",
+    feeVerified: false,
+  },
+  vn: {
+    document: "Hộ chiếu hoặc giấy thông hành khẩn cấp",
+    fee: "Xác nhận lệ phí bằng đồng tiền sở tại với cơ quan đại diện tiếp nhận",
+    processing: "Cơ quan đại diện xác nhận loại giấy tờ và thời điểm nhận",
+    note: "Mức thu và thủ tục có thể khác theo cơ quan đại diện. Không dùng mức trung bình hoặc phí hộ chiếu trong nước để thay cho phí ở nước ngoài.",
+    sourceLabel: "Cổng thông tin công tác lãnh sự Việt Nam",
+    sourceUrl: "https://lanhsuvietnam.gov.vn/",
+    verifiedAt: "2026-07-28",
+    feeVerified: false,
+  },
+};
+
+export function getTravelerPassportEvidence(traveler: string): TravelerPassportEvidence | null {
+  return travelerEvidence[traveler] ?? null;
 }
 
 const japanBase = {

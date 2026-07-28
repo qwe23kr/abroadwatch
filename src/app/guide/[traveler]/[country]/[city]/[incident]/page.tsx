@@ -185,8 +185,8 @@ export default async function TravelerGuidePage({ params }: Props) {
             incident={incident as IncidentType}
             incidentLabel={incidentName}
           />
-          {profile.language === "ko" && incident === "lost-passport" && (
-            <PassportCostEvidence country={country} city={city} />
+          {incident === "lost-passport" && (
+            <PassportCostEvidence profile={profile} country={country} city={city} />
           )}
           <MdxContent source={guide.content} locale={locale} uiLanguage={profile.language} />
         </div>
@@ -253,7 +253,7 @@ export default async function TravelerGuidePage({ params }: Props) {
           </section>
         )}
       </article>
-      <div className="mt-8 xl:absolute xl:left-[calc(100%+1rem)] xl:top-12 xl:mt-0 xl:w-[220px] 2xl:w-[260px]">
+      <div className="mt-8 2xl:absolute 2xl:left-[calc(100%+1rem)] 2xl:top-12 2xl:mt-0 2xl:w-[260px]">
         <TravelProblemCta language={profile.language} travelerCode={profile.code} incident={incident} />
       </div>
       </main>
