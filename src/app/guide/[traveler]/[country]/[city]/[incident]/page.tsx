@@ -17,6 +17,7 @@ import { getTravelerCity, getTravelerCountry } from "@/lib/traveler-destinations
 import { travelerIncident, travelerName, travelerTagCopy, travelerUi } from "@/lib/traveler-ui";
 import {
   buildFaqJsonLd,
+  buildHowToJsonLd,
   buildTravelerArticleJsonLd,
   buildTravelerBreadcrumbJsonLd,
   buildTravelerGuideMetadata,
@@ -92,6 +93,10 @@ export default async function TravelerGuidePage({ params }: Props) {
     guide.content.matchAll(/<FaqItem question="([^"]+)">\s*([\s\S]*?)\s*<\/FaqItem>/g),
     (match) => ({ question: match[1], answer: match[2].replace(/[*_`]/g, "").trim() }),
   );
+  const actionSteps = Array.from(
+    guide.content.matchAll(/<ActionStep\s+n="[^"]+"\s+title="([^"]+)"\s+detail="([^"]+)"/g),
+    (match) => ({ title: match[1], detail: match[2] }),
+  );
   const hashtag = (value: string) => `#${value.replace(/[\s·・,.'’/()\-]/g, "")}`;
   const tags = [
     { label: hashtag(`${cityName}${tagCopy.city}`), href: `/${traveler}/search?query=${encodeURIComponent(cityName)}` },
@@ -128,6 +133,21 @@ export default async function TravelerGuidePage({ params }: Props) {
           id="traveler-faq-jsonld"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(faqItems)) }}
+        />
+      )}
+      {actionSteps.length > 0 && (
+        <Script
+          id="traveler-howto-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildHowToJsonLd(
+                guide.frontmatter.title,
+                guide.frontmatter.summary,
+                actionSteps,
+              ),
+            ),
+          }}
         />
       )}
       <main className="relative mx-auto max-w-4xl px-4 py-8 pb-24 md:px-6 md:py-14">
@@ -184,6 +204,9 @@ export default async function TravelerGuidePage({ params }: Props) {
             countryName={countryName}
             incident={incident as IncidentType}
             incidentLabel={incidentName}
+            estimatedCost={guide.frontmatter.estimatedCost}
+            estimatedTime={guide.frontmatter.estimatedTime}
+            emergencyNumber={guide.frontmatter.emergencyNumber}
           />
           {incident === "lost-passport" && (
             <PassportCostEvidence profile={profile} country={country} city={city} />

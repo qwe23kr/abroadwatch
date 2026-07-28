@@ -10,6 +10,9 @@ interface SearchIntentSectionProps {
   countryName: string;
   incident: IncidentType;
   incidentLabel: string;
+  estimatedCost?: string;
+  estimatedTime?: string;
+  emergencyNumber?: string;
 }
 
 const questions: Record<Language, Record<IncidentType, (city: string) => string>> = {
@@ -95,6 +98,9 @@ export function SearchIntentSection({
   countryName,
   incident,
   incidentLabel,
+  estimatedCost,
+  estimatedTime,
+  emergencyNumber,
 }: SearchIntentSectionProps) {
   const language: Language = uiLanguage ?? (locale === "ko" ? "ko" : "en");
   const question = questions[language][incident](cityName);
@@ -106,6 +112,28 @@ export function SearchIntentSection({
         {question}
       </h2>
       <p className="mt-3 text-sm leading-6 text-gray-700">{answer}</p>
+      {language === "ko" && (
+        <dl className="mt-5 grid gap-2 sm:grid-cols-3">
+          {estimatedTime && (
+            <div className="rounded-xl border border-blue-100 bg-white p-3">
+              <dt className="text-xs font-bold text-gray-500">예상 처리시간</dt>
+              <dd className="mt-1 text-sm font-black text-gray-950">{estimatedTime}</dd>
+            </div>
+          )}
+          {estimatedCost && (
+            <div className="rounded-xl border border-blue-100 bg-white p-3">
+              <dt className="text-xs font-bold text-gray-500">예상·공식 비용</dt>
+              <dd className="mt-1 text-sm font-black text-gray-950">{estimatedCost}</dd>
+            </div>
+          )}
+          {emergencyNumber && (
+            <div className="rounded-xl border border-blue-100 bg-white p-3">
+              <dt className="text-xs font-bold text-gray-500">현지 긴급번호</dt>
+              <dd className="mt-1 text-sm font-black text-gray-950">{emergencyNumber}</dd>
+            </div>
+          )}
+        </dl>
+      )}
     </section>
   );
 }

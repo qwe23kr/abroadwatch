@@ -10,6 +10,8 @@ import { getTravelerMissionSource, type DestinationCode } from "./traveler-missi
 const contentDir = path.join(process.cwd(), "content");
 const errors: string[] = [];
 const reviewSignatures = new Map<string, string>();
+const indexedTitles = new Map<string, string>();
+const indexedSummaries = new Map<string, string>();
 const missionWords = /embassy|consulate|mission|representative|대사관|영사관|대표부|大使館|領事館|駐|สถานทูต|đại sứ|lãnh sự/i;
 let count = 0;
 let activePassportCount = 0;
@@ -45,6 +47,22 @@ for (const profile of travelerProfiles) {
         const { data, content } = matter(raw);
         for (const key of ["title", "summary", "updatedAt", "emergencyNumber"]) {
           if (typeof data[key] !== "string" || !data[key].trim()) errors.push(`${relative}: invalid ${key}`);
+        }
+        if (profile.code === "kr") {
+          for (const [label, value, registry] of [
+            ["title", String(data.title ?? "").trim(), indexedTitles],
+            ["summary", String(data.summary ?? "").trim(), indexedSummaries],
+          ] as const) {
+            const previous = registry.get(value);
+            if (value && previous && previous !== relative) {
+              errors.push(`${relative}: duplicate indexed ${label} also used in ${previous}`);
+            } else if (value) {
+              registry.set(value, relative);
+            }
+          }
+          if (!data.estimatedTime || !data.estimatedCost) {
+            errors.push(`${relative}: indexed guide requires estimatedTime and estimatedCost`);
+          }
         }
         const hasOfficialSource = profile.code === "kr" && country.slug !== "south-korea"
           ? /https:\/\/(?:overseas\.mofa\.go\.kr|www\.0404\.go\.kr)/.test(content)

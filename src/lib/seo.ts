@@ -168,7 +168,15 @@ export function buildTravelerGuideMetadata(
   country: string,
   city: string,
   incident: IncidentType,
-  frontmatter: { title: string; summary: string; publishedAt?: string; updatedAt: string },
+  frontmatter: {
+    title: string;
+    summary: string;
+    publishedAt?: string;
+    updatedAt: string;
+    estimatedCost?: string;
+    estimatedTime?: string;
+    emergencyNumber?: string;
+  },
 ): Metadata {
   const suffix = `/${country}/${city}/${incident}`;
   const canonicalUrl = `${siteConfig.url}${travelerPath(profile, suffix)}`;
@@ -194,17 +202,25 @@ export function buildTravelerGuideMetadata(
           scam: `${cityName} 여행 사기 대처법 | 유형·신고·환불 절차`,
         } satisfies Record<IncidentType, string>)[incident]
       : frontmatter.title;
-  const metaDescription =
+  const koreanIntentDescription =
     profile.language === "ko"
-      ? truncateMetaDescription(
-          ({
+      ? ({
             "lost-passport": `${countryName} ${cityName} 여권 분실 시 분실물 확인부터 경찰 신고, 한국 영사관 긴급여권 신청, 귀국 항공편 처리까지 순서대로 확인하세요.`,
             "lost-phone": `${cityName} 휴대폰 분실 시 원격 잠금, SIM·eSIM 정지, 금융앱 보호, 경찰 신고와 증거 보존 순서를 확인하세요.`,
             "lost-wallet": `${cityName} 지갑·카드 분실 시 카드 정지, 부정결제 확인, 현지 경찰 신고서 발급 순서를 확인하세요.`,
             hospital: `${cityName} 병원·응급실 이용 시 긴급번호, 접수 방법, 비용, 한국어 통역 요청과 준비 서류를 확인하세요.`,
             "police-report": `${cityName}에서 도난·분실을 신고하는 외국인 절차와 접수번호, 경찰 확인서를 받는 방법을 확인하세요.`,
             scam: `${cityName} 여행 사기 피해 시 추가 결제 중단, 증거 보존, 관광경찰 신고와 카드 결제 분쟁 순서를 확인하세요.`,
-          } satisfies Record<IncidentType, string>)[incident],
+          } satisfies Record<IncidentType, string>)[incident]
+      : "";
+  const koreanFactSuffix = [
+    frontmatter.estimatedTime && `처리시간 ${frontmatter.estimatedTime}`,
+    frontmatter.estimatedCost && `비용 ${frontmatter.estimatedCost}`,
+  ].filter(Boolean).join(", ");
+  const metaDescription =
+    profile.language === "ko"
+      ? truncateMetaDescription(
+          `${koreanIntentDescription}${koreanFactSuffix ? ` ${koreanFactSuffix}.` : ""}`,
         )
       : truncateMetaDescription(frontmatter.summary);
   return {

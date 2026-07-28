@@ -136,6 +136,7 @@ export function getTravelerCityGuides(
 
 const popularGuideKeys = [
   ["japan", "tokyo", "lost-passport"],
+  ["japan", "fukuoka", "lost-passport"],
   ["thailand", "bangkok", "lost-phone"],
   ["japan", "tokyo", "scam"],
   ["thailand", "bangkok", "scam"],
