@@ -61,14 +61,14 @@ export function NationalitySelector({ locale }: { locale: Locale }) {
 
   return (
     <label className="relative inline-flex items-center gap-1.5">
-      <span className="hidden text-xs font-medium text-gray-500 lg:inline">
+      <span className="hidden text-xs font-medium text-gray-500 xl:inline">
         {locale === "ko" ? "국적" : "Nationality"}
       </span>
       <select
         value={nationality}
         onChange={(event) => handleChange(event.target.value)}
         aria-label={locale === "ko" ? "국적 선택" : "Select nationality"}
-        className="h-10 w-28 cursor-pointer rounded-lg border border-gray-200 bg-white px-1.5 text-sm font-medium text-gray-700 outline-none transition hover:border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 min-[360px]:w-32 sm:w-auto sm:max-w-none sm:px-2"
+        className="h-10 w-[7.5rem] cursor-pointer rounded-full border border-[#173c32]/15 bg-white px-3 text-sm font-bold text-[#31443d] shadow-sm outline-none transition hover:border-[#0f766e]/40 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/10 min-[400px]:w-[8.5rem] sm:w-auto sm:max-w-none"
       >
         {travelerProfiles.map((item) => (
           <option key={item.countryCode} value={item.countryCode}>
