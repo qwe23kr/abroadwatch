@@ -130,7 +130,7 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
               {navItems.map((item) => (
                 <li key={item.key}>
                   <Link
-                    href={`/${locale}${item.path}`}
+                    href={traveler ? `/${traveler.code}${item.path}` : `/${locale}${item.path}`}
                     onClick={() => setOpen(false)}
                     className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >

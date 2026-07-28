@@ -38,7 +38,7 @@ export function Footer({ locale, traveler }: FooterProps) {
             {footerLinks.map((link) => (
               <Link
                 key={link.key}
-                href={`/${locale}${link.path}`}
+                href={traveler ? `/${traveler.code}${link.path}` : `/${locale}${link.path}`}
                 className="text-sm text-[#b8c8c2] transition-colors hover:text-[#c8f169]"
               >
                 {nativeFooter?.[link.key as keyof Omit<typeof nativeFooter, "tagline">] ??

@@ -80,7 +80,7 @@ export function Header({ locale, traveler }: HeaderProps) {
           {navItems.map((item) => (
             <Link
               key={item.key}
-              href={`/${locale}${item.path}`}
+              href={traveler ? `/${traveler.code}${item.path}` : `/${locale}${item.path}`}
               className={`${item.key === "contact" ? "hidden xl:block" : ""} rounded-full px-3 py-2.5 text-sm font-bold text-[#52645e] transition-colors hover:bg-white hover:text-[#0f766e]`}
             >
               {nativeNav?.[item.key] ?? t(locale, item.key)}

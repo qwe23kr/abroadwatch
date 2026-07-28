@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const legacyCountryPattern = "japan|thailand|vietnam|taiwan|philippines";
-const staticPagePattern = "about|contact|privacy|terms|disclaimer|editorial";
 
 const nextConfig: NextConfig = {
   turbopack: {
@@ -23,16 +22,6 @@ const nextConfig: NextConfig = {
       {
         source: "/en",
         destination: "/us",
-        permanent: true,
-      },
-      {
-        source: `/kr/:page(${staticPagePattern})`,
-        destination: "/ko/:page",
-        permanent: true,
-      },
-      {
-        source: `/:traveler(cn|us|jp|tw|au|gb|ca|th|vn)/:page(${staticPagePattern})`,
-        destination: "/en/:page",
         permanent: true,
       },
       {
