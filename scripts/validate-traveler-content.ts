@@ -66,6 +66,17 @@ for (const profile of travelerProfiles) {
           if (leaked) errors.push(`${relative}: map contains another city (${leaked})`);
         }
         if (profile.code === "kr" && incident === "lost-passport") {
+          if (country.slug !== "south-korea") {
+            if (!data.estimatedCost || /공관\s*(문의|확인)|확인 필요/.test(String(data.estimatedCost))) {
+              errors.push(`${relative}: missing verified emergency-passport cost`);
+            }
+            if (!data.estimatedTime || /상황.*다름|1~3영업일/.test(String(data.estimatedTime))) {
+              errors.push(`${relative}: generic processing time remains`);
+            }
+            if (/후기|가장 흔|실제 경험|실제 비용|6,500~6,890/.test(raw)) {
+              errors.push(`${relative}: unsourced review or average-cost wording remains`);
+            }
+          }
           const remoteMission = maps.some((map) => {
             const label = `${map[1]} ${map[2]}`.toLocaleLowerCase();
             return missionWords.test(label)

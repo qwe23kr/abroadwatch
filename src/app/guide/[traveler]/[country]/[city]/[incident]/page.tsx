@@ -8,6 +8,7 @@ import { GuideQualitySection } from "@/components/guide/GuideQualitySection";
 import { SearchIntentSection } from "@/components/guide/SearchIntentSection";
 import { TravelerDepthSection } from "@/components/guide/TravelerDepthSection";
 import { TravelProblemCta } from "@/components/guide/TravelProblemCta";
+import { PassportCostEvidence } from "@/components/guide/PassportCostEvidence";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { EmergencyFab } from "@/components/layout/EmergencyFab";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
@@ -184,6 +185,9 @@ export default async function TravelerGuidePage({ params }: Props) {
             incident={incident as IncidentType}
             incidentLabel={incidentName}
           />
+          {profile.language === "ko" && incident === "lost-passport" && (
+            <PassportCostEvidence country={country} city={city} />
+          )}
           <MdxContent source={guide.content} locale={locale} uiLanguage={profile.language} />
         </div>
 
