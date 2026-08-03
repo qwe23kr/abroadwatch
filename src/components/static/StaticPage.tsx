@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { t } from "@/lib/i18n";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, NOINDEX_ROBOTS } from "@/lib/seo";
 import { staticPages, staticPageSlugs } from "@/lib/static-pages";
 import { isValidLocale, siteConfig, type Locale } from "@/lib/site-config";
 
@@ -26,15 +26,18 @@ export function createStaticPage(slug: string) {
     if (!isValidLocale(localeParam)) return {};
     const locale = localeParam as Locale;
 
-    return buildMetadata({
-      locale,
-      title: page.title[locale],
-      description: page.description[locale],
-      path: `/${locale}/${slug}`,
-      alternatePaths: Object.fromEntries(
-        siteConfig.locales.map((loc) => [loc, `/${loc}/${slug}`]),
-      ) as Partial<Record<Locale, string>>,
-    });
+    return {
+      ...buildMetadata({
+        locale,
+        title: page.title[locale],
+        description: page.description[locale],
+        path: `/${locale}/${slug}`,
+        alternatePaths: Object.fromEntries(
+          siteConfig.locales.map((loc) => [loc, `/${loc}/${slug}`]),
+        ) as Partial<Record<Locale, string>>,
+      }),
+      robots: NOINDEX_ROBOTS,
+    };
   }
 
   async function Page({ params }: StaticPageProps) {

@@ -16,7 +16,7 @@ import {
   type Locale,
 } from "./site-config";
 import { getTravelerCity, getTravelerCountry } from "./traveler-destinations";
-import { isAdsenseReadyTravelerProfile } from "./quality";
+import { isAdsensePriorityCity, isAdsenseReadyTravelerProfile } from "./quality";
 import type { TravelerProfile } from "./traveler-profiles";
 import { travelerIncident, travelerName, travelerUi } from "./traveler-ui";
 
@@ -171,7 +171,7 @@ export function buildTravelerGuideMetadata(
   frontmatter: {
     title: string;
     summary: string;
-    publishedAt?: string;
+    publishedAt: string;
     updatedAt: string;
     estimatedCost?: string;
     estimatedTime?: string;
@@ -257,7 +257,10 @@ export function buildTravelerGuideMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: isAdsenseReadyTravelerProfile(profile) ? INDEXABLE_ROBOTS : NOINDEX_ROBOTS,
+    robots:
+      isAdsenseReadyTravelerProfile(profile) && isAdsensePriorityCity(country, city)
+        ? INDEXABLE_ROBOTS
+        : NOINDEX_ROBOTS,
   };
 }
 
@@ -370,7 +373,10 @@ export function buildTravelerCityMetadata(
       site: siteConfig.twitterHandle,
       images: [OG_IMAGE.url],
     },
-    robots: isAdsenseReadyTravelerProfile(profile) ? INDEXABLE_ROBOTS : NOINDEX_ROBOTS,
+    robots:
+      isAdsenseReadyTravelerProfile(profile) && isAdsensePriorityCity(country, city)
+        ? INDEXABLE_ROBOTS
+        : NOINDEX_ROBOTS,
   };
 }
 
@@ -607,6 +613,7 @@ export function buildTravelerArticleJsonLd(
     path: string;
     title: string;
     description: string;
+    publishedAt: string;
     updatedAt: string;
   },
 ): object {
@@ -615,6 +622,7 @@ export function buildTravelerArticleJsonLd(
     "@type": "Article",
     headline: options.title,
     description: truncateMetaDescription(options.description),
+    datePublished: options.publishedAt,
     dateModified: options.updatedAt,
     author: {
       "@type": "Organization",

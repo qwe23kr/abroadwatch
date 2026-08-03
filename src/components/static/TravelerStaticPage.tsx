@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MdxContent } from "@/components/mdx/MdxContent";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, NOINDEX_ROBOTS } from "@/lib/seo";
+import { isAdsenseReadyTravelerProfile } from "@/lib/quality";
 import { staticPages, staticPageSlugs } from "@/lib/static-pages";
 import { getTravelerProfile } from "@/lib/traveler-profiles";
 import type { Locale } from "@/lib/site-config";
@@ -19,12 +20,15 @@ export function createTravelerStaticPage(slug: string) {
     const profile = getTravelerProfile((await params).traveler);
     if (!profile) return {};
     const locale: Locale = profile.code === "kr" ? "ko" : "en";
-    return buildMetadata({
-      locale,
-      title: page.title[locale],
-      description: page.description[locale],
-      path: `/${profile.code}/${slug}`,
-    });
+    return {
+      ...buildMetadata({
+        locale,
+        title: page.title[locale],
+        description: page.description[locale],
+        path: `/${profile.code}/${slug}`,
+      }),
+      ...(!isAdsenseReadyTravelerProfile(profile) && { robots: NOINDEX_ROBOTS }),
+    };
   }
 
   async function Page({ params }: Props) {

@@ -16,6 +16,7 @@ export interface TravelerGuide {
   frontmatter: {
     title: string;
     summary: string;
+    publishedAt: string;
     updatedAt: string;
     estimatedCost?: string;
     estimatedTime?: string;
@@ -136,13 +137,13 @@ export function getTravelerCityGuides(
 
 const popularGuideKeys = [
   ["japan", "tokyo", "lost-passport"],
-  ["japan", "fukuoka", "lost-passport"],
   ["thailand", "bangkok", "lost-phone"],
   ["japan", "tokyo", "scam"],
   ["thailand", "bangkok", "scam"],
-  ["vietnam", "danang", "hospital"],
-  ["philippines", "cebu", "lost-passport"],
+  ["vietnam", "ho-chi-minh-city", "hospital"],
   ["taiwan", "taipei", "police-report"],
+  ["philippines", "manila", "lost-passport"],
+  ["vietnam", "ho-chi-minh-city", "lost-passport"],
 ] as const;
 
 export function getPopularTravelerGuides(traveler: TravelerCode, limit = 7) {

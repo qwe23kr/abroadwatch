@@ -5,6 +5,7 @@ import Script from "next/script";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { NationalityProofSection } from "@/components/guide/NationalityProofSection";
 import { GuideQualitySection } from "@/components/guide/GuideQualitySection";
+import { EditorialReviewNote } from "@/components/guide/EditorialReviewNote";
 import { SearchIntentSection } from "@/components/guide/SearchIntentSection";
 import { TravelerDepthSection } from "@/components/guide/TravelerDepthSection";
 import { TravelProblemCta } from "@/components/guide/TravelProblemCta";
@@ -87,6 +88,7 @@ export default async function TravelerGuidePage({ params }: Props) {
     path: canonicalPath,
     title: guide.frontmatter.title,
     description: guide.frontmatter.summary,
+    publishedAt: guide.frontmatter.publishedAt,
     updatedAt: guide.frontmatter.updatedAt,
   });
   const faqItems = Array.from(
@@ -180,6 +182,11 @@ export default async function TravelerGuidePage({ params }: Props) {
             <div className="rounded-2xl bg-white p-4 shadow-sm"><dt className="text-xs font-bold text-[#788983]">{ui.updated}</dt><dd className="mt-1 font-black">{guide.frontmatter.updatedAt}</dd></div>
             <div className="rounded-2xl bg-white p-4 shadow-sm"><dt className="text-xs font-bold text-[#788983]">{ui.nationality}</dt><dd className="mt-1 font-black">{profile.nativeName}</dd></div>
           </dl>
+          <EditorialReviewNote
+            profile={profile}
+            publishedAt={guide.frontmatter.publishedAt}
+            reviewedAt={guide.frontmatter.updatedAt}
+          />
           <nav className="mt-5" aria-label={tagCopy.heading}>
             <p className="sr-only">{tagCopy.heading}</p>
             <div className="flex flex-wrap gap-2">

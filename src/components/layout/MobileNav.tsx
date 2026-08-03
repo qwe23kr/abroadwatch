@@ -6,8 +6,6 @@ import { t, type TranslationKey } from "@/lib/i18n";
 import { siteConfig, type Locale } from "@/lib/site-config";
 import type { TravelerProfile } from "@/lib/traveler-profiles";
 import { travelerNav } from "@/lib/traveler-ui";
-import { affiliateLinks } from "@/lib/affiliate-links";
-import { TrackedLink } from "@/components/analytics/TrackedLink";
 
 interface MobileNavProps {
   locale: Locale;
@@ -99,32 +97,6 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
                   >
                     {traveler.code === "kr" ? "여행 준비" : "Trip preparation"}
                   </Link>
-                </li>
-              )}
-              {traveler && (
-                <li className="pt-4">
-                  <p className="px-3 pb-2 text-[10px] font-black tracking-[.14em] text-[#788983]">
-                    {traveler.code === "kr" ? "여행 서비스 · 제휴" : "TRAVEL SERVICES · AFFILIATE"}
-                  </p>
-                  <div className="grid grid-cols-2 gap-1">
-                    {Object.entries(affiliateLinks).map(([key, item]) => (
-                      <TrackedLink
-                        key={key}
-                        href={item.href}
-                        target="_blank"
-                        rel="sponsored nofollow noopener"
-                        eventName="affiliate_click"
-                        eventParams={{ placement: "mobile_menu", partner: item.partner, product: key }}
-                        onClick={() => setOpen(false)}
-                        className="rounded-lg px-3 py-2.5 text-sm font-bold text-[#31443d] hover:bg-[#eef5ef]"
-                      >
-                        {traveler.code === "kr" ? item.ko : item.en} ↗
-                      </TrackedLink>
-                    ))}
-                  </div>
-                  <p className="px-3 pt-2 text-[10px] leading-4 text-[#788983]">
-                    {traveler.code === "kr" ? "구매 시 수수료를 받을 수 있습니다." : "We may earn a commission."}
-                  </p>
                 </li>
               )}
               {navItems.map((item) => (

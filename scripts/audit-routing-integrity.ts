@@ -10,7 +10,10 @@ import {
   getTravelerDestinations,
   isDomesticTravelerDestination,
 } from "../src/lib/traveler-destinations";
-import { isAdsenseReadyTravelerCode } from "../src/lib/quality";
+import {
+  isAdsenseIndexableGuide,
+  isAdsenseReadyTravelerCode,
+} from "../src/lib/quality";
 import { travelerProfiles } from "../src/lib/traveler-profiles";
 
 const problems: string[] = [];
@@ -124,10 +127,15 @@ if (domesticUrls.length) {
 }
 
 const indexableGuideUrlSet = new Set(
-  existingGuides.filter((params) => isAdsenseReadyTravelerCode(params.traveler)).map(
-    (params) =>
-      `https://abroadwatch.com/${params.traveler}/${params.country}/${params.city}/${params.incident}`,
-  ),
+  existingGuides
+    .filter((params) => {
+      const profile = travelerProfiles.find((item) => item.code === params.traveler);
+      return profile && isAdsenseIndexableGuide(profile, params.country, params.city);
+    })
+    .map(
+      (params) =>
+        `https://abroadwatch.com/${params.traveler}/${params.country}/${params.city}/${params.incident}`,
+    ),
 );
 const missingGuideUrls = [...indexableGuideUrlSet].filter((url) => !urls.includes(url));
 console.log(`SITEMAP missingIndexableGuideUrls=${missingGuideUrls.length}`);
