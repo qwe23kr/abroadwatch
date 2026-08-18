@@ -103,10 +103,11 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
               )}
               {traveler && (
                 <li className="pt-4">
-                  <p className="px-3 pb-2 text-[10px] font-black tracking-[.14em] text-[#788983]">
-                    {traveler.code === "kr" ? "여행 서비스 · 제휴" : "TRAVEL SERVICES · AFFILIATE"}
+                  <p className="flex items-center gap-2 px-3 pb-2 text-[10px] font-black tracking-[.14em] text-[#9a4d0d]">
+                    <span className="rounded-full bg-[#e45c2f] px-1.5 py-0.5 text-[9px] tracking-[.08em] text-white">HOT</span>
+                    {traveler.code === "kr" ? "여행 특가" : "TRAVEL DEALS"}
                   </p>
-                  <div className="grid grid-cols-2 gap-1">
+                  <div className="grid grid-cols-2 gap-1 rounded-2xl border border-[#f1b85b]/35 bg-[#fff8e9] p-1.5">
                     {Object.entries(affiliateLinks).map(([key, item]) => (
                       <TrackedLink
                         key={key}
@@ -116,7 +117,7 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
                         eventName="affiliate_click"
                         eventParams={{ placement: "mobile_menu", partner: item.partner, product: key }}
                         onClick={() => setOpen(false)}
-                        className="rounded-lg px-3 py-2.5 text-sm font-bold text-[#31443d] hover:bg-[#eef5ef]"
+                        className="rounded-lg px-3 py-2.5 text-sm font-bold text-[#5c3b21] hover:bg-[#ffe9bd] hover:text-[#9a4d0d]"
                       >
                         {traveler.code === "kr" ? item.ko : item.en} ↗
                       </TrackedLink>

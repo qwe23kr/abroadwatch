@@ -48,14 +48,18 @@ export function Header({ locale, traveler }: HeaderProps) {
             <div className="group relative">
               <button
                 type="button"
-                className="inline-flex rounded-full px-4 py-2.5 text-sm font-bold text-[#52645e] transition-colors hover:bg-white group-hover:text-[#0f766e] group-focus-within:text-[#0f766e]"
+                className="inline-flex items-center rounded-full border border-[#f1b85b]/45 bg-[#fff2d9] px-3.5 py-2.5 text-sm font-black text-[#9a4d0d] shadow-sm transition hover:-translate-y-0.5 hover:border-[#e89b2d]/70 hover:bg-[#ffe9bd] hover:shadow-md group-focus-within:border-[#e89b2d]/70 group-focus-within:bg-[#ffe9bd]"
                 aria-haspopup="true"
               >
-                {traveler.code === "kr" ? "여행 서비스" : "Travel services"}
-                <span className="ml-1 text-xs" aria-hidden="true">⌄</span>
+                <span className="mr-1.5 rounded-full bg-[#e45c2f] px-1.5 py-0.5 text-[9px] font-black tracking-[.08em] text-white">HOT</span>
+                {traveler.code === "kr" ? "여행 특가" : "Travel deals"}
+                <span className="ml-1.5 text-xs" aria-hidden="true">⌄</span>
               </button>
               <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                 <div className="rounded-2xl border border-[#173c32]/10 bg-[#fffefb] p-2 shadow-[0_20px_60px_rgba(16,34,29,0.18)]">
+                  <p className="px-3 pb-2 pt-1 text-[11px] font-black tracking-[.08em] text-[#9a4d0d]">
+                    {traveler.code === "kr" ? "여행 특가 모음" : "TRAVEL DEALS"}
+                  </p>
                   {Object.entries(affiliateLinks).map(([key, item]) => (
                     <TrackedLink
                       key={key}
@@ -64,7 +68,7 @@ export function Header({ locale, traveler }: HeaderProps) {
                       rel="sponsored nofollow noopener"
                       eventName="affiliate_click"
                       eventParams={{ placement: "desktop_header", partner: item.partner, product: key }}
-                      className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-[#31443d] hover:bg-[#eef5ef] hover:text-[#0f766e]"
+                      className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-[#31443d] hover:bg-[#fff2d9] hover:text-[#9a4d0d]"
                     >
                       <span>{traveler.code === "kr" ? item.ko : item.en}</span>
                       <span className="text-xs" aria-hidden="true">↗</span>
