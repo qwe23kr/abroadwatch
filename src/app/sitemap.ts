@@ -3,11 +3,7 @@ import { siteConfig } from "@/lib/site-config";
 import { travelerAlternateLanguages, travelerPath } from "@/lib/seo";
 import { getAllTravelerGuideParams, getTravelerGuide } from "@/lib/traveler-content";
 import { getTravelerDestinations } from "@/lib/traveler-destinations";
-import {
-  isAdsenseIndexableGuide,
-  isAdsensePriorityCity,
-  isAdsenseReadyTravelerProfile,
-} from "@/lib/quality";
+import { isAdsenseReadyTravelerProfile } from "@/lib/quality";
 import { travelerProfiles, type TravelerProfile } from "@/lib/traveler-profiles";
 
 const staticPageSlugs = ["about", "contact", "privacy", "terms", "disclaimer", "editorial"];
@@ -46,19 +42,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  for (const slug of staticPageSlugs) {
-    entries.push({
-      url: `${siteConfig.url}/kr/${slug}`,
-      lastModified: staticPageLastModified,
-      changeFrequency: "yearly",
-      priority: 0.35,
-      alternates: {
-        languages: {
-          ko: `${siteConfig.url}/kr/${slug}`,
-          "x-default": `${siteConfig.url}/kr/${slug}`,
+  for (const profile of indexableProfiles) {
+    for (const slug of staticPageSlugs) {
+      const suffix = `/${slug}`;
+      entries.push({
+        url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
+        lastModified: staticPageLastModified,
+        changeFrequency: "yearly",
+        priority: 0.35,
+        alternates: {
+          languages: travelerAlternateLanguages(profile, suffix),
         },
-      },
-    });
+      });
+    }
   }
 
   for (const profile of indexableProfiles) {
@@ -75,7 +71,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       });
 
       for (const city of country.cities) {
-        if (!isAdsensePriorityCity(country.slug, city.slug)) continue;
         const citySuffix = `/${country.slug}/${city.slug}`;
         entries.push({
           url: `${siteConfig.url}${travelerPath(profile, citySuffix)}`,
@@ -101,7 +96,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     const suffix = `/${params.country}/${params.city}/${params.incident}`;
     const profile = travelerProfiles.find((item) => item.code === params.traveler);
-    if (!profile || !isAdsenseIndexableGuide(profile, params.country, params.city)) continue;
+    if (!profile || !isAdsenseReadyTravelerProfile(profile)) continue;
 
     entries.push({
       url: `${siteConfig.url}${travelerPath(profile, suffix)}`,

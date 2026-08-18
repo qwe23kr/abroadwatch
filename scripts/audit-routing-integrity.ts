@@ -11,8 +11,8 @@ import {
   isDomesticTravelerDestination,
 } from "../src/lib/traveler-destinations";
 import {
-  isAdsenseIndexableGuide,
   isAdsenseReadyTravelerCode,
+  isAdsenseReadyTravelerProfile,
 } from "../src/lib/quality";
 import { travelerProfiles } from "../src/lib/traveler-profiles";
 
@@ -130,7 +130,7 @@ const indexableGuideUrlSet = new Set(
   existingGuides
     .filter((params) => {
       const profile = travelerProfiles.find((item) => item.code === params.traveler);
-      return profile && isAdsenseIndexableGuide(profile, params.country, params.city);
+      return profile && isAdsenseReadyTravelerProfile(profile);
     })
     .map(
       (params) =>
