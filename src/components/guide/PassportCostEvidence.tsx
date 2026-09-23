@@ -28,7 +28,7 @@ export function PassportCostEvidence({ profile, country, city }: Props) {
 
   if (profile.language !== "ko" && travelerEvidence) {
     return (
-      <section className="my-10 rounded-[1.75rem] border border-[#0f766e]/20 bg-[#eef7f2] p-5 not-prose md:p-7">
+      <section data-official-sources className="my-10 rounded-[1.75rem] border border-[#0f766e]/20 bg-[#eef7f2] p-5 not-prose md:p-7">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div><p className="text-xs font-black tracking-[.14em] text-[#0f766e]">OFFICIAL COST CHECK</p><h2 className="mt-2 text-2xl font-black tracking-[-.035em] text-[#10221d]">{labels.title}</h2></div>
           <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${travelerEvidence.feeVerified ? "bg-[#dff7ef] text-[#0f766e]" : "bg-[#fff4dc] text-[#8a5600]"}`}>{travelerEvidence.feeVerified ? labels.exact : labels.local}</span>
@@ -44,7 +44,7 @@ export function PassportCostEvidence({ profile, country, city }: Props) {
   if (!evidence) return null;
 
   return (
-    <section className="my-10 rounded-[1.75rem] border border-[#0f766e]/20 bg-[#eef7f2] p-5 not-prose md:p-7">
+    <section data-official-sources className="my-10 rounded-[1.75rem] border border-[#0f766e]/20 bg-[#eef7f2] p-5 not-prose md:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-black tracking-[.14em] text-[#0f766e]">OFFICIAL COST CHECK</p>

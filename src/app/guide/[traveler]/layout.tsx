@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { ResponseAnalytics } from "@/components/analytics/ResponseAnalytics";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { LocaleHtmlLang } from "@/components/layout/LocaleHtmlLang";
@@ -32,6 +33,7 @@ export default async function TravelerLayout({
       <main className="flex-1">{children}</main>
       <Footer locale={locale} traveler={profile} />
       {enableThirdParty && <EmrldTracker />}
+      <ResponseAnalytics traveler={profile.code} />
       <ServiceWorkerRegister />
     </>
   );

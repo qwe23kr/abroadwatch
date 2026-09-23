@@ -296,7 +296,7 @@ export const cityDataRegistry: Record<string, CityData> = {
       },
     ],
     reviewNote: {
-      ko: "치앙마이 **송크란·야시장** 소매치기 주의. 경찰 신고 **도난** 기록 요청(보험).",
+      ko: "치앙마이 **송크란·야시장** 소매치기 주의. 경찰에 실제 경위를 설명하고 보험사에 보장 범위를 확인하세요.",
       en: "Pickpockets at **Songkran/night markets**. Request **Stolen** on police report.",
     },
     reviewSource: { ko: "savasavasns.com", en: "savasavasns.com", url: "https://savasavasns.com/guide/travel-police-report-guide/" },

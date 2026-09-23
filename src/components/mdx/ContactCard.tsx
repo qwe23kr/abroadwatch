@@ -74,7 +74,7 @@ export function ContactCard({
         {website && (
           <div>
             <dt className="inline font-medium text-gray-500">{label("website")}: </dt>
-            <dd className="inline">
+            <dd className="inline" data-official-sources>
               <a
                 href={website}
                 target="_blank"

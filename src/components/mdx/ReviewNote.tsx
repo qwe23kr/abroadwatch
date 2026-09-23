@@ -39,7 +39,7 @@ export function ReviewNote({
       : t(locale, "reviewSource");
 
   return (
-    <aside className="relative my-6 overflow-hidden rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-sm">
+    <aside data-official-sources={url && !url.includes("reddit.com") ? "" : undefined} className="relative my-6 overflow-hidden rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-sm">
       <p className="relative mb-3 text-xs font-semibold uppercase tracking-wide text-amber-900">
         {displayLabel}
       </p>

@@ -1,3 +1,4 @@
+import { responseCopy } from "./response-copy";
 import type { IncidentType } from "./site-config";
 import type { TravelerProfile } from "./traveler-profiles";
 
@@ -136,7 +137,7 @@ const cleanKoNav = {
   home: "홈",
   about: "소개",
   contact: "문의",
-  search: "검색",
+  search: "가이드 찾기",
 };
 
 const cleanKoFooter = {
@@ -173,7 +174,7 @@ export function travelerTagCopy(profile: TravelerProfile) {
 }
 
 export function travelerUi(profile: TravelerProfile) {
-  if (profile.language === "ko") return cleanKoUi;
+  if (profile.language === "ko") return { ...cleanKoUi, official: responseCopy.ko.scope, faq2a: responseCopy.ko.scope };
   const coverage = ({
     ko: "6개국 22개 도시 · 상황별 1,320개 국적 가이드",
     "zh-Hans": "6个国家、22座城市 · 1,320份国籍专属指南",
@@ -183,19 +184,19 @@ export function travelerUi(profile: TravelerProfile) {
     vi: "6 quốc gia, 22 thành phố · 1.320 hướng dẫn theo quốc tịch",
     en: "6 countries, 22 cities · 1,320 nationality-specific guides",
   } as const)[profile.language];
-  return { ...ui[profile.language], coverage };
+  return { ...ui[profile.language], coverage, official: responseCopy[profile.language].scope, faq2a: responseCopy[profile.language].scope };
 }
 
 export function travelerNav(profile: TravelerProfile) {
   if (profile.language === "ko") return cleanKoNav;
   return ({
-    ko: { home: "홈", about: "소개", contact: "문의", search: "검색" },
-    "zh-Hans": { home: "首页", about: "关于", contact: "联系", search: "搜索" },
-    ja: { home: "ホーム", about: "サイトについて", contact: "お問い合わせ", search: "検索" },
-    "zh-Hant": { home: "首頁", about: "關於", contact: "聯絡", search: "搜尋" },
-    th: { home: "หน้าหลัก", about: "เกี่ยวกับ", contact: "ติดต่อ", search: "ค้นหา" },
-    vi: { home: "Trang chủ", about: "Giới thiệu", contact: "Liên hệ", search: "Tìm kiếm" },
-    en: { home: "Home", about: "About", contact: "Contact", search: "Search" },
+    ko: { home: "홈", about: "소개", contact: "문의", search: "가이드 찾기" },
+    "zh-Hans": { home: "首页", about: "关于", contact: "联系", search: "查找指南" },
+    ja: { home: "ホーム", about: "サイトについて", contact: "お問い合わせ", search: "ガイドを探す" },
+    "zh-Hant": { home: "首頁", about: "關於", contact: "聯絡", search: "尋找指南" },
+    th: { home: "หน้าหลัก", about: "เกี่ยวกับ", contact: "ติดต่อ", search: "ค้นหาคู่มือ" },
+    vi: { home: "Trang chủ", about: "Giới thiệu", contact: "Liên hệ", search: "Tìm hướng dẫn" },
+    en: { home: "Home", about: "About", contact: "Contact", search: "Find guides" },
   } as const)[profile.language];
 }
 

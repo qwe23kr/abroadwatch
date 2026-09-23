@@ -209,7 +209,7 @@ export function NationalityProofSection({
   const action = l.actions[incident](profile.nativeName);
 
   return (
-    <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+    <section data-official-sources className="mt-10 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{l.eyebrow}</p>
       <h2 className="mt-2 text-xl font-bold leading-snug text-gray-950 md:text-2xl">
         {l.title(profile.nativeName, cityName, incidentName)}

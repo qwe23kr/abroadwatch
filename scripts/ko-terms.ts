@@ -57,6 +57,6 @@ export function insuranceReportRequest(country: string): string {
 
 /** 도난 vs 분실 */
 export const THEFT_VS_LOST_KO =
-  "보험 청구 시 **「도난」** 으로 기록 요청. 「분실」만 적히면 보험 거절되는 경우 많음.";
+  "분실·도난은 실제 경위대로 신고하세요. 보험 보장 범위와 제출 서류는 가입 약관과 보험사에 확인하세요.";
 
-export const STOLEN_EN_NOTE = "(영문 기록 시 Stolen / Theft, Lost 아님)";
+export const STOLEN_EN_NOTE = "(영문 신고도 실제 분실·도난 경위에 맞게 작성)";

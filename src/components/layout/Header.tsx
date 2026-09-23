@@ -6,6 +6,7 @@ import { MobileNav } from "./MobileNav";
 import { NationalitySelector } from "./NationalitySelector";
 import type { TravelerProfile } from "@/lib/traveler-profiles";
 import { travelerNav } from "@/lib/traveler-ui";
+import { responseCopy } from "@/lib/response-copy";
 import { affiliateLinks } from "@/lib/affiliate-links";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 
@@ -16,7 +17,6 @@ interface HeaderProps {
 
 const navItems = [
   { key: "about" as const, path: "/about" },
-  { key: "contact" as const, path: "/contact" },
 ];
 
 /** 사이트 헤더 — 로고, 내비게이션, 언어 전환 */
@@ -36,12 +36,18 @@ export function Header({ locale, traveler }: HeaderProps) {
         </Link>
 
         <nav className="hidden items-center gap-2 lg:flex" aria-label="Main">
+          <Link
+            href={traveler ? `/${traveler.code}/search` : `/${locale}/search`}
+            className="rounded-full bg-[#10221d] px-4 py-2.5 text-sm font-black text-[#c8f169] transition hover:bg-[#0f766e]"
+          >
+            {nativeNav?.search ?? t(locale, "searchButton")}
+          </Link>
           {traveler && (
             <Link
               href={`/${traveler.code}/prepare`}
-              className="rounded-full bg-[#10221d] px-4 py-2.5 text-sm font-black text-[#c8f169] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="rounded-full px-4 py-2.5 text-sm font-bold text-[#52645e] transition hover:bg-white hover:text-[#0f766e]"
             >
-              {traveler.code === "kr" ? "여행 준비" : "Trip prep"}
+              {responseCopy[traveler.language].prep}
             </Link>
           )}
           {traveler && (
@@ -85,7 +91,7 @@ export function Header({ locale, traveler }: HeaderProps) {
             <Link
               key={item.key}
               href={traveler ? `/${traveler.code}${item.path}` : `/${locale}${item.path}`}
-              className={`${item.key === "contact" ? "hidden xl:block" : ""} rounded-full px-3 py-2.5 text-sm font-bold text-[#52645e] transition-colors hover:bg-white hover:text-[#0f766e]`}
+              className="rounded-full px-3 py-2.5 text-sm font-bold text-[#52645e] transition-colors hover:bg-white hover:text-[#0f766e]"
             >
               {nativeNav?.[item.key] ?? t(locale, item.key)}
             </Link>

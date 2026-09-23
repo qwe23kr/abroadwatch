@@ -7,7 +7,7 @@ import { isAdsenseReadyTravelerProfile } from "@/lib/quality";
 import { travelerProfiles, type TravelerProfile } from "@/lib/traveler-profiles";
 
 const staticPageSlugs = ["about", "contact", "privacy", "terms", "disclaimer", "editorial"];
-const qualityUpdateLastModified = new Date("2026-07-10");
+const qualityUpdateLastModified = new Date("2026-09-23");
 
 function latestDate(...dates: Date[]) {
   return new Date(Math.max(...dates.map((date) => date.getTime())));
@@ -34,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const [suffix, priority] of [["/prepare", 0.96], ["/tools/lost-phone", 0.92], ["/claims", 0.88]] as const) {
       entries.push({
         url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
-        lastModified: new Date("2026-07-27"),
+        lastModified: qualityUpdateLastModified,
         changeFrequency: "monthly",
         priority,
         alternates: { languages: travelerAlternateLanguages(profile, suffix) },
@@ -47,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const suffix = `/${slug}`;
       entries.push({
         url: `${siteConfig.url}${travelerPath(profile, suffix)}`,
-        lastModified: staticPageLastModified,
+        lastModified: ["about", "contact", "editorial"].includes(slug) ? qualityUpdateLastModified : staticPageLastModified,
         changeFrequency: "yearly",
         priority: 0.35,
         alternates: {

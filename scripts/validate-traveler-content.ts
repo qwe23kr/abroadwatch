@@ -45,6 +45,8 @@ for (const profile of travelerProfiles) {
         }
         const raw = fs.readFileSync(file, "utf8");
         const { data, content } = matter(raw);
+        if (/reddit\.com\/[^"\n]*(?:search|\?q=)/.test(content)) errors.push(`${relative}: search results cannot substantiate traveler reports`);
+        if (/Request (?:\*\*)?Stolen(?:\*\*)? not (?:\*\*)?Lost|도난」\*\* 으로 기록 요청|Stolen \/ Theft, Lost 아님/.test(content)) errors.push(`${relative}: misleading police report advice`);
         for (const key of ["title", "summary", "updatedAt", "emergencyNumber"]) {
           if (typeof data[key] !== "string" || !data[key].trim()) errors.push(`${relative}: invalid ${key}`);
         }
@@ -122,7 +124,7 @@ for (const profile of travelerProfiles) {
           const contactCount = content.match(/<ContactCard\b/g)?.length ?? 0;
           const timelineCount = content.match(/<TimelineStep\b/g)?.length ?? 0;
           const actionCount = content.match(/<ActionStep\b/g)?.length ?? 0;
-          if (mapCount < 2) errors.push(`${relative}: expected at least 2 maps, found ${mapCount}`);
+          if (mapCount < 1) errors.push(`${relative}: expected a local institution map, found ${mapCount}`);
           if (contactCount < 2) errors.push(`${relative}: expected at least 2 contacts, found ${contactCount}`);
           if (timelineCount < 6) errors.push(`${relative}: expected 6 timeline steps, found ${timelineCount}`);
           if (actionCount < 6) errors.push(`${relative}: expected 6 action steps, found ${actionCount}`);

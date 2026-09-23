@@ -1,3 +1,4 @@
+import { homeCopy } from "@/lib/home-copy";
 import Form from "next/form";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -61,47 +62,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
   const popularGuides = getPopularTravelerGuides(profile.code, 6);
   const cityCount = destinations.reduce((sum, country) => sum + country.cities.length, 0);
   const isKo = profile.language === "ko";
-  const copy = isKo ? {
-    eyebrow: "해외 문제 해결 가이드",
-    hero: "당황한 순간에도,\n다음 행동은 선명하게.",
-    subtitle: "국적과 현재 도시를 기준으로 긴급 연락처, 신고 절차, 필요한 서류와 보상 준비까지 한 번에 확인하세요.",
-    search: "도시 또는 문제를 검색하세요",
-    searchButton: "해결 방법 찾기",
-    now: "지금 무슨 일이 생겼나요?",
-    nowSub: "실제 검색에서 가장 많이 찾는 문제부터 정리했습니다.",
-    tool: "60초 대응 도구",
-    toolTitle: "휴대폰을 잃어버렸나요?",
-    toolBody: "잠금, 유심 정지, 결제 차단, 경찰 신고, 보험 증거 보존 순서를 놓치지 마세요.",
-    toolCta: "지금 대응 시작",
-    browse: "목적지로 찾기",
-    browseSub: "현재 있는 나라를 선택하면 도시별 절차와 공식 연락처를 보여드립니다.",
-    popular: "여행자가 지금 찾는 가이드",
-    trust: "정보를 믿을 수 있는 이유",
-    claim: "귀국 후에도 끝까지",
-    claimTitle: "보험 청구와 피해 복구까지 연결합니다.",
-    claimBody: "현장에서 어떤 증거를 남겨야 하는지부터 귀국 후 제출할 서류까지 체크리스트로 정리했습니다.",
-    claimCta: "보상·청구 가이드 보기",
-  } : {
-    eyebrow: "Travel problem solver",
-    hero: "When plans break,\nyour next move stays clear.",
-    subtitle: "Get the right contacts, local steps, documents, and recovery checklist for your nationality and current city.",
-    search: "Search a city or travel problem",
-    searchButton: "Find my next step",
-    now: "What happened?",
-    nowSub: "Start with the problems travelers need to solve most often.",
-    tool: "60-second response tool",
-    toolTitle: "Lost your phone abroad?",
-    toolBody: "Lock the device, stop the SIM and payments, report it, and preserve evidence in the right order.",
-    toolCta: "Start now",
-    browse: "Browse by destination",
-    browseSub: "Choose where you are for city-specific steps and official contacts.",
-    popular: "Guides travelers are using",
-    trust: "Why trust AbroadWatch",
-    claim: "Recovery after you return",
-    claimTitle: "From incident report to insurance claim.",
-    claimBody: "Know what evidence to save on the ground and which documents to submit when you get home.",
-    claimCta: "View claims checklist",
-  };
+  const copy = homeCopy(profile);
   const faqJsonLd = buildFaqJsonLd([
     { question: ui.faq1q, answer: ui.faq1a },
     { question: ui.faq2q, answer: ui.faq2a },
@@ -118,11 +79,11 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
         <div className="animate-soft-pulse absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#0f766e]/35 blur-3xl" />
         <div className="absolute bottom-0 left-1/3 h-48 w-48 rounded-full bg-[#c8f169]/10 blur-3xl" />
         <div className="mx-auto grid min-h-[610px] max-w-7xl gap-12 px-4 py-16 sm:px-6 md:px-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:py-24">
-          <div className="animate-fade-in-up relative z-10">
+          <div className="animate-fade-in-up relative z-10 min-w-0">
             <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-bold tracking-[.12em] text-[#c8f169]">
               <span className="h-2 w-2 rounded-full bg-[#c8f169]" /> {profile.nativeName} · {copy.eyebrow}
             </p>
-            <h1 className="text-balance break-keep whitespace-pre-line text-[clamp(2.55rem,5.8vw,4.9rem)] font-black leading-[.96] tracking-[-.06em]">
+            <h1 className="text-balance break-words whitespace-pre-line text-[clamp(2.55rem,5.8vw,4.9rem)] font-black leading-[1.12] tracking-[-.04em]">
               {isKo ? <><span className="block">당황한 순간에도,</span><span className="block">다음 행동은</span><span className="block text-[#c8f169]">선명하게.</span></> : copy.hero}
             </h1>
             <p className="mt-7 max-w-2xl text-base leading-7 text-[#c6d3ce] md:text-lg">{copy.subtitle}</p>
@@ -132,7 +93,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
               <button className="rounded-xl bg-[#c8f169] px-5 py-3.5 text-sm font-black text-[#10221d] transition hover:bg-[#d9ff82] active:scale-[.98]">{copy.searchButton}</button>
             </Form>
             <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-[#93aaa2]">
-              <span>● {destinations.length} countries</span><span>● {cityCount} cities</span><span>● {cityCount * 6} action guides</span>
+              <span>● {destinations.length} {copy.countries}</span><span>● {cityCount} {copy.cities}</span><span>● {cityCount * 6} {copy.guides}</span>
             </div>
           </div>
 
@@ -154,7 +115,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
 
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:px-8 md:py-24">
         <section>
-          <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">START HERE</p>
+          <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">{copy.now}</p>
           <div className="mt-3 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div><h2 className="text-3xl font-black tracking-[-.045em] md:text-5xl">{copy.now}</h2><p className="mt-3 text-[#61716b]">{copy.nowSub}</p></div>
             <Link href={`/${profile.code}/search`} className="text-sm font-black text-[#0f766e] hover:underline">{ui.searchButton} →</Link>
@@ -173,7 +134,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
         <section className="mt-24">
           <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
             <div className="lg:sticky lg:top-28 lg:self-start">
-              <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">DESTINATIONS</p>
+              <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">{copy.browse}</p>
               <h2 className="mt-3 text-3xl font-black tracking-[-.045em] md:text-5xl">{copy.browse}</h2>
               <p className="mt-4 max-w-md leading-7 text-[#61716b]">{copy.browseSub}</p>
             </div>
@@ -190,7 +151,7 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
         </section>
 
         <section className="mt-24">
-          <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">TRENDING SOLUTIONS</p>
+          <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">{copy.popular}</p>
           <h2 className="mt-3 text-3xl font-black tracking-[-.045em] md:text-5xl">{copy.popular}</h2>
           <div className="mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{popularGuides.map((guide, i) => <GuideCard key={`${guide.country}-${guide.city}-${guide.incident}`} guide={guide} profile={profile} index={i} />)}</div>
         </section>
@@ -203,12 +164,12 @@ export default async function TravelerHomePage({ params }: { params: Promise<{ t
         </section>
 
         <section className="mt-24">
-          <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">EDITORIAL STANDARD</p>
+          <p className="text-xs font-black tracking-[.16em] text-[#0f766e]">{copy.trust}</p>
           <h2 className="mt-3 text-3xl font-black tracking-[-.045em] md:text-5xl">{copy.trust}</h2>
           <div className="mt-8 rounded-[2rem] bg-white p-4 shadow-sm md:p-8"><HomeQualitySection profile={profile} countries={destinations} incidents={incidentTypes} /></div>
         </section>
       </div>
-      <EmergencyFab locale={isKo ? "ko" : "en"} phone={profile.consularHotline} label={ui.emergency} />
+      <EmergencyFab locale={isKo ? "ko" : "en"} uiLanguage={profile.language} phone={profile.consularHotline} label={ui.emergency} />
     </>
   );
 }

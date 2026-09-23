@@ -6,6 +6,7 @@ import { t, type TranslationKey } from "@/lib/i18n";
 import { siteConfig, type Locale } from "@/lib/site-config";
 import type { TravelerProfile } from "@/lib/traveler-profiles";
 import { travelerNav } from "@/lib/traveler-ui";
+import { responseCopy } from "@/lib/response-copy";
 import { affiliateLinks } from "@/lib/affiliate-links";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 
@@ -16,14 +17,12 @@ interface MobileNavProps {
 
 const navItems: Array<{ key: TranslationKey; path: string }> = [
   { key: "about", path: "/about" },
-  { key: "contact", path: "/contact" },
 ];
 
 /** 모바일 햄버거 메뉴 */
 export function MobileNav({ locale, traveler }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const nativeNav = traveler ? travelerNav(traveler) : undefined;
-  const homePath = traveler ? `/${traveler.code}` : `/${locale}`;
   const searchPath = traveler ? `/${traveler.code}/search` : `/${locale}/search`;
 
   return (
@@ -74,18 +73,9 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
             <ul className="space-y-1">
               <li>
                 <Link
-                  href={homePath}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  {nativeNav?.home ?? t(locale, "home")}
-                </Link>
-              </li>
-              <li>
-                <Link
                   href={searchPath}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="block rounded-lg bg-[#10221d] px-3 py-2.5 text-sm font-bold text-[#c8f169]"
                 >
                   {nativeNav?.search ?? t(locale, "searchButton")}
                 </Link>
@@ -95,9 +85,9 @@ export function MobileNav({ locale, traveler }: MobileNavProps) {
                   <Link
                     href={`/${traveler.code}/prepare`}
                     onClick={() => setOpen(false)}
-                    className="block rounded-lg bg-[#10221d] px-3 py-2.5 text-sm font-black text-[#c8f169]"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
-                    {traveler.code === "kr" ? "여행 준비" : "Trip preparation"}
+                    {responseCopy[traveler.language].prep}
                   </Link>
                 </li>
               )}

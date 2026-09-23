@@ -5,15 +5,18 @@ import { usePathname } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/site-config";
 import { trackEvent } from "@/lib/analytics-events";
+import type { ResponseLanguage } from "@/lib/response-copy";
 
 interface EmergencyFabProps {
   locale: Locale;
   phone?: string;
   label?: string;
+  uiLanguage?: ResponseLanguage;
 }
 
 /** Mobile emergency call FAB */
-export function EmergencyFab({ locale, phone, label }: EmergencyFabProps) {
+export function EmergencyFab({ locale, phone, label, uiLanguage }: EmergencyFabProps) {
+  const callLabel = { ko: "긴급전화", en: "Emergency call", "zh-Hans": "紧急电话", "zh-Hant": "緊急電話", ja: "緊急電話", th: "โทรฉุกเฉิน", vi: "Gọi khẩn cấp" }[uiLanguage ?? locale];
   const pathname = usePathname();
   const helpline = "https://www.0404.go.kr";
   const helplineTel = "tel:+82232100404";
@@ -42,7 +45,7 @@ export function EmergencyFab({ locale, phone, label }: EmergencyFabProps) {
           })
         }
         className="flex max-w-[calc(100vw-1.5rem)] items-center gap-1.5 rounded-full bg-red-600 px-3 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-red-700 hover:shadow-xl active:scale-95 sm:gap-2 sm:px-4 sm:py-3 sm:text-sm"
-        aria-label={`${t(locale, "emergencyFab")}: ${label ?? displayPhone}`}
+        aria-label={`${callLabel}: ${label ?? displayPhone}`}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +60,7 @@ export function EmergencyFab({ locale, phone, label }: EmergencyFabProps) {
             clipRule="evenodd"
           />
         </svg>
-        <span className="hidden min-[380px]:inline">{t(locale, "emergencyFab")}</span>
+        <span className="hidden min-[380px]:inline">{callLabel}</span>
         <span>{displayPhone}</span>
       </a>
       {label && pathname && (

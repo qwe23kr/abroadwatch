@@ -589,12 +589,11 @@ ${phrase}
 
 <ContactCard
   name="${esc(mission.officialName)}"
-  phone="${profile.consularHotline}"
   website="${mission.officialUrl}"
   note="${esc(ui.sourceNote)}"
 />
 
-<GoogleMap query="${esc(`${mission.officialName} ${cityName} ${countryName}`)}" title="${esc(mission.officialName)}" />
+
 
 ## ${ui.police}
 

@@ -407,7 +407,7 @@ function generateLostPhone(
       {
         time: "30분 이내",
         action: "SIM 정지 + 은행·카카오·Google·Apple ID 비밀번호 변경",
-        note: "도난 후 24시간이 2차 피해 방지 골든타임",
+        note: "지체하지 말고 회선과 결제 수단을 보호하세요",
       },
       {
         time: "1~3시간",
@@ -420,7 +420,7 @@ function generateLostPhone(
         note: isThailand ? "현지 판매점·통신사에서 가격 확인" : "숙소 또는 현지 통신사에 문의",
       },
       {
-        time: "2~4주",
+        time: "보험사 확인",
         action: "여행자보험 휴대품 손해 청구",
         note: "사건 번호·IMEI·구매영수증·경찰 확인서",
       },
@@ -448,7 +448,7 @@ function generateLostPhone(
       },
       {
         title: "보험사에 사건 번호 전달",
-        detail: "경찰 확인서 사본·IMEI·영수증 제출 → 2~4주 보상",
+        detail: "경찰 확인서·IMEI·영수증 제출 후 보장 여부와 처리 기간을 보험사에 확인",
       },
     ];
 
@@ -457,7 +457,7 @@ function generateLostPhone(
       title: `${cityName} 휴대폰 분실·도난 — 실제 대처 절차 (2026)`,
       summary: `${countryName} ${cityName} 휴대폰 분실 시 기기 찾기, SIM 정지, 경찰 신고, 보험 청구까지.`,
       cost: "경찰 신고 0원",
-      time: "경찰 1~3시간 · 보험 2~4주",
+      time: "접수 대기와 보험 처리 기간은 기관별 확인",
       emergency: { number: emergency, label: { ko: isThailand ? "관광경찰 1155" : data.emergency.label.ko, en: "" } },
       review: buildReviewSection(data, "ko", country, citySlug, "lost-phone", cityName),
       timelineTitle: `${cityName} 휴대폰 분실 타임라인`,
@@ -481,9 +481,9 @@ function generateLostPhone(
   // English lost phone - similar structure
   const timeline: TimelineItem[] = [
     { time: "Within 5 min", action: "Find My — locate, lock, play sound", note: "Act while device is online" },
-    { time: "Within 30 min", action: "Block SIM + change all passwords", note: "24hr golden window" },
-    { time: "1–3 hours", action: `${police.name.en} — Police Report`, note: "Request Stolen not Lost" },
-    { time: "2–4 weeks", action: "Insurance claim", note: "Case number + IMEI + receipt" },
+    { time: "Within 30 min", action: "Block SIM + change all passwords", note: "Secure accounts as soon as possible" },
+    { time: "1–3 hours", action: `${police.name.en} — Police Report`, note: "Report the facts accurately; confirm coverage with your insurer" },
+    { time: "Confirm with insurer", action: "Insurance claim", note: "Case number + IMEI + receipt" },
   ];
   const actions: ActionItem[] = [
     { title: "Remote lock via Find My", detail: "icloud.com/find or google.com/android/find", urgent: true },
@@ -498,12 +498,12 @@ function generateLostPhone(
     title: `Lost Phone in ${cityName} — What To Do (2026)`,
     summary: `Find My, SIM block, police report, insurance — ${cityName}, ${countryName}.`,
     cost: "Police report free",
-    time: "Police 1–3 hrs · insurance 2–4 weeks",
+    time: "Confirm police waiting times and claim processing with each provider",
     emergency: { number: emergency, label: { ko: "", en: isThailand ? "Tourist Police 1155" : data.emergency.label.en } },
     review: buildReviewSection(data, "en", country, citySlug, "lost-phone", cityName),
     timelineTitle: `Lost phone timeline — ${cityName}`,
     timeline, actions,
-    warning: { title: "Insurance", body: "Request **Stolen** not **Lost** on police report." },
+    warning: { title: "Insurance", body: "Describe the actual circumstances to police. Ask your insurer which documents and coverage apply." },
     info: [
       { label: "Identity", value: "Name, DOB, passport #" },
       { label: "Device", value: "Model, IMEI, color" },
@@ -535,7 +535,7 @@ function generateLostWallet(
       { time: "30분", action: "분실 카드·계좌 일시정지 + Apple Pay/Google Pay 해제", note: "" },
       { time: "1~2시간", action: `${police.name.ko} — ${reportName}`, note: "현금·카드 목록·추정 금액 작성" },
       { time: "당일", action: "여권이 지갑에 있었는지 확인 → 있으면 여권 가이드 병행", note: "" },
-      { time: "2~4주", action: "여행자보험 청구 (현금·카드재발급비)", note: "" },
+      { time: "보험사 확인", action: "여행자보험 청구 (현금·카드재발급비)", note: "" },
     ];
     const actions: ActionItem[] = [
       { title: "카드사 앱 → 해외결제 OFF", detail: "신한·삼성·KB·하나 등 앱에서 즉시 분실신고·일시정지", urgent: true },
@@ -561,9 +561,9 @@ function generateLostWallet(
   }
 
   const timeline: TimelineItem[] = [
-    { time: "Immediately", action: "Block all cards — international transactions OFF", note: "24hr golden window" },
+    { time: "Immediately", action: "Block all cards — international transactions OFF", note: "Secure accounts as soon as possible" },
     { time: "1–2 hours", action: `${police.name.en} — police report`, note: "List cards and cash amount" },
-    { time: "2–4 weeks", action: "Insurance claim if covered", note: "" },
+    { time: "Confirm with insurer", action: "Insurance claim if covered", note: "" },
   ];
   const actions: ActionItem[] = [
     { title: "Block cards via app", detail: "Turn off international payments immediately", urgent: true },
